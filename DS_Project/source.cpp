@@ -1,12 +1,9 @@
 #include <iostream>
+#include "CSVReader.h"
 using namespace std;
 
-
-
-
-
 int main() {
-
-
-	return 0;
+    CSVReader c;
+    c.readCSV();
+    return 0;
 }
