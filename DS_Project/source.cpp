@@ -1,9 +1,11 @@
 #include <iostream>
-#include "CSVReader.h"
+#include "AVL.h"
 using namespace std;
 
+
 int main() {
-    CSVReader c;
-    c.readCSV();
-    return 0;
+	
+
+	return 0;
 }
+

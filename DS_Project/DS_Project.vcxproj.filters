@@ -32,5 +32,8 @@
     <ClInclude Include="CSVReader.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="AVL.h">
+      <Filter>Trees</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
