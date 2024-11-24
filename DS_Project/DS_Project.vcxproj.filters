@@ -35,5 +35,8 @@
     <ClInclude Include="AVL.h">
       <Filter>Trees</Filter>
     </ClInclude>
+    <ClInclude Include="RedBlack.h">
+      <Filter>Trees</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

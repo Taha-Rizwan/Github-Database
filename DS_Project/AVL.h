@@ -3,6 +3,7 @@
 #include<string>
 #include<cmath>
 #include<queue>
+
 using namespace std;
 template<class T>
 class Node {
@@ -16,7 +17,6 @@ public:
 	}
 
 };
-
 template<class T>
 class AVL {
 public:
