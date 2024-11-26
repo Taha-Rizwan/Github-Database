@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BTree.h" />
     <ClCompile Include="source.cpp" />
   </ItemGroup>
   <ItemGroup>
