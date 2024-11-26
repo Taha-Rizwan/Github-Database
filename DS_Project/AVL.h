@@ -1,19 +1,26 @@
 #pragma once
+#pragma once
 #include<iostream>
+#include<filesystem>
+#include<fstream>
+#include<cstdio>
 #include<string>
 #include<cmath>
 #include<queue>
-
+namespace fs = std::filesystem;
 using namespace std;
 template<class T>
 class Node {
 public:
 	Node<T>* left;
 	Node<T>* right;
+	Node<T>* parent;
+
 	T data;
 	int height;
-	Node(T c) :data(c), left(nullptr), right(nullptr), height(0) {
-
+	string fileName;
+	Node(T c) :data(c), left(nullptr), right(nullptr), parent(nullptr), height(0) {
+		fileName = std::to_string(data) + ".txt";
 	}
 
 };
@@ -22,9 +29,59 @@ class AVL {
 public:
 	Node<T>* root;
 	int nNodes;
+	string dirName;
 	AVL() :root(nullptr), nNodes(0) {
-
+		dirName = "Nodes";
 	}
+
+	//File Handling
+
+	//creates a directory
+	void createDirectory(const string& dirName) {
+		if (!fs::exists(dirName)) {
+			fs::create_directory(dirName);
+			cout << "Directory " << dirName << " has been created\n";
+		}
+	}
+
+	//Creates a file in that directory(basically a node)
+
+	void createFileInDirectory(const string& dirName, const string& fileName, Node<T>* n) {
+		createDirectory(dirName);
+		fstream file;
+		file.open(dirName + '/' + fileName, ios::out);
+		cout << "File " << fileName << " has been created\n";
+		file << n->data << endl;
+		if (n->parent) {
+			file << n->parent->data << ".txt ";
+		}
+		else {
+			file << "NULL ";
+		}
+		if (n->left) {
+			file << n->left->data << ".txt ";
+		}
+		else {
+			file << "NULL ";
+		}
+		if (n->right) {
+			file << n->right->data << ".txt" << endl;
+		}
+		else {
+			file << "NULL" << endl;
+		}
+	}
+
+	void updateNodeFile(Node<T>* node) {
+		if (!node) return;
+		fstream file(dirName + '/' + node->fileName, ios::out);
+		file << node->data << endl;
+		file << (node->parent ? to_string(node->parent->data) + ".txt" : "NULL") << " ";
+		file << (node->left ? to_string(node->left->data) + ".txt" : "NULL") << " ";
+		file << (node->right ? to_string(node->right->data) + ".txt" : "NULL") << endl;
+		file.close();
+	}
+
 
 	int Height(Node<T>* k1) {
 		if (k1 == nullptr) {
@@ -67,9 +124,22 @@ public:
 		cout << "Rotating left\n";
 		Node<T>* temp = k1->right;
 		k1->right = temp->left;
+		if (k1->right)
+			k1->right->parent = k1;
+		if (temp->left)
+			temp->left->parent = k1;
 		temp->left = k1;
+		temp->parent = k1->parent;
+		k1->parent = temp;
 		k1->height = max(Height(k1->left), Height(k1->right)) + 1;
 		temp->height = max(Height(temp->right), k1->height) + 1;
+
+		updateNodeFile(k1);
+		updateNodeFile(temp);
+		if (k1->parent) updateNodeFile(k1->parent);
+		if (temp->parent) updateNodeFile(temp->parent);
+		if (k1->right) updateNodeFile(k1->right);
+
 		return temp;
 	}
 
@@ -78,9 +148,21 @@ public:
 
 		Node<T>* temp = k1->left;
 		k1->left = temp->right;
+		if (k1->left)
+			k1->left->parent = k1;
+
 		temp->right = k1;
+		temp->parent = k1->parent;
+		k1->parent = temp;
 		k1->height = max(Height(k1->left), Height(k1->right)) + 1;
 		temp->height = max(Height(temp->left), k1->height) + 1;
+
+		updateNodeFile(k1);
+		updateNodeFile(temp);
+		if (k1->parent) updateNodeFile(k1->parent);
+		if (temp->parent) updateNodeFile(temp->parent);
+		if (k1->left) updateNodeFile(k1->left);
+
 		return temp;
 	}
 
@@ -88,6 +170,8 @@ public:
 		cout << "Rotating rightleft\n";
 
 		k1->left = rotateLeft(k1->left);
+		if (k1->left)
+			k1->left->parent = k1;
 		k1 = rotateRight(k1);
 		return k1;
 	}
@@ -96,23 +180,39 @@ public:
 
 	Node<T>* leftRight(Node<T>* k1) {
 		k1->right = rotateRight(k1->right);
+		if (k1->right)
+			k1->right->parent = k1;
 		k1 = rotateLeft(k1);
 		return k1;
 	}
 
 	void insert(T c) {
-		insertNode(root, c);
+		if (root == nullptr) {
+			root = new Node<T>(c);
+			nNodes++;
+			root->height = max(Height(root->left), Height(root->right)) + 1;
+			root->parent = nullptr;
+			createDirectory(dirName);
+			createFileInDirectory(dirName, root->fileName, root);
+			return;
+		}
+		else {
+			insertNode(root, root->parent, c);
+		}
 	}
 
-	void insertNode(Node<T>*& tRoot, T c) {
+	void insertNode(Node<T>*& tRoot, Node<T>*& parent, T c) {
 		if (tRoot == nullptr) {
 			tRoot = new Node<T>(c);
 			nNodes++;
 			tRoot->height = max(Height(tRoot->left), Height(tRoot->right)) + 1;
+			tRoot->parent = parent;
+			createFileInDirectory(dirName, tRoot->fileName, tRoot);
+			createFileInDirectory(dirName, tRoot->parent->fileName, tRoot->parent);
 			return;
 		}
 		else if (isEqual(c, tRoot->data) == -1) {
-			insertNode(tRoot->left, c);
+			insertNode(tRoot->left, tRoot, c);
 			if (abs(Height(tRoot->left) - Height(tRoot->right)) == 2) {
 				if (isEqual(c, tRoot->left->data) == -1) {
 					tRoot = rotateRight(tRoot);
@@ -121,9 +221,10 @@ public:
 					tRoot = rightLeft(tRoot);
 				}
 			}
+
 		}
 		else if (isEqual(c, tRoot->data) == 1) {
-			insertNode(tRoot->right, c);
+			insertNode(tRoot->right, tRoot, c);
 			if (abs(Height(tRoot->right) - Height(tRoot->left)) == 2) {
 				if (isEqual(c, tRoot->right->data) == 1) {
 					tRoot = rotateLeft(tRoot);
@@ -229,6 +330,8 @@ public:
 		else {
 			if (!tRoot->left || !tRoot->right) {
 				Node<T>* temp = tRoot->left ? tRoot->left : tRoot->right;
+				//string filename = to_string(key) + ".txt";
+				//fs::remove(filename);
 				delete tRoot;
 				tRoot = temp;
 				nNodes--;
