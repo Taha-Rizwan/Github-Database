@@ -32,13 +32,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CSVReader.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="AVL.h">
       <Filter>Trees</Filter>
     </ClInclude>
     <ClInclude Include="RedBlack.h">
+      <Filter>Trees</Filter>
+    </ClInclude>
+    <ClInclude Include="Repository.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree.h">
       <Filter>Trees</Filter>
     </ClInclude>
   </ItemGroup>

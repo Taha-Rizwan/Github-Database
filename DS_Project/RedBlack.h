@@ -1,5 +1,11 @@
+#pragma once
 #include <iostream>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+#include "Repository.h"
 using namespace std;
+using namespace std::filesystem;
 
 bool RED = 1;
 bool BLACK = 0;
@@ -22,12 +28,17 @@ struct RedBlackNode {
 
 // Red-Black Tree class
 template<class T>
-class RedBlackTree {
+class RedBlackTree:public Tree<T> {
 private:
     RedBlackNode<T>* root;
     RedBlackNode<T>* nil;
+    Repository<T> repo;
+    void createFile(RedBlackNode<T>* node) {
+        
+    }
 
-
+    void updateFile(RedBlackNode<T>* node){
+    }
     int isEqual(char c, char d) {
         return isEqual(int(c), int(d));
     }
@@ -214,7 +225,7 @@ private:
          y->parent = x->parent;
     }
 
-    RedBlackNode<T>* searchHelper(RedBlackNode<T>* node, int n) {
+    RedBlackNode<T>* searchHelper(RedBlackNode<T>* node, T n) {
         if (!node || node==nil)
             return nullptr;
 
@@ -355,14 +366,14 @@ private:
     }
 
 public:
-    RedBlackTree() {
+    RedBlackTree():repo(this) {
         root = nullptr;
         nil = new RedBlackNode<T>();
     }
 
    
     void insert(T data) {
-        cout << data << endl;
+        //cout << data << endl;
         if (root == nullptr) {
             root = new RedBlackNode<T>(data);
             root->color = BLACK;
@@ -417,11 +428,11 @@ public:
 
         }
     }
-    RedBlackNode<T>* search(int val) {
+    RedBlackNode<T>* search(T val) {
         return searchHelper(root, val);
     }
 
-    void deleteByVal(int val) {
+    void deleteByVal(T val) {
         RedBlackNode<T>* x = search(val);
         if (!x||x==nil) {
             return;
@@ -436,6 +447,10 @@ public:
     }
     void inorder() {
         inorderHelper(root);
+    }
+
+    void createRepo() {
+      
     }
 
 };
