@@ -1,0 +1,3 @@
+rIcharD bAkER
+rIcharD ray.txt
+NULL NULL

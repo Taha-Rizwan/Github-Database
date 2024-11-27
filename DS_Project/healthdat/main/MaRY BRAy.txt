@@ -1,0 +1,3 @@
+MaRY BRAy
+MaRVIn potts.txt
+NULL NULL

@@ -1,0 +1,3 @@
+PAmELa ramOs
+PAmELA wu.txt
+NULL NULL

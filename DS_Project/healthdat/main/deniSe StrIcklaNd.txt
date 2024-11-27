@@ -1,0 +1,3 @@
+deniSe StrIcklaNd
+deniSe Wall.txt
+NULL NULL

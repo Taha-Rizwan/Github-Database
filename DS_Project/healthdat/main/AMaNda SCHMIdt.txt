@@ -1,0 +1,3 @@
+AMaNda SCHMIdt
+AMaNda MAy.txt
+AMaNda MaRtin.txt NULL

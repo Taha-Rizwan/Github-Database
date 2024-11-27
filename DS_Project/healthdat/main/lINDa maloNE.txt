@@ -1,0 +1,3 @@
+lINDa maloNE
+lINDa orozcO.txt
+NULL NULL

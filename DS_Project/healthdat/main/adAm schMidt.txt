@@ -1,0 +1,3 @@
+adAm schMidt
+adAm riVeRa.txt
+NULL NULL

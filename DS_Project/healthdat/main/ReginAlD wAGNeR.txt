@@ -1,0 +1,3 @@
+ReginAlD wAGNeR
+ReginALD CHANdleR.txt
+ReginAlD lEONArd.txt NULL

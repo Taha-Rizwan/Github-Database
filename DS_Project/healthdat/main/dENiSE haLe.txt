@@ -1,0 +1,3 @@
+dENiSE haLe
+dENiSe hinEs.txt
+dENiSE GOoDWIN.txt NULL

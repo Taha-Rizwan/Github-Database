@@ -6,20 +6,9 @@ using namespace std;
 
 int main() {
 
-	RedBlackTree<string> t;
-	AVL<int> tree;
-	tree.insert(21);
-	tree.insert(26);
-	tree.insert(30);
-	tree.insert(9);
-	tree.insert(4);
-	tree.insert(14);
-	tree.insert(28);
-	tree.insert(1);
-	tree.insert(31);
-	tree.print();
-	tree.deleteByVal(28);
-	tree.print();
+	//RedBlackTree<string> t;
+	AVL<string> tree;
+	
 	return 0;
 }
 

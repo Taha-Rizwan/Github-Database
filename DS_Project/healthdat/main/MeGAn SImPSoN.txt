@@ -1,0 +1,3 @@
+MeGAn SImPSoN
+MeGAn STArk.txt
+MeGAn POWElL.txt NULL
