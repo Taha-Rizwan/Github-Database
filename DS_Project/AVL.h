@@ -21,7 +21,7 @@ public:
 	int height;
 	string fileName;
 	Node(T c) :data(c), left(nullptr), right(nullptr), parent(nullptr), height(0) {
-		fileName = std::to_string(data) + ".txt";
+		fileName = to_string_generic(data) + ".txt";
 	}
 
 };
@@ -31,9 +31,9 @@ public:
 	Node<T>* root;
 	int nNodes;
 	Repository<T> repo;
-	string dirName;
 	AVL() :root(nullptr), nNodes(0),repo(this) {
-		dirName = "Nodes";
+		repo.create();
+		repo.main();
 	}
 
 	void deleteByVal(T val) {
@@ -50,13 +50,13 @@ public:
 
 	//Creates a file in that directory(basically a node)
 
-	void createFileInDirectory(const string& dirName, const string& fileName, Node<T>* n) {
+	void createFile(const string& fileName, Node<T>* n) {
 		fstream file;
 		file.open(repo.name + "/" + repo.currBranch + "/" + fileName, ios::out);
 		cout << "File " << fileName << " has been created\n";
 		file << n->data << endl;
 		if (n->parent) {
-			file << n->parent->data << ".txt ";
+			file << n->parent->data << ".txt\n";
 		}
 		else {
 			file << "NULL ";
@@ -80,9 +80,24 @@ public:
 		fstream file;
 		file.open(repo.name + "/" + repo.currBranch + "/" + node->fileName, ios::out);
 		file << node->data << endl;
-		file << (node->parent ? to_string(node->parent->data) + ".txt" : "NULL") << " ";
-		file << (node->left ? to_string(node->left->data) + ".txt" : "NULL") << " ";
-		file << (node->right ? to_string(node->right->data) + ".txt" : "NULL") << endl;
+		if (node->parent) {
+			file << node->parent->data << ".txt\n";
+		}
+		else {
+			file << "NULL ";
+		}
+		if (node->left) {
+			file << node->left->data << ".txt ";
+		}
+		else {
+			file << "NULL ";
+		}
+		if (node->right) {
+			file << node->right->data << ".txt" << endl;
+		}
+		else {
+			file << "NULL" << endl;
+		}
 		file.close();
 	}
 
@@ -99,36 +114,6 @@ public:
 			return -1;
 		}
 		return k1->height;
-	}
-
-	int isEqual(char c, char d) {
-		return isEqual(int(c), int(d));
-	}
-
-	int isEqual(int c, int d) {
-		if (c == d) {
-			return 0;
-		}
-		else if (c > d) {
-			return 1;
-		}
-		else {
-			return -1;
-		}
-	}
-
-	int isEqual(string c, string d) {
-		int len1 = c.length();
-		int len2 = d.length();
-		for (int i = 0; i < min(len1, len2); i++) {
-			if (c[i] > d[i]) {
-				return 1;
-			}
-			else if (c[i] < d[i]) {
-				return -1;
-			}
-		}
-		return 0;
 	}
 
 	Node<T>* rotateLeft(Node<T>*& k1) {
@@ -214,7 +199,7 @@ public:
 			nNodes++;
 			root->height = max(Height(root->left), Height(root->right)) + 1;
 			root->parent = nullptr;
-			createFileInDirectory(dirName, root->fileName, root);
+			createFile(root->fileName, root);
 			return;
 		}
 		else {
@@ -228,8 +213,8 @@ public:
 			nNodes++;
 			tRoot->height = max(Height(tRoot->left), Height(tRoot->right)) + 1;
 			tRoot->parent = parent;
-			createFileInDirectory(dirName, tRoot->fileName, tRoot);
-			createFileInDirectory(dirName, tRoot->parent->fileName, tRoot->parent);
+			createFile(tRoot->fileName, tRoot);
+			createFile(tRoot->parent->fileName, tRoot->parent);
 			return;
 		}
 		else if (isEqual(c, tRoot->data) == -1) {
@@ -381,7 +366,7 @@ public:
 				deleteNode(tRoot->right, succ->data);
 
 				deleteFile(key);
-				tRoot->fileName = to_string(tRoot->data) + ".txt";
+				tRoot->fileName = to_string_generic(tRoot->data) + ".txt";
 				updateNodeFile(tRoot);
 				updateNodeFile(tRoot->left);
 				updateNodeFile(tRoot->right);
@@ -420,33 +405,17 @@ public:
 
 	}
 
-	//Updates value of a node
-	void updateNode(Node<T>*& tRoot, T oldData, T newData) {
-		Node<T>* targetNode = search(tRoot, oldData);
-
-		if (!targetNode) {
-			cout << "Node with data " << oldData << " not found!" << endl;
-			return;
-		}
-
-		targetNode->data = newData;
-		targetNode->fileName = std::to_string(newData) + ".txt";
-		deleteFile(oldData);
-		updateNodeFile(targetNode);
-
-		if (targetNode->parent) {
-			updateNodeFile(targetNode->parent);
-		}
-		if (targetNode->left) {
-			updateNodeFile(targetNode->left);
-		}
-		if (targetNode->right) {
-			updateNodeFile(targetNode->right);
-		}
+	//Virtual function update
+	void update(T oldData,T newData){
+		updateNode(root,oldData,newData);
 	}
 
-
-
+	//Updates value of a node
+	void updateNode(Node<T>*& tRoot, T oldData, T newData) {
+		deleteByVal(oldData);
+		insert(newData);
+		cout << "Updated Node with value " << oldData << " with " << newData << endl;
+	}
 
 	bool isAVL() {
 		if (abs(Height(root->right) - Height(root->left)) <= 1) {
@@ -459,6 +428,17 @@ public:
 		return abs(Height(root->right) - Height(root->left));
 	}
 
+	void computeHash() {
+		computeHashHelper(root);
+		cout << root->hash;
+	}
 
+	string computeHashHelper(AVL<T>* node) {
+		if (node == nullptr)
+			return "";
+		//Currently a placeholder for computing actual has, implement later
+		node->hash = instructorHash(node->data) + computeHashHelper(node->left) + computeHashHelper(node->right);
+		return node->hash;
+	}
 
 };
