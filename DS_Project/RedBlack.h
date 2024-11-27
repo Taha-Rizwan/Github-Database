@@ -105,6 +105,12 @@ private:
 
         file.close();
     }
+
+    void deleteFile(T data) {
+            
+            remove(repo.name + "/" + repo.currBranch + "/" + to_string_generic(data) + ".txt");
+        
+    }
     int isEqual(char c, char d) {
         return isEqual(int(c), int(d));
     }
@@ -294,7 +300,11 @@ private:
             //x is on the right of parent
             x->parent->right = y;
         }
+         updateFile(y->parent);
          y->parent = x->parent;
+         updateFile(y);
+         updateFile(x);
+         updateFile(y->parent);
     }
 
     RedBlackNode<T>* searchHelper(RedBlackNode<T>* node, T n) {
@@ -414,16 +424,21 @@ private:
             x = y->right;
             if (y->parent == node) {
                 x->parent = y;
+                updateFile(x->parent);
             }
             else {
                 transplant(y, y->right);
                 y->right = node->right;
                 y->right->parent = y;
+                updateFile(y->right);
+                updateFile(y);
             }
             transplant(node, y);
             y->left = node->left;
             y->left->parent = y;
             y->color = node->color;
+            updateFile(y->left);
+            updateFile(y);
         }
         //In case original color is black there will be violations
         if (!origColor)
@@ -441,6 +456,8 @@ public:
     RedBlackTree():repo(this) {
         root = nullptr;
         nil = new RedBlackNode<T>();
+        repo.create();
+        repo.main();
     }
 
    
@@ -514,6 +531,7 @@ public:
         }
         else {
             deleteNode(x);
+            deleteFile(val);
         }
     }
 
@@ -522,10 +540,6 @@ public:
     }
     void inorder() {
         inorderHelper(root);
-    }
-
-    void createRepo() {
-      
     }
 
 };

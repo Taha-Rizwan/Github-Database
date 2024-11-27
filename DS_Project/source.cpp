@@ -6,7 +6,6 @@ using namespace std;
 int main() {
 
 	RedBlackTree<string> t;
-	t.createRepo();
 	return 0;
 }
 
