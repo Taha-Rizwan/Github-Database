@@ -1,3 +1,0 @@
-ANGEla chaSE
-ANGEla glOVER.txt
-NULL NULL

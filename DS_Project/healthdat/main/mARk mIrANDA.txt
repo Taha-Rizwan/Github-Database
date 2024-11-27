@@ -1,3 +1,0 @@
-mARk mIrANDA
-mARk hARrIS.txt
-mARk lYnch.txt NULL

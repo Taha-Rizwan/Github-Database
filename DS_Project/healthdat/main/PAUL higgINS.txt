@@ -1,3 +1,0 @@
-PAUL higgINS
-PAUL hOlmeS.txt
-NULL NULL

@@ -1,3 +1,0 @@
-kevIn cONNeR
-kevIn haRRIs.txt
-kevIn Rice.txt kevIn doNalDsON.txt

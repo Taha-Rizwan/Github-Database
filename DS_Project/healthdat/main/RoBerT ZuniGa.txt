@@ -1,3 +1,0 @@
-RoBerT ZuniGa
-RoBerT bUck.txt
-NULL NULL

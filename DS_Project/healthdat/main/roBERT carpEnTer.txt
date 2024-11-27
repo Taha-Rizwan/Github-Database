@@ -1,3 +1,0 @@
-roBERT carpEnTer
-roBERT MercadO.txt
-roBERT alVAreZ.txt roBERT mOLinA.txt

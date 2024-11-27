@@ -1,3 +1,0 @@
-mARY SCott
-mARY aLlEN.txt
-mARY KENnedY.txt NULL

@@ -1,3 +1,0 @@
-linDa alLEN
-linDSay fRaZiEr.txt
-linDa PErez.txt NULL

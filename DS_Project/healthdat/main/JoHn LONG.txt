@@ -1,3 +1,0 @@
-jOhn long
-jOhn mOsS.txt
-NULL NULL

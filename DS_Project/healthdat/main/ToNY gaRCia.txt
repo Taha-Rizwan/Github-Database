@@ -1,3 +1,0 @@
-ToNY gaRCia
-ToNY mIRAnda.txt
-ToNY JAcKson.txt NULL

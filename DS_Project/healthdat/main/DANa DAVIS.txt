@@ -1,3 +1,0 @@
-DanA dAViS
-DanIEL GIll.txt
-DanA cOmPtoN.txt NULL

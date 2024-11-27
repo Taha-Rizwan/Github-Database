@@ -1,3 +1,0 @@
-suSAn HaRT
-suSAn Smith.txt
-NULL NULL

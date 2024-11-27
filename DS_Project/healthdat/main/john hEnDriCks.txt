@@ -1,3 +1,0 @@
-john hEnDriCks
-john hIcKs.txt
-NULL NULL

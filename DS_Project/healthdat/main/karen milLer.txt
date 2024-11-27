@@ -1,3 +1,0 @@
-karEN mILleR
-karEN jONEs.txt
-NULL NULL

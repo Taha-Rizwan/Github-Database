@@ -1,3 +1,0 @@
-jasoN mAys
-jasoN hErnandez.txt
-NULL jasoN moore.txt

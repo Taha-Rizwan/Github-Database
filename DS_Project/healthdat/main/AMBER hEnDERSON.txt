@@ -1,3 +1,0 @@
-AMBER hEnDERSON
-AMBER kIng.txt
-AMBER gOoDmAN.txt NULL

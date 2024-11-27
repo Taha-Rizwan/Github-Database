@@ -1,3 +1,0 @@
-adAm mAddOX
-adAm jOhnSon.txt
-NULL NULL

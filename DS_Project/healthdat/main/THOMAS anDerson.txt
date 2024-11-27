@@ -1,3 +1,0 @@
-THOMAS anDerson
-THOMAS SotO.txt
-NULL NULL

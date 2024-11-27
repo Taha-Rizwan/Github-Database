@@ -1,3 +1,0 @@
-petEr meRCAdo
-petEr cOnway.txt
-NULL petEr nICHOLS.txt

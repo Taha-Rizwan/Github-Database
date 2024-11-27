@@ -1,3 +1,0 @@
-jaNE SINGLeTON
-jaNET MARtinEZ.txt
-jaNE Baker.txt jaNET HUGhes.txt

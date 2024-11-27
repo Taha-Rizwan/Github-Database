@@ -1,3 +1,0 @@
-WillIAm DOmIngueZ
-WillIAm LewIs.txt
-WillIAm BRyAN.txt NULL

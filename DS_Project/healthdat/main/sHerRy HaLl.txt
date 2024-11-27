@@ -1,3 +1,0 @@
-sheRrY haLl
-sheRrY oLivEr.txt
-NULL NULL

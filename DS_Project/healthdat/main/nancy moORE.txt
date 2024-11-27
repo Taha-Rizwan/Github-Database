@@ -1,3 +1,0 @@
-nancy moORE
-nancy smiTh.txt
-NULL NULL

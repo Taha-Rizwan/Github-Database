@@ -1,3 +1,0 @@
-jaMeS green
-jaMeS rogers.txt
-NULL jaMeS jAckSON.txt

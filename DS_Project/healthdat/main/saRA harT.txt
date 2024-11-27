@@ -1,3 +1,0 @@
-saRA harT
-saRA hall.txt
-NULL NULL

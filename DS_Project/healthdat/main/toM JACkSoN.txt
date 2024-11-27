@@ -1,3 +1,0 @@
-toM JACkSoN
-toM iRWIn.txt
-NULL NULL

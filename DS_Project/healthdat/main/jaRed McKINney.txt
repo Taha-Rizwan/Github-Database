@@ -1,3 +1,0 @@
-jaRed McKINney
-jaRed smIth.txt
-NULL NULL

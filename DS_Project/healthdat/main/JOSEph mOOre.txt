@@ -1,3 +1,0 @@
-josEph MOOre
-josEph GaRciA.txt
-josEph LeVIne.txt NULL

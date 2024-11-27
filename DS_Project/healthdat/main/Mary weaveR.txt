@@ -1,3 +1,0 @@
-Mary weaveR
-Mary smith.txt
-NULL NULL

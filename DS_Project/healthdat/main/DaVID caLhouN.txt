@@ -1,3 +1,0 @@
-DaVID caLhouN
-DaVID gARcIA.txt
-DaVID THompsOn.txt NULL

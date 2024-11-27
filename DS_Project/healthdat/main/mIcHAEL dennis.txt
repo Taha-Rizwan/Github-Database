@@ -1,3 +1,0 @@
-mIcHAEL dennis
-mIcHAEL johnSoN.txt
-NULL NULL

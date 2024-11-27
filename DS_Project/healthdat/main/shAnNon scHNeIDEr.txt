@@ -1,3 +1,0 @@
-shAnNon scHNeIDEr
-shAne CastRO.txt
-shAnNon newman.txt NULL

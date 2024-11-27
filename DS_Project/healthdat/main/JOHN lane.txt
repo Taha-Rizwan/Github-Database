@@ -1,3 +1,0 @@
-JOHN lane
-JOHN jONEs.txt
-JOHN laNE.txt JOHN mArTinEz.txt

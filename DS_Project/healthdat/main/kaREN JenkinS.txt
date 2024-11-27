@@ -1,3 +1,0 @@
-kaREN JenkinS
-kaREN MARtinEZ.txt
-kaREN GOnZaLes.txt NULL

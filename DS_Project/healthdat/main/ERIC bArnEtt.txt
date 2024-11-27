@@ -1,3 +1,0 @@
-ERIC bArnEtt
-ERIC davIS.txt
-NULL NULL

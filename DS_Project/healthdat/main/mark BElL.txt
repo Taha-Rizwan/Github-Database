@@ -1,3 +1,0 @@
-MARK BElL
-MARK DavIs.txt
-NULL NULL

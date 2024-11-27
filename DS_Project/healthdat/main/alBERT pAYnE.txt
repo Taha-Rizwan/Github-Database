@@ -1,3 +1,0 @@
-alBERT pAYnE
-alBERT jenSEn.txt
-NULL NULL

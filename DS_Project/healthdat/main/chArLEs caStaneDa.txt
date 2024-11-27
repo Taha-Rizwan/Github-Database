@@ -1,3 +1,0 @@
-chArLEs caStaneDa
-chArLEs thomaS.txt
-chArLEs GReeN.txt NULL

@@ -1,3 +1,0 @@
-dakota WATTS
-dakoTa TRAN.txt
-NULL NULL

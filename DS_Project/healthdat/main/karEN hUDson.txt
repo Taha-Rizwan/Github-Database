@@ -1,3 +1,0 @@
-karEN hUDson
-karEN fARmER.txt
-NULL NULL

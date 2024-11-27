@@ -1,3 +1,0 @@
-cHERYl HEBErt
-cHERYL wesT.txt
-cHERYL woODs.txt NULL

@@ -1,3 +1,0 @@
-kAreN ALLEn
-kAreN FORd.txt
-kAra rAmos.txt NULL

@@ -1,3 +1,0 @@
-pAMela murPhy
-pAMela myeRS.txt
-NULL NULL

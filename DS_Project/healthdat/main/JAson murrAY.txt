@@ -1,3 +1,0 @@
-JAson murrAY
-JAson pETeRSON.txt
-JAson gallAgheR.txt NULL

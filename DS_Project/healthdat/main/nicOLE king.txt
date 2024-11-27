@@ -1,3 +1,0 @@
-nicOLE king
-nicOLE jImeNez.txt
-NULL NULL

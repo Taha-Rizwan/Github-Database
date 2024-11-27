@@ -1,3 +1,0 @@
-heatHeR camPbeLl
-heatHeR tRan.txt
-heatHeR PATEL.txt NULL

@@ -1,3 +1,0 @@
-NOrMA stONE
-NOrMA cobb.txt
-NULL NULL

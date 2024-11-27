@@ -1,3 +1,0 @@
-dEbra ramOs
-dEbra paTtERSon.txt
-NULL NULL

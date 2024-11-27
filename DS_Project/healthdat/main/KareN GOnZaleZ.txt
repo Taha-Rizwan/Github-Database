@@ -1,3 +1,0 @@
-KAREN gONZALeZ
-KAREN cONner.txt
-KAREN carroll.txt NULL

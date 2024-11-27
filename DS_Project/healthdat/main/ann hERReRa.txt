@@ -1,3 +1,0 @@
-ann hERReRa
-ann bOWMan.txt
-NULL NULL

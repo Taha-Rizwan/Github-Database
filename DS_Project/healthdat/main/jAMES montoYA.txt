@@ -1,3 +1,0 @@
-jAMES montoYA
-jAMES pricE.txt
-NULL NULL

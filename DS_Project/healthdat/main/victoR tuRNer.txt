@@ -1,3 +1,0 @@
-victoR tuRNer
-victoR andERSOn.txt
-NULL NULL

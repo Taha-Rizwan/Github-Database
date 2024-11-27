@@ -1,3 +1,0 @@
-loRI PacHECO
-loRETta FLEMiNg.txt
-loREtTA oWeN.txt NULL

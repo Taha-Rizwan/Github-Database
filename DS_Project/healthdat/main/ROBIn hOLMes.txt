@@ -1,3 +1,0 @@
-ROBIn hOLMes
-ROBeRT STEPhEnSOn.txt
-ROBIn JONES.txt ROBeRT COoper.txt

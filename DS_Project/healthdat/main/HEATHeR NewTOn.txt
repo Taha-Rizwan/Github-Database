@@ -1,3 +1,0 @@
-HEATHeR NewTOn
-HEATHeR hENDerSon.txt
-NULL NULL

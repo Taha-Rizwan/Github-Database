@@ -1,3 +1,0 @@
-KeVIN logAn
-KeVIN adKiNS dvM.txt
-KeVIN joHNsoN.txt NULL

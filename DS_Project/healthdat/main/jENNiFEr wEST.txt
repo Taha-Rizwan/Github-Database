@@ -1,3 +1,0 @@
-JENnifER WEsT
-JENnifER HUnt.txt
-NULL NULL

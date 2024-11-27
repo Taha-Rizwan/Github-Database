@@ -1,3 +1,0 @@
-JOHN grEgORy
-JOHN hUgHes.txt
-NULL NULL

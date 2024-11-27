@@ -1,3 +1,0 @@
-mARY KENnedY
-mARY SCott.txt
-NULL NULL

@@ -1,3 +1,0 @@
-pAUL cartEr
-pAUL bYrD.txt
-pAUL baRbER.txt NULL

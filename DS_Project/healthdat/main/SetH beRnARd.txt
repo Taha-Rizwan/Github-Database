@@ -1,3 +1,0 @@
-SetH beRnARd
-SetH SMITH.txt
-NULL NULL

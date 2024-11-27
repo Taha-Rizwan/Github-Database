@@ -1,3 +1,0 @@
-TANYA chrIStian
-TANYA wiLlIams.txt
-TAMmy miLLs.txt NULL

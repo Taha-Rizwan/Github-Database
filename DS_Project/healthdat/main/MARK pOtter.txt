@@ -1,3 +1,0 @@
-MARK pOtter
-MARK maLONE.txt
-NULL NULL

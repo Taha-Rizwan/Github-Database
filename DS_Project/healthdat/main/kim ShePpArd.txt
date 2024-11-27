@@ -1,3 +1,0 @@
-kim ShePpArd
-kim SMITH.txt
-NULL NULL

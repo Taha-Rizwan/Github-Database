@@ -1,3 +1,0 @@
-adAm BENSon
-adAm JoRDaN.txt
-NULL adAm EvaNS.txt

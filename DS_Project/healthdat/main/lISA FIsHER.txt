@@ -1,3 +1,0 @@
-lISA FIsHER
-lISA HARris.txt
-NULL NULL

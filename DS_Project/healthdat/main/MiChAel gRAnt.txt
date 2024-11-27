@@ -1,3 +1,0 @@
-MiChAel gRAnt
-MiChAel fRENCH.txt
-NULL NULL

@@ -1,3 +1,0 @@
-AlisON maYNArd
-AlisON potter.txt
-NULL NULL

@@ -1,3 +1,0 @@
-MeGAN wIlkeRSoN
-MeGAN jOnes.txt
-NULL NULL

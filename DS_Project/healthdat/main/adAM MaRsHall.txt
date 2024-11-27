@@ -1,3 +1,0 @@
-adAM MaRsHall
-adAM PeTERSON.txt
-NULL NULL

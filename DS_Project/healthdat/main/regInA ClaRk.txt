@@ -1,3 +1,0 @@
-regInA ClaRk
-regINa carTer.txt
-NULL NULL

@@ -1,3 +1,0 @@
-tracY PArKer
-tracI MartINeZ.txt
-tracY DIaz.txt tracY RODRigUEZ.txt

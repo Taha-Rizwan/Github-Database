@@ -1,3 +1,0 @@
-paulA waLlAce
-paulA gUTiErrez.txt
-NULL NULL

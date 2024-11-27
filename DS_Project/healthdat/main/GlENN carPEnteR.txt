@@ -1,3 +1,0 @@
-GlENN carPEnteR
-GlENDA LAm.txt
-GlENN BAUTIsTa.txt NULL

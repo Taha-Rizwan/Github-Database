@@ -1,3 +1,0 @@
-mary foRD
-mary caRlSOn.txt
-mary fiGUerOa.txt NULL

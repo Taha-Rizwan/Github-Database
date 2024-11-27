@@ -1,3 +1,0 @@
-aMbEr BEll
-aMbEr Jones.txt
-NULL NULL

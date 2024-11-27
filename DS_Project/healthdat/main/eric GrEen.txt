@@ -1,3 +1,0 @@
-eric GrEen
-eric ESTRADa.txt
-eric Fry.txt NULL

@@ -1,3 +1,0 @@
-ruTh simmoNS
-rubeN jAckSon.txt
-NULL NULL

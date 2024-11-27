@@ -1,3 +1,0 @@
-auStin paRk
-auStiN MyErs.txt
-NULL NULL

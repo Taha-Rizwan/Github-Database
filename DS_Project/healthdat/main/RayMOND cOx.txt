@@ -1,3 +1,0 @@
-RayMOND cOx
-RayMONd lee.txt
-NULL NULL

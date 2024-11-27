@@ -1,3 +1,0 @@
-zachARY reyes
-zacHary juarEZ.txt
-zachARY lin.txt NULL

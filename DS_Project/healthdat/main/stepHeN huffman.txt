@@ -1,3 +1,0 @@
-stepHeN huffman
-stepHaniE marSH.txt
-stepHeN hOlMEs.txt stephANIE AndeRsOn.txt

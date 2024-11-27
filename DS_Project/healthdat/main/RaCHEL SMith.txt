@@ -1,3 +1,0 @@
-RAcHEL smith
-RAcHEL rAy.txt
-NULL NULL

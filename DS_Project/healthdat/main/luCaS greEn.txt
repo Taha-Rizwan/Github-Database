@@ -1,3 +1,0 @@
-luCaS greEn
-luIS PHilLips.txt
-NULL luIS HerNANdEZ.txt

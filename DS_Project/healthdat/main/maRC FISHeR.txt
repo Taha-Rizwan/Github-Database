@@ -1,3 +1,0 @@
-maRC FISHeR
-maRCO wIse.txt
-NULL NULL

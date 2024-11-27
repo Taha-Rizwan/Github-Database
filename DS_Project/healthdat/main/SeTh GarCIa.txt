@@ -1,3 +1,0 @@
-SeTh GarCIa
-SeTH marshALl.txt
-NULL NULL

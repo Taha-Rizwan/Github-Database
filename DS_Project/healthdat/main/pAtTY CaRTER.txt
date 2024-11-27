@@ -1,3 +1,0 @@
-pAtTY CaRTER
-pAtTY SANdovAl.txt
-NULL NULL

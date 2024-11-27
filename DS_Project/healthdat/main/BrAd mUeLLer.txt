@@ -1,3 +1,0 @@
-BrAd mUeLLer
-BrAd haRtman.txt
-NULL NULL

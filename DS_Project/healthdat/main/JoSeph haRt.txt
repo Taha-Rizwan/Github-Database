@@ -1,3 +1,0 @@
-JoSeph haRt
-JoSeph gaRcia.txt
-NULL NULL

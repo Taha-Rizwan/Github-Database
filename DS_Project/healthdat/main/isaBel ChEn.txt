@@ -1,3 +1,0 @@
-isaBel ChEn
-isabEL mUrPhy.txt
-NULL NULL

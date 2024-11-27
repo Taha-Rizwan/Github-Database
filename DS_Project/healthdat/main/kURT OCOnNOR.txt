@@ -1,3 +1,0 @@
-kURT OCOnNOR
-kURT ZAMorA.txt
-NULL NULL

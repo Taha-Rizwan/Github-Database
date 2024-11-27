@@ -1,3 +1,0 @@
-mARIA gaRNer
-mARIA brOoks.txt
-mARIA evANS.txt NULL

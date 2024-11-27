@@ -1,3 +1,0 @@
-jamES burTOn
-jamES fOx.txt
-jamES baLL.txt jamES cANTU.txt

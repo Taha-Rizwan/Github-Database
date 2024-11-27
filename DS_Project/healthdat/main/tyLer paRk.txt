@@ -1,3 +1,0 @@
-tyLer paRk
-tyLer thOMpSON.txt
-tyLer WILliams.txt NULL

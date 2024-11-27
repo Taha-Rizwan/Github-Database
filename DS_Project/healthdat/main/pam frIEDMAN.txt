@@ -1,3 +1,0 @@
-pam frIEDMAN
-pam WALSh.txt
-NULL NULL

@@ -1,3 +1,0 @@
-liNDA webB
-liNDSAY rice.txt
-NULL NULL

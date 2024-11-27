@@ -1,3 +1,0 @@
-AMY pORtER
-AMY pARker.txt
-NULL NULL

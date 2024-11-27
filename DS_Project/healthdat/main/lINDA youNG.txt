@@ -1,3 +1,0 @@
-lINDA youNG
-lINDSAY WOOd.txt
-lINDA lEe.txt NULL

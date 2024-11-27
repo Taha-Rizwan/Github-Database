@@ -1,3 +1,0 @@
-RObERT pETErSeN
-RObERT vasQUez.txt
-NULL NULL

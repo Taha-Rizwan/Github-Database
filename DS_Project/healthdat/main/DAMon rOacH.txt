@@ -1,3 +1,0 @@
-DAMon rOacH
-DALe bYRd.txt
-DALe weSt.txt NULL

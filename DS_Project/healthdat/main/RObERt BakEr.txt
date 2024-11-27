@@ -1,3 +1,0 @@
-RoBert baKeR
-RoBert bROwn.txt
-NULL RoBert guERRA.txt

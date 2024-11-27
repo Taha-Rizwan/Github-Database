@@ -1,3 +1,0 @@
-JeNnifeR LE
-JeNnifeR monRoE.txt
-NULL NULL

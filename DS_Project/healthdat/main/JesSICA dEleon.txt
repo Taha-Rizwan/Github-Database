@@ -1,3 +1,0 @@
-JesSICA dEleon
-JesSICA MeYer.txt
-JesSICA PrICe.txt NULL

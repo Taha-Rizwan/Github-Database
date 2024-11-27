@@ -1,3 +1,0 @@
-dEVin BOyle
-dEVOn BRaDFORD.txt
-NULL NULL

@@ -1,3 +1,0 @@
-ColIn bUtlEr
-ColIN sChUlTZ.txt
-NULL NULL

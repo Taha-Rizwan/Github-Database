@@ -1,3 +1,0 @@
-lydiA lIttLe
-lyNn cAiN.txt
-lyNn cook.txt NULL

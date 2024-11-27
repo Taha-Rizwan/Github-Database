@@ -1,3 +1,0 @@
-charLES VElez
-charLEs GrEGORY.txt
-NULL NULL

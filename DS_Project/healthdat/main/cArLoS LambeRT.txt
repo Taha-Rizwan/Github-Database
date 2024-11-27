@@ -1,3 +1,0 @@
-cArLoS LambeRT
-cArLoS coX.txt
-NULL NULL

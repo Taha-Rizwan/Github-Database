@@ -1,3 +1,0 @@
-TrAcEy COOK
-TrAVis smith.txt
-NULL NULL

@@ -1,3 +1,0 @@
-AmanDa buchaNAn
-AmanDa cLine.txt
-NULL NULL

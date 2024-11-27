@@ -1,3 +1,0 @@
-GREG tHOmAs
-GREGG SImpson.txt
-NULL NULL

@@ -1,3 +1,0 @@
-SusAn brown
-SusAn TrAn.txt
-SusAn VarGaS.txt NULL

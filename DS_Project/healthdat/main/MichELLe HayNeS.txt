@@ -1,3 +1,0 @@
-mIChELle HAyNES
-mIChElLE cook.txt
-mIChELle GArCia.txt NULL

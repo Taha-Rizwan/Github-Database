@@ -1,3 +1,0 @@
-EUGene JaCObs
-EUGeNE bell.txt
-NULL NULL

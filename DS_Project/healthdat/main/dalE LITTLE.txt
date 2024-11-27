@@ -1,3 +1,0 @@
-dalE LITTLE
-dalE hUnter.txt
-NULL NULL

@@ -1,3 +1,0 @@
-leslie genTry
-leslie kiNG.txt
-NULL NULL

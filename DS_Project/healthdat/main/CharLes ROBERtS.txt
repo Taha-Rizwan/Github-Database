@@ -1,3 +1,0 @@
-CharLes ROBERtS
-CharLES hArRIS.txt
-CharLES hoOd.txt NULL

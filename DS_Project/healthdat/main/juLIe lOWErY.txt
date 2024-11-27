@@ -1,3 +1,0 @@
-juLIe lOWErY
-juLIe nElSon.txt
-NULL NULL

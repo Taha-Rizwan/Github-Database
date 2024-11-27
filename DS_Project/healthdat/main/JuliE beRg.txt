@@ -1,3 +1,0 @@
-JuLiE bERG
-JuLiE hogAN.txt
-NULL NULL

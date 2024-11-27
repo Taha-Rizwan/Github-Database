@@ -1,3 +1,0 @@
-linDA butleR
-linDA cooPER.txt
-NULL NULL

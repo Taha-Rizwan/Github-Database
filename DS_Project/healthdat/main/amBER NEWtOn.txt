@@ -1,3 +1,0 @@
-amBER NEWtOn
-amBEr Gill.txt
-amBER MaRtin.txt amBEr DILLon.txt

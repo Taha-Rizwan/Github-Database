@@ -1,3 +1,0 @@
-SetH SMITH
-SetH jACobs.txt
-Sean coCHrAN.txt SetH beRnARd.txt

@@ -1,3 +1,0 @@
-RayMONd rOMERo
-RayMONd lee.txt
-NULL NULL

@@ -1,3 +1,0 @@
-deVIn RIvERs
-deVIN gaRrisoN.txt
-deVIN sHAw.txt NULL

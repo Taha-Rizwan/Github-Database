@@ -1,3 +1,0 @@
-hEAtHEr cLine
-hEAtHEr wAGNer.txt
-NULL NULL

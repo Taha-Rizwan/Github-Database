@@ -1,3 +1,0 @@
-jasmIN swanSoN
-jasmIne GLOveR.txt
-NULL NULL

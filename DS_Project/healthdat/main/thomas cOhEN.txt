@@ -1,3 +1,0 @@
-thomas cOhEN
-thomas lopez.txt
-NULL NULL

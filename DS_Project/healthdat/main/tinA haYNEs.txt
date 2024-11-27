@@ -1,3 +1,0 @@
-tinA haYNEs
-tinA hOlland.txt
-NULL NULL

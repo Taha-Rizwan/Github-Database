@@ -1,3 +1,0 @@
-JohN johNstOn
-JohN lawsOn.txt
-NULL NULL

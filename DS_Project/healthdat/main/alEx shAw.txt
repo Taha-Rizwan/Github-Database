@@ -1,3 +1,0 @@
-alEx shAw
-alEx cARriLLO.txt
-alEx sMith.txt NULL

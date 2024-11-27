@@ -1,3 +1,0 @@
-rEbecCA WAshingToN
-rEbecCA nEwTON.txt
-rEbecCA GrahAm.txt NULL

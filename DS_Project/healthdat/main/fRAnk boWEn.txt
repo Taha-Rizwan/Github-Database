@@ -1,3 +1,0 @@
-fRAnk boWEn
-fRAnk kEMP.txt
-fRAncisCo WarNER.txt NULL

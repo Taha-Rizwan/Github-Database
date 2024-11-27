@@ -1,3 +1,0 @@
-BETH strOng
-BETH whIte.txt
-BETH bAxtEr.txt NULL

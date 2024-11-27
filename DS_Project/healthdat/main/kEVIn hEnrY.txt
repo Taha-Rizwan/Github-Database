@@ -1,3 +1,0 @@
-kEVIn hEnrY
-kEVIn WaTts.txt
-kEVIn cohEn.txt NULL

@@ -1,3 +1,0 @@
-GlENN BAUTIsTa
-GlENN carPEnteR.txt
-NULL NULL

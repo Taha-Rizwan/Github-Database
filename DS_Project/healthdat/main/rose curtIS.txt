@@ -1,3 +1,0 @@
-rose curtIS
-rose NOVak.txt
-NULL NULL

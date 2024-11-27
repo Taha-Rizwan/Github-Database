@@ -1,3 +1,0 @@
-eRNEST garCiA
-eRIn sINGH.txt
-eRIn wAng.txt eRiC BeLl.txt

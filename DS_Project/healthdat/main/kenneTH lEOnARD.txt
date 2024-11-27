@@ -1,3 +1,0 @@
-kenneTH lEOnARD
-kenneTH tOrres.txt
-NULL NULL

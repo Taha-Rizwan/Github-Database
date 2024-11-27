@@ -1,3 +1,0 @@
-haLEy EnGLISh
-haLEy peCK.txt
-haLEY hAMilTon.txt NULL

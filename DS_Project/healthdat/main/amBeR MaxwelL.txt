@@ -1,3 +1,0 @@
-amBeR MaxwelL
-amBer JOhnson.txt
-NULL amBeR fLEmiNg.txt

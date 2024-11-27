@@ -1,3 +1,0 @@
-barBara HArding
-barBaRa lamBert.txt
-NULL NULL

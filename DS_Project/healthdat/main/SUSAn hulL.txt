@@ -1,3 +1,0 @@
-SUSAn hulL
-SUSAn mack.txt
-SUSAn cOwan.txt NULL

@@ -1,3 +1,0 @@
-davID WaRD
-davID dAvis.txt
-NULL NULL

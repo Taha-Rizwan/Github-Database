@@ -1,3 +1,0 @@
-eRIN MCcANN
-eRIN gREEr.txt
-NULL eRIN PIneDA.txt

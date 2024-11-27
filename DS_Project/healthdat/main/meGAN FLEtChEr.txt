@@ -1,3 +1,0 @@
-meGAN FLEtChEr
-meGAN mYers.txt
-NULL NULL

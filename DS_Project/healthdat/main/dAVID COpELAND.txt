@@ -1,3 +1,0 @@
-davId CopeLanD
-davId BRookS.txt
-NULL NULL

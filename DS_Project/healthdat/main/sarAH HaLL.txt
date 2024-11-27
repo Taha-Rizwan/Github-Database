@@ -1,3 +1,0 @@
-sarAH HaLL
-sarAH BeNTLEY.txt
-sarAH CarTEr.txt NULL

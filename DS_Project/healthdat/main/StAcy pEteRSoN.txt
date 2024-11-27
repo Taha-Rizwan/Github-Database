@@ -1,3 +1,0 @@
-StAcy pEteRSoN
-StAcy Gillespie.txt
-StAcy howard.txt NULL

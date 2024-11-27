@@ -1,3 +1,0 @@
-KAReN MEndEZ
-KAReN jOHNson.txt
-NULL KAReN STEIn.txt

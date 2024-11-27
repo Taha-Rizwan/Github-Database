@@ -1,3 +1,0 @@
-vicTORIA barber
-vicTORIa Hill.txt
-NULL NULL

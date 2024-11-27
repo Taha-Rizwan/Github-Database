@@ -1,3 +1,0 @@
-donNA DiXon
-donNA PierCe.txt
-donNA CLarKE.txt NULL

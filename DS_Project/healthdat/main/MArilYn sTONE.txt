@@ -1,3 +1,0 @@
-MArilYn sTONE
-MArie smIth.txt
-NULL NULL

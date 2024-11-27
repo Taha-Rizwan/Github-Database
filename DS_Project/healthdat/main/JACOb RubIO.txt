@@ -1,3 +1,0 @@
-JACOb RubIO
-JACOb coLe.txt
-NULL NULL

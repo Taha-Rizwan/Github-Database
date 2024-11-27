@@ -1,3 +1,0 @@
-allIsON BENsOn
-allIsON cOok.txt
-allISON johnsoN.txt allIsON BuRns.txt

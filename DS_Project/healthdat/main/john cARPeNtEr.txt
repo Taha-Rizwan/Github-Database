@@ -1,3 +1,0 @@
-john cARPeNtEr
-john boyD.txt
-NULL NULL

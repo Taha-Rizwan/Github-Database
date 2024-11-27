@@ -1,3 +1,0 @@
-RosS aRCHER
-RosE hAlL.txt
-NULL NULL

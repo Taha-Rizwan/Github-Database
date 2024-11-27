@@ -1,3 +1,0 @@
-PATRiCk parRIsH
-PATRiCk jAmeS.txt
-NULL NULL

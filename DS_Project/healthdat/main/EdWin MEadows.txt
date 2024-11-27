@@ -1,3 +1,0 @@
-EdWin MEadows
-EdWin MillEr.txt
-NULL NULL

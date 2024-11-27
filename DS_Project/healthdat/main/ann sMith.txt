@@ -1,3 +1,0 @@
-ann sMith
-annA bEll.txt
-ann bOWMan.txt ann stEwaRT.txt

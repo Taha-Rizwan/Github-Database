@@ -1,3 +1,0 @@
-sHANE adAMS
-sHANE SKinner.txt
-NULL NULL

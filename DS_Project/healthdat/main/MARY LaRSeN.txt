@@ -1,3 +1,0 @@
-MARY LaRSeN
-MARY JoHNSon.txt
-NULL NULL

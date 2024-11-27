@@ -1,3 +1,0 @@
-john SANDERS
-john SMiTH.txt
-john RUIz.txt NULL

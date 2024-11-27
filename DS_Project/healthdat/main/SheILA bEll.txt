@@ -1,3 +1,0 @@
-SheILA bEll
-SheILA joRdan.txt
-NULL NULL

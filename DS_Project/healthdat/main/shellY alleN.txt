@@ -1,3 +1,0 @@
-shellY alleN
-shelleY bAker.txt
-NULL shelleY SHepPArd.txt

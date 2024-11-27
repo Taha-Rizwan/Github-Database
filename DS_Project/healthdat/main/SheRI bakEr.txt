@@ -1,3 +1,0 @@
-SheRI bakEr
-SheRI JoHNSon.txt
-NULL NULL

@@ -1,3 +1,0 @@
-rOBErT hoFfMan
-rOBErT douGherty.txt
-NULL NULL

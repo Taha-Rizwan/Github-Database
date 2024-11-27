@@ -1,3 +1,0 @@
-susan chArLes
-susan Smith.txt
-NULL NULL

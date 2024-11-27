@@ -1,3 +1,0 @@
-AMANDa CurTIS
-AMANDA quiNn.txt
-NULL NULL

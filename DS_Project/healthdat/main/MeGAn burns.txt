@@ -1,3 +1,0 @@
-MeGAn burns
-MeGAn STArk.txt
-MeGAn WAttS.txt NULL

@@ -1,3 +1,0 @@
-maRk hiNTON
-maRk hughes.txt
-NULL NULL

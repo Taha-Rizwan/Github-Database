@@ -1,3 +1,0 @@
-JohnNy bANks
-John tHoMPsOn.txt
-John wAtSON.txt NULL

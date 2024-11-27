@@ -1,3 +1,0 @@
-racHeL CoLemaN
-racHeL BAkER.txt
-NULL NULL

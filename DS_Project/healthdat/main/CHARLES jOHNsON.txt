@@ -1,3 +1,0 @@
-charLEs JOhnsOn
-charLEs GrEGORY.txt
-NULL NULL

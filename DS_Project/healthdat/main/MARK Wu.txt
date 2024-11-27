@@ -1,3 +1,0 @@
-MARK Wu
-MARK fosTEr.txt
-MARK WIlLIAMs.txt MARK bLakE.txt

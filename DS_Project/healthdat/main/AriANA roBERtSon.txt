@@ -1,3 +1,0 @@
-AriANA roBERtSon
-ArThur hOlmES.txt
-NULL NULL

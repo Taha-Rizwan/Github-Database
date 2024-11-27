@@ -1,3 +1,0 @@
-maRy cherRy
-maRy beLl.txt
-NULL NULL

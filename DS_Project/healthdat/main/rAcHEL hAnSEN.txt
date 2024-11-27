@@ -1,3 +1,0 @@
-rAcHEL hAnSEN
-rAcHEL lOnG.txt
-NULL NULL

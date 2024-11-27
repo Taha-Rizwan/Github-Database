@@ -1,3 +1,0 @@
-lIsa lUCas
-lIsa mIller.txt
-NULL NULL

@@ -1,3 +1,0 @@
-colLEeN AnderSoN
-colLEeN alLEN.txt
-colIN HUdsON.txt NULL

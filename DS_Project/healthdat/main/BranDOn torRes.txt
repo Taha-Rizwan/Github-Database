@@ -1,3 +1,0 @@
-BranDOn torRes
-BranDOn wRiGHT.txt
-NULL NULL

@@ -1,3 +1,0 @@
-Julia WIlSon
-Julia coOk.txt
-NULL NULL

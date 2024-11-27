@@ -1,3 +1,0 @@
-juliE sHoRt
-julia AndReWS.txt
-NULL NULL

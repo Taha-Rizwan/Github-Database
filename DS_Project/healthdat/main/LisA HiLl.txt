@@ -1,3 +1,0 @@
-lisA HIlL
-lisA GlOveR.txt
-NULL NULL

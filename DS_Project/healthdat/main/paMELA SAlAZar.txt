@@ -1,3 +1,0 @@
-paMELA SAlAZar
-paMELA cARTEr.txt
-NULL NULL

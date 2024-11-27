@@ -1,3 +1,0 @@
-pam WALSh
-pam jOhNsOn.txt
-NULL pam frIEDMAN.txt

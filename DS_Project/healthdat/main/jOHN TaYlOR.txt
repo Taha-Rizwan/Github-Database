@@ -1,3 +1,0 @@
-JOHN tAyLOR
-JOHN wILSon.txt
-NULL NULL

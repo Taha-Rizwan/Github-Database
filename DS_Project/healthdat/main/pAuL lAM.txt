@@ -1,3 +1,0 @@
-pAuL lAM
-pAuL sAnders.txt
-NULL NULL

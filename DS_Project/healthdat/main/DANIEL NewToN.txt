@@ -1,3 +1,0 @@
-DANIEL NewToN
-DANIEL PeTeRsoN.txt
-NULL NULL

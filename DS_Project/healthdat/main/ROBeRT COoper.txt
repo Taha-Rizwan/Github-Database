@@ -1,3 +1,0 @@
-ROBeRT COoper
-ROBIn hOLMes.txt
-ROBIn rolLINS.txt ROBeRT ENGlIsh.txt

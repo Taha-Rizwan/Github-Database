@@ -1,3 +1,0 @@
-ann stEwaRT
-ann sMith.txt
-NULL annA EWinG.txt

@@ -1,3 +1,0 @@
-DavID evaNs
-DavID joNES.txt
-NULL DavID hALl.txt

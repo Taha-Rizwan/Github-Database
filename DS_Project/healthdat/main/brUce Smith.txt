@@ -1,3 +1,0 @@
-brUce Smith
-brUce GaRciA.txt
-brUce HiLl.txt NULL

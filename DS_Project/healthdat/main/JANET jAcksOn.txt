@@ -1,3 +1,0 @@
-JANET jAcksOn
-JANE maRTiNEz.txt
-NULL NULL

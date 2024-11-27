@@ -1,3 +1,0 @@
-LArRY myeRS
-LArRY thOmas.txt
-NULL NULL

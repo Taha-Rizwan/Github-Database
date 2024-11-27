@@ -1,3 +1,0 @@
-cAtheriNE GlenN
-cAtheRinE peTERSON.txt
-cAtherINE JOhnSoN.txt NULL

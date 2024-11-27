@@ -1,3 +1,0 @@
-HEATheR heRriNg
-HEATheR TAylor.txt
-HEATheR gRIfFIN.txt NULL

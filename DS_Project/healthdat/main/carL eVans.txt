@@ -1,3 +1,0 @@
-carL eVans
-carL hoUse.txt
-NULL NULL

@@ -1,3 +1,0 @@
-linDSAY STeVeNs
-linDA cooPER.txt
-NULL NULL

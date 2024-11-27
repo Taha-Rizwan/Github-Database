@@ -1,3 +1,0 @@
-DEViN adAMS
-DEVIn stEWaRt.txt
-NULL NULL

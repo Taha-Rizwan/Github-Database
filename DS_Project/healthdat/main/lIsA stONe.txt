@@ -1,3 +1,0 @@
-lIsA stONe
-lIsA tHOMPsoN.txt
-NULL NULL

@@ -1,3 +1,0 @@
-angELA waLKer
-angELA johnson.txt
-NULL NULL

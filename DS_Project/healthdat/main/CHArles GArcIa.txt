@@ -1,3 +1,0 @@
-CHarLES gaRCia
-CHarLES Thomas.txt
-NULL NULL

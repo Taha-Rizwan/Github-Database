@@ -1,3 +1,0 @@
-JEssicA BoOker
-JEssicA floyd.txt
-NULL NULL

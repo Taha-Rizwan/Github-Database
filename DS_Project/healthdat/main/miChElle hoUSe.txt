@@ -1,3 +1,0 @@
-miChElle hoUSe
-miChElle brOWn.txt
-NULL NULL

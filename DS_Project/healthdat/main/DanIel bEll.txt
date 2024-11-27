@@ -1,3 +1,0 @@
-DanIel bEll
-DanIel gRay.txt
-NULL NULL

@@ -1,3 +1,0 @@
-LiNDa boyeR
-LiNDa waRNEr.txt
-LiNDa Ray.txt NULL

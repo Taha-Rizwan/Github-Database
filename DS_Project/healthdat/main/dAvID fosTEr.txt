@@ -1,3 +1,0 @@
-DAVId FOsTer
-DAVId HaMilTON.txt
-DAVId COLliER.txt NULL

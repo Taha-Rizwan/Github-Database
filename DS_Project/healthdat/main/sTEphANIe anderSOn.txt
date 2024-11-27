@@ -1,3 +1,0 @@
-stephANIE AndeRsOn
-stepHeN huffman.txt
-stepHeN moOrE.txt stephANIE PrICe.txt

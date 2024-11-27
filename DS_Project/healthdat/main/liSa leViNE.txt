@@ -1,3 +1,0 @@
-liSa leViNE
-liSa mOrales.txt
-liSa kinG.txt NULL

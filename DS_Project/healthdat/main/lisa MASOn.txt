@@ -1,3 +1,0 @@
-lisa MASOn
-lisa HernANDEZ.txt
-NULL NULL

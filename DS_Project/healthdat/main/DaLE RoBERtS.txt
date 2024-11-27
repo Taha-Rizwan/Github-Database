@@ -1,3 +1,0 @@
-DaLE RoBERtS
-DaKotA whIte.txt
-DaLE CaLdweLL.txt DaLE wilLIaMs.txt

@@ -1,3 +1,0 @@
-RoBeRt paRRIsH
-RoBeRt johnSoN.txt
-NULL NULL

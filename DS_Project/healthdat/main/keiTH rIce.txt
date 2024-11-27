@@ -1,3 +1,0 @@
-keiTH rIce
-keiTH SMITH.txt
-NULL NULL

@@ -1,3 +1,0 @@
-connOr hERmAN
-connOr pETERSon.txt
-connOR coMPTon.txt NULL

@@ -1,3 +1,0 @@
-wiLLIam wAsHington
-wiLLIam soLis.txt
-NULL NULL

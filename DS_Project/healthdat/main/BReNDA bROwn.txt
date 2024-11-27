@@ -1,3 +1,0 @@
-BReNDA bROwn
-BReNDa BaLLaRd.txt
-BReNDA bLaCk.txt NULL

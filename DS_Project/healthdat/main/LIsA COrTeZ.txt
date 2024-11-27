@@ -1,3 +1,0 @@
-LiSa coRTez
-LiSa dAvis.txt
-LiSa aCosta.txt NULL

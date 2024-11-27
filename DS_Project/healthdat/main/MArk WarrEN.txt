@@ -1,3 +1,0 @@
-MARK waRREN
-MARK shaW.txt
-MARK taYLOr.txt NULL

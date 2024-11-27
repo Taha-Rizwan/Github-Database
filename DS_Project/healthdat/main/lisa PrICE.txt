@@ -1,3 +1,0 @@
-lisa PrICE
-lisa STeWArt.txt
-lisa HernANDEZ.txt lisa ReYEs.txt

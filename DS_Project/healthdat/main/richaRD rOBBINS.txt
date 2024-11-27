@@ -1,3 +1,0 @@
-RichArd robbIns
-RichArd coloN.txt
-NULL NULL

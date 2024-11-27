@@ -1,3 +1,0 @@
-CINDy cASey
-CINDy mOrAn.txt
-NULL NULL

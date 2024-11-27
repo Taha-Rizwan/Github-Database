@@ -1,3 +1,0 @@
-tifFANY hALL
-tifFANY WaLkER.txt
-NULL NULL

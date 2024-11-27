@@ -1,3 +1,0 @@
-CURTis FarLEY
-CURTis JoNEs.txt
-NULL NULL

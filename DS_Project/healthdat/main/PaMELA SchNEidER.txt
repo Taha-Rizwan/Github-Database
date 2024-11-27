@@ -1,3 +1,0 @@
-PaMELA SchNEidER
-PaMELA bakeR.txt
-NULL NULL

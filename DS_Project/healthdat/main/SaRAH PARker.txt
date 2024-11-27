@@ -1,3 +1,0 @@
-sarAH paRkER
-sarAH marTin.txt
-NULL NULL

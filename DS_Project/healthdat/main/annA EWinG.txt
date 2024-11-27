@@ -1,3 +1,0 @@
-annA EWinG
-ann stEwaRT.txt
-NULL NULL

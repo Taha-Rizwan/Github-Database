@@ -1,3 +1,0 @@
-lOGAn haRtMan
-lOGAn crANe.txt
-NULL NULL

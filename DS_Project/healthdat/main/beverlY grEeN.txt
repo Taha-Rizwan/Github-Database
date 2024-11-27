@@ -1,3 +1,0 @@
-beverlY grEeN
-bettY flOrEs.txt
-betty fLoREs.txt NULL

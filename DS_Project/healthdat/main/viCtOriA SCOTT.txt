@@ -1,3 +1,0 @@
-viCtOriA SCOTT
-viCtOriA HuBBARd.txt
-NULL viCtOriA WaLtErS.txt

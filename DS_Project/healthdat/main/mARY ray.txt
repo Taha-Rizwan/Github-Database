@@ -1,3 +1,0 @@
-mARY ray
-mARY pOWELL.txt
-NULL NULL

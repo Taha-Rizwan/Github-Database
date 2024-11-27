@@ -1,3 +1,0 @@
-auSTiN bArNES
-auSTIn roMero.txt
-auSTiN EvANS.txt NULL

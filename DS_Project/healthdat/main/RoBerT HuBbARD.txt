@@ -1,3 +1,0 @@
-RoBerT HuBbARD
-RoBerT gRavEs.txt
-RoBeRt quiNn.txt RoBerT RivErs.txt

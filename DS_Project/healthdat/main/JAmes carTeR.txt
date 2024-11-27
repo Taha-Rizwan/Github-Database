@@ -1,3 +1,0 @@
-JAMES cartEr
-JAMES fReNCh.txt
-NULL NULL

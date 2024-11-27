@@ -1,3 +1,0 @@
-racHEL haHN
-racHEL WalkER.txt
-NULL NULL

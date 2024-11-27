@@ -1,3 +1,0 @@
-MORGAN tERry
-MORGAN wAlL.txt
-NULL NULL

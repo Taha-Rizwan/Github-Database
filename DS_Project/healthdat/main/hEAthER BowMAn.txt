@@ -1,3 +1,0 @@
-hEAthER BowMAn
-hEAthER mArtinez.txt
-NULL NULL

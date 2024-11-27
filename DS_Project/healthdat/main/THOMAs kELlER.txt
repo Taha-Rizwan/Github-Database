@@ -1,3 +1,0 @@
-thoMAS kelleR
-thoMAS grAy.txt
-NULL NULL

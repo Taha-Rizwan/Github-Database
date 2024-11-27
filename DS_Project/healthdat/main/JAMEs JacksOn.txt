@@ -1,3 +1,0 @@
-jaMeS jAckSON
-jaMeS green.txt
-NULL NULL

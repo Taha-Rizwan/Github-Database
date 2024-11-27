@@ -1,3 +1,0 @@
-lisA HOWard
-lisA SMiTh.txt
-lisA GlOveR.txt lisA RObERTs.txt

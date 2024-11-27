@@ -1,3 +1,0 @@
-ERiC hIneS
-ERiC fIeldS.txt
-ERiC fRanCo.txt NULL

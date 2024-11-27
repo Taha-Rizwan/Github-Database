@@ -1,3 +1,0 @@
-MaRVIn potts
-MaRVIN smiTh.txt
-NULL MaRY BRAy.txt

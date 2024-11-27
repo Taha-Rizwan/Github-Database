@@ -1,3 +1,0 @@
-GlEnN ESTrada
-GlEnN Beck.txt
-NULL NULL

@@ -1,3 +1,0 @@
-miCHAEL PhElpS
-miA smith.txt
-miCHAEL BentlEY.txt NULL

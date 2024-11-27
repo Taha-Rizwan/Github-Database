@@ -1,3 +1,0 @@
-LANCE keITH
-LANCE kinG.txt
-NULL NULL

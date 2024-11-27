@@ -1,3 +1,0 @@
-lOrI johNsON
-lOrI hall.txt
-NULL NULL

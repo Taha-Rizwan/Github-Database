@@ -1,3 +1,0 @@
-jULIE peRez
-jULIE tRan.txt
-NULL NULL

@@ -1,3 +1,0 @@
-JAsmIn TurNER
-JAsmIne Wiley.txt
-NULL NULL

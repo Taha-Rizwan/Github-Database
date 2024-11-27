@@ -1,3 +1,0 @@
-rIcHARD fuENTES
-rIcHARD sHieLds.txt
-NULL NULL

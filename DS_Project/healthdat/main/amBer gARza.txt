@@ -1,3 +1,0 @@
-amBer gARza
-amBer jONES.txt
-NULL NULL

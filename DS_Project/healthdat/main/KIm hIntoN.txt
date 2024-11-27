@@ -1,3 +1,0 @@
-KIm hIntoN
-KIm kIM.txt
-NULL NULL

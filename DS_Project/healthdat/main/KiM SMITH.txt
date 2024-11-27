@@ -1,3 +1,0 @@
-kim SMITH
-kiRstEn PatEl.txt
-kim HARDY.txt kim ShePpArd.txt

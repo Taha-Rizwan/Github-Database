@@ -1,3 +1,0 @@
-ShANe diAZ
-ShANe sMITH.txt
-ShANe HOlLand.txt NULL

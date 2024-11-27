@@ -1,3 +1,0 @@
-steVeN rICharD
-steVen AlLEn.txt
-NULL steVeN stOUT.txt

@@ -1,3 +1,0 @@
-roBERt cooK
-roBERt mIller.txt
-roBERt arNold.txt roBERt jaCKsOn.txt

@@ -1,3 +1,0 @@
-SetH jACobs
-Sean MartIn.txt
-SetH SMITH.txt ShANE CHeN.txt

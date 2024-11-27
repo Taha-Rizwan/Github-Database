@@ -1,3 +1,0 @@
-jAnICE west
-jAnICe NovaK.txt
-NULL NULL

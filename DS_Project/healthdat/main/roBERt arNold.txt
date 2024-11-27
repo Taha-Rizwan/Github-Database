@@ -1,3 +1,0 @@
-rOBert arNold
-rOBert ayALa.txt
-NULL NULL

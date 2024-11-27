@@ -1,3 +1,0 @@
-loRI daY
-loRI viLlA.txt
-NULL loRI gonZALEZ.txt

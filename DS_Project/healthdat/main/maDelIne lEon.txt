@@ -1,3 +1,0 @@
-maDelIne lEon
-maDiSON RaMos.txt
-NULL NULL

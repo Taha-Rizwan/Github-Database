@@ -1,3 +1,0 @@
-shELBY ConneR
-shELBY tayLoR.txt
-NULL NULL

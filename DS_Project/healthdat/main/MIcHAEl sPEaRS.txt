@@ -1,3 +1,0 @@
-MIcHAEl sPEaRS
-MIcHAEl johNSOn.txt
-MIcHAEl kinG.txt NULL

@@ -1,3 +1,0 @@
-lIsa ButlEr
-lIsa BerGer.txt
-lIsa BranDt.txt NULL

@@ -1,3 +1,0 @@
-liNdsay gReeN
-liNda BrOwn.txt
-NULL NULL

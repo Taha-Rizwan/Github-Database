@@ -1,3 +1,0 @@
-PAmELA gOLDEn
-PAm becKeR.txt
-NULL NULL

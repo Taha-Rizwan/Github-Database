@@ -1,3 +1,0 @@
-jennifeR brEwER
-jennifeR cOLlins.txt
-NULL NULL

@@ -1,3 +1,0 @@
-cHRIStoPHER GreENE
-cHRIStoPHER henDeRsoN.txt
-cHRIStinA garCIA.txt NULL

@@ -1,3 +1,0 @@
-MiCHAel bEckER
-MiCHAel fRench.txt
-NULL NULL

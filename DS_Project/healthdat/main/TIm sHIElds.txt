@@ -1,3 +1,0 @@
-TIm sHIElds
-TIm vAsQuez.txt
-NULL NULL

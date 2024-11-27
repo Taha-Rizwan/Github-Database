@@ -1,3 +1,0 @@
-LInDA GleNN
-LInDA fIScHEr.txt
-NULL NULL

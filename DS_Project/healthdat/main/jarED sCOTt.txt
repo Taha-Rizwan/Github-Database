@@ -1,3 +1,0 @@
-jarED sCOTt
-jarED GIlleSPIe.txt
-jarED nEwTon.txt NULL

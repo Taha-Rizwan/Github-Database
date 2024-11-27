@@ -1,3 +1,0 @@
-ElLen GArcIa
-ElLen hATfIeld.txt
-NULL NULL

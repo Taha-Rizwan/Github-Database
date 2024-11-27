@@ -1,3 +1,0 @@
-gARY mYers
-gARY smITh.txt
-NULL NULL

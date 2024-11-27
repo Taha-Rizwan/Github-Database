@@ -1,3 +1,0 @@
-RoBerT RivErs
-RoBerT HuBbARD.txt
-RoBerT RIcHArDS.txt RoBerT brOwN.txt

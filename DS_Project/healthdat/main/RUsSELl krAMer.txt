@@ -1,3 +1,0 @@
-RUsSELl krAMer
-RUbEN sPENcEr.txt
-NULL NULL

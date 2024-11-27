@@ -1,3 +1,0 @@
-TereSA GIlBeRt
-TereSA fOx.txt
-TereSA BaKer.txt NULL

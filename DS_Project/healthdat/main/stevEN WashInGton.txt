@@ -1,3 +1,0 @@
-stevEN WashInGton
-stevEn FIsHeR.txt
-NULL stevEN soLomOn.txt

@@ -1,3 +1,0 @@
-mARY harPeR
-mARY jOrDaN.txt
-NULL mARY hiGgins.txt

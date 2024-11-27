@@ -1,3 +1,0 @@
-daVID bELl
-daVID atkINs.txt
-NULL NULL

@@ -1,3 +1,0 @@
-thomaS LONG
-thomaS WelCH.txt
-NULL NULL

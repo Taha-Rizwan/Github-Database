@@ -1,3 +1,0 @@
-SUsAN bELl
-SUsAN hALe.txt
-NULL NULL

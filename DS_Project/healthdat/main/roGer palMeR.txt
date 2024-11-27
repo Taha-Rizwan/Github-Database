@@ -1,3 +1,0 @@
-roGer palMeR
-roGer hiLl.txt
-NULL NULL

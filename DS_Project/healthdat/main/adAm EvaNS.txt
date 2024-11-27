@@ -1,3 +1,0 @@
-adAm EvaNS
-adAm BENSon.txt
-NULL NULL

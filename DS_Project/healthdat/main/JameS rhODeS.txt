@@ -1,3 +1,0 @@
-jAMES rhoDes
-jAMES jONEs.txt
-jAMES pricE.txt jAMES wHIte.txt

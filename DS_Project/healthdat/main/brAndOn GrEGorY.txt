@@ -1,3 +1,0 @@
-brAndOn GrEGorY
-brAndOn NASh.txt
-NULL NULL

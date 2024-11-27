@@ -1,3 +1,0 @@
-dAViD beaslEY
-dAViD cAMpBEll.txt
-dAViD WALkeR.txt NULL

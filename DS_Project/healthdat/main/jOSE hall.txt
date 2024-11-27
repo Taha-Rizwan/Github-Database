@@ -1,3 +1,0 @@
-jOSE hall
-jOSE iNGram.txt
-NULL NULL

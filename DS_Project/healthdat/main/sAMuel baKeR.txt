@@ -1,3 +1,0 @@
-sAMuel baKeR
-sAMuel fOWleR.txt
-NULL NULL

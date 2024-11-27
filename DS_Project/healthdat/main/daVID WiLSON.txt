@@ -1,3 +1,0 @@
-dAviD wilSon
-dAviD pena.txt
-dAviD roBleS.txt NULL

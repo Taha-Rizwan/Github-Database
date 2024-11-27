@@ -1,3 +1,0 @@
-RoBeRt quiNn
-RoBerT HuBbARD.txt
-RoBeRt bean.txt RoBerT GarDNEr.txt

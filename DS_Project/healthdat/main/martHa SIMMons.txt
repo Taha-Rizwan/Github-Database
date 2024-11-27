@@ -1,3 +1,0 @@
-martHa SIMMons
-martIn vARgAs.txt
-NULL NULL

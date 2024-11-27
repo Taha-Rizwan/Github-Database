@@ -1,3 +1,0 @@
-TerrY lEBlANC
-TerrI wAlSH.txt
-NULL NULL

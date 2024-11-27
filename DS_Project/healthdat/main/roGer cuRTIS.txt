@@ -1,3 +1,0 @@
-roGer cuRTIS
-roGer grIFFIN.txt
-NULL NULL

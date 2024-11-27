@@ -1,3 +1,0 @@
-MARY PoPe
-MARY Sanders.txt
-NULL NULL

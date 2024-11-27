@@ -1,3 +1,0 @@
-DaLE wilLIaMs
-DaLE RoBERtS.txt
-NULL NULL

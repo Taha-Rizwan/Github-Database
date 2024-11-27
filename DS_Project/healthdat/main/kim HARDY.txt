@@ -1,3 +1,0 @@
-kim HARDY
-kim SMITH.txt
-kiaRa heSS.txt NULL

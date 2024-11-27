@@ -1,3 +1,0 @@
-StEVEN hamILTON
-StEVEN olsEN.txt
-StEVEN SmIth.txt StEVEN harPER.txt

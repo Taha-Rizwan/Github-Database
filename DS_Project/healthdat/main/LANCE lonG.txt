@@ -1,3 +1,0 @@
-LANCE lonG
-LANCE kinG.txt
-NULL NULL

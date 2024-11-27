@@ -1,3 +1,0 @@
-anDrew mORse
-anDrew madDen.txt
-anDrew WoNg.txt NULL

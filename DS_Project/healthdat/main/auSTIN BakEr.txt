@@ -1,3 +1,0 @@
-auSTIN BakEr
-auSTIn roMero.txt
-auDREy BENneTT.txt NULL

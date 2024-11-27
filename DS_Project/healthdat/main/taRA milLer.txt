@@ -1,3 +1,0 @@
-taRA milLer
-taRA sMiTH.txt
-taRA aGUIlAr.txt NULL

@@ -1,3 +1,0 @@
-bRIAn SCOTT
-bRIAn VanCE.txt
-NULL NULL

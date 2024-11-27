@@ -1,3 +1,0 @@
-RoBerT grAY
-RoBerT heNderson.txt
-NULL NULL

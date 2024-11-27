@@ -1,3 +1,0 @@
-CLAiRe ALvAreZ
-CLAiRe bAnKs.txt
-CLAiRE EdwarDs.txt NULL

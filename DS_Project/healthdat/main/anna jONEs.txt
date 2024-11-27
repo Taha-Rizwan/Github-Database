@@ -1,3 +1,0 @@
-ANNA JOnEs
-ANN fORd.txt
-ANN kiNG.txt NULL

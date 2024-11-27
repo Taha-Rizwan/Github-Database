@@ -1,3 +1,0 @@
-hanNAH GLoVer
-hanNAH JEnNINGs.txt
-NULL NULL

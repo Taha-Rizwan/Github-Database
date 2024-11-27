@@ -1,3 +1,0 @@
-joHn HunteR
-joHn JacKsoN.txt
-joHn HowaRd.txt NULL

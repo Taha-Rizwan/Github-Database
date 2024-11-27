@@ -1,3 +1,0 @@
-tHoMAS holmES
-tHoMAS joHnsON.txt
-tHoMAS JacKsoN.txt NULL

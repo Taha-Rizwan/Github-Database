@@ -1,3 +1,0 @@
-ronaLD scott
-ronaLD daviD.txt
-NULL NULL

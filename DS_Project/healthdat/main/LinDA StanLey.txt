@@ -1,3 +1,0 @@
-LinDA StanLey
-LinDA RiVerA.txt
-NULL NULL

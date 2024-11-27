@@ -1,3 +1,0 @@
-MARk peRRy
-MARk nash.txt
-MARk pRIce.txt NULL

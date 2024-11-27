@@ -1,3 +1,0 @@
-maRk cRAIg
-maRk dAvis.txt
-maRk ayala.txt NULL

@@ -1,3 +1,0 @@
-ElLen hATfIeld
-ElaIne BrYAnT.txt
-ElLen GArcIa.txt NULL

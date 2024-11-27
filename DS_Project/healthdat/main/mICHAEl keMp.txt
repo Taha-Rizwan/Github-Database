@@ -1,3 +1,0 @@
-mICHAEl keMp
-mICHAEl hall.txt
-NULL NULL

@@ -1,3 +1,0 @@
-ruTH MEnDez
-ruTh huff.txt
-NULL NULL

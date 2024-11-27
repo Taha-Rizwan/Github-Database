@@ -1,3 +1,0 @@
-linDA PArSoNS
-liSa ingRaM.txt
-liSa smiTh.txt linDSAy WOOd.txt

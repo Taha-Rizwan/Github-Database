@@ -1,3 +1,0 @@
-kaRen clarK
-kaRen peReZ.txt
-kaRen YOUnG.txt NULL

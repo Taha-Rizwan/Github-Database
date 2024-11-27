@@ -1,3 +1,0 @@
-Anne gOoD
-Anne grEEN.txt
-NULL NULL

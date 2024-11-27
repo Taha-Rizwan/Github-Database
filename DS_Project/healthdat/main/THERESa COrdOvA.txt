@@ -1,3 +1,0 @@
-THERESa COrdOvA
-THERESa bArRY.txt
-THERESa BROWN.txt NULL

@@ -1,3 +1,0 @@
-jasminE frenCh
-jasminE garCIa.txt
-NULL NULL

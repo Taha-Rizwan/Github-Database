@@ -1,3 +1,0 @@
-JASmine nEal
-JASmine sHort.txt
-NULL NULL

@@ -1,3 +1,0 @@
-caroL SIMS DdS
-caroL mARTin.txt
-carmeN jACKsOn.txt caroL gonzAleZ.txt

@@ -1,3 +1,0 @@
-JULIE brADleY
-JULIA JoHNson.txt
-JULIE PetERsen.txt NULL

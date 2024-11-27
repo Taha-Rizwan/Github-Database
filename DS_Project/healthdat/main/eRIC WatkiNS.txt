@@ -1,3 +1,0 @@
-eRIC WatkiNS
-eRIC gRIFFIN.txt
-eRIC WalKEr.txt NULL

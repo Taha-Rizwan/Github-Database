@@ -1,3 +1,0 @@
-LISA bEckER
-LISA brOOKs.txt
-NULL NULL

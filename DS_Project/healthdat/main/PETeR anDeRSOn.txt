@@ -1,3 +1,0 @@
-PETeR anDeRSOn
-PETeR bURKe.txt
-NULL NULL

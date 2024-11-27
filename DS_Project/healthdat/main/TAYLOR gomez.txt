@@ -1,3 +1,0 @@
-TAYLOR gomez
-TASHA hUghes.txt
-NULL NULL

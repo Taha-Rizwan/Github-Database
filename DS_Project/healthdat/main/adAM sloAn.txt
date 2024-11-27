@@ -1,3 +1,0 @@
-adAM sloAn
-adAM alexaNder.txt
-NULL NULL

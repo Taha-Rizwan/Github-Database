@@ -1,3 +1,0 @@
-mARY FiEldS
-mARY HIcKs.txt
-NULL NULL

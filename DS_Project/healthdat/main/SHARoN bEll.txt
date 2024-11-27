@@ -1,3 +1,0 @@
-SHARoN bEll
-SHARoN EvAns.txt
-NULL NULL

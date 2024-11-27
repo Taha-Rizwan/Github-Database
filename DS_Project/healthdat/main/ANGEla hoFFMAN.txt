@@ -1,3 +1,0 @@
-ANGEla hoFFMAN
-ANGEla glOVER.txt
-NULL NULL

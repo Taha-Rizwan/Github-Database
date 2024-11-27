@@ -1,3 +1,0 @@
-johN MclauGhLIn
-johN JAcksOn.txt
-johN MAyER.txt NULL

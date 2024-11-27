@@ -1,3 +1,0 @@
-sCOtt jonES
-sCOtt kim.txt
-NULL NULL

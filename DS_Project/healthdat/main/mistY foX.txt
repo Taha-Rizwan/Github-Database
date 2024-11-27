@@ -1,3 +1,0 @@
-mistY foX
-mistY roBertson.txt
-miss kim lEstEr.txt NULL

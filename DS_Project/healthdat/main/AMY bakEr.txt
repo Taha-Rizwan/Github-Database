@@ -1,3 +1,0 @@
-AMY bakEr
-AMY browN.txt
-NULL NULL

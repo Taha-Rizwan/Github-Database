@@ -77,10 +77,12 @@ public:
 
         return to_string_generic(hash);
     }
-    virtual string computeHashHelper(Tree<T>* node);
-    virtual void computeHash();
+	virtual string computeHashHelper(Tree<T>* node) {}
+	virtual void computeHash() {}
 	virtual void insert(T data) {}
 	virtual void display(){}
 	virtual void deleteByVal(T data) {}
-	virtual void computeHash() {}
+	virtual void update(T oldData, T newData) {}
 };
+
+

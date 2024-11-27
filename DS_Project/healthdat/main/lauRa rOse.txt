@@ -1,3 +1,0 @@
-lauRa rOse
-lauReN BAteS.txt
-lauRa jones.txt NULL

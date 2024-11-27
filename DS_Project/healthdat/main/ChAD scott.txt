@@ -1,3 +1,0 @@
-ChAD scott
-ChAD rAMirez.txt
-NULL NULL

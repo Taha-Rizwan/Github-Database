@@ -1,3 +1,0 @@
-catHY rAmOS
-catHY jefferSON.txt
-NULL NULL

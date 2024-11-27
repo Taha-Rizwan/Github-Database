@@ -1,3 +1,0 @@
-braNDOn wArneR
-braNDOn hoWe.txt
-NULL NULL

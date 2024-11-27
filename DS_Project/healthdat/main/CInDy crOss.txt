@@ -1,3 +1,0 @@
-CInDy crOss
-CInDy burton.txt
-NULL NULL

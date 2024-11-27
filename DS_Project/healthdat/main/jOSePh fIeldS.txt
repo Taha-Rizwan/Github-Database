@@ -1,3 +1,0 @@
-jOSePh fIeldS
-jOSePh SaLInAs.txt
-jOSePh dOdson.txt NULL

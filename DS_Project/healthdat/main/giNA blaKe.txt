@@ -1,3 +1,0 @@
-giNA blaKe
-giNA brOWN.txt
-giNA WhiTE.txt NULL

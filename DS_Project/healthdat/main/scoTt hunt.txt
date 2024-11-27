@@ -1,3 +1,0 @@
-scoTt hunt
-scoTt phIllIpS.txt
-scoTt gibSON.txt NULL

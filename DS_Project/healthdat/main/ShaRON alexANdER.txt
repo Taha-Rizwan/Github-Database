@@ -1,3 +1,0 @@
-ShaRON alexANdER
-ShaRON BaRrEtt.txt
-NULL ShaRON lane.txt

@@ -1,3 +1,0 @@
-RICHARD aLlen
-RICHARD bASs.txt
-NULL NULL

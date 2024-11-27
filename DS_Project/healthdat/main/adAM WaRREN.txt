@@ -1,3 +1,0 @@
-adAM WaRREN
-adAM PeTERSON.txt
-NULL NULL

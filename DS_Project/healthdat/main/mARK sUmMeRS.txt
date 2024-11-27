@@ -1,3 +1,0 @@
-mARK sUmMeRS
-mARK sMiTh.txt
-NULL NULL

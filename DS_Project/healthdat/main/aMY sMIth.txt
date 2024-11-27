@@ -1,3 +1,0 @@
-aMy smiTh
-aMy sanDErs.txt
-NULL NULL

@@ -1,3 +1,0 @@
-JanET BARbeR
-JanE MedIna.txt
-NULL NULL

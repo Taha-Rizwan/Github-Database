@@ -1,3 +1,0 @@
-miChAEl mOrRiS
-miChAEl greEN.txt
-miChAEl harper.txt NULL

@@ -1,3 +1,0 @@
-stephANIE PrICe
-stephANIE AndeRsOn.txt
-NULL NULL

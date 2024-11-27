@@ -1,3 +1,0 @@
-CaLVIN cAmpOS
-CaLVIN BRoWn.txt
-NULL NULL

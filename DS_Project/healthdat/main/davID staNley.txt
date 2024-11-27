@@ -1,3 +1,0 @@
-davID staNley
-davID maCK.txt
-NULL NULL

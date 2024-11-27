@@ -1,3 +1,0 @@
-SteveN OlSon
-SteveN HaMIlToN.txt
-SteveN JAcksoN.txt NULL

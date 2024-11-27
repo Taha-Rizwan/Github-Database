@@ -405,29 +405,16 @@ public:
 
 	}
 
+	//Virtual function update
+	void update(T oldData,T newData){
+		updateNode(root,oldData,newData);
+	}
+
 	//Updates value of a node
 	void updateNode(Node<T>*& tRoot, T oldData, T newData) {
-		Node<T>* targetNode = search(tRoot, oldData);
-
-		if (!targetNode) {
-			cout << "Node with data " << oldData << " not found!" << endl;
-			return;
-		}
-
-		targetNode->data = newData;
-		targetNode->fileName = std::to_string(newData) + ".txt";
-		deleteFile(oldData);
-		updateNodeFile(targetNode);
-
-		if (targetNode->parent) {
-			updateNodeFile(targetNode->parent);
-		}
-		if (targetNode->left) {
-			updateNodeFile(targetNode->left);
-		}
-		if (targetNode->right) {
-			updateNodeFile(targetNode->right);
-		}
+		deleteByVal(oldData);
+		insert(newData);
+		cout << "Updated Node with value " << oldData << " with " << newData << endl;
 	}
 
 	bool isAVL() {

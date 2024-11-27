@@ -1,3 +1,0 @@
-davID dAvis
-davID wIlLiamS.txt
-davID WaRD.txt davID maCK.txt

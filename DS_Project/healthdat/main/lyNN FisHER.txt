@@ -1,3 +1,0 @@
-lyNN FisHER
-lyNN patEL.txt
-NULL NULL

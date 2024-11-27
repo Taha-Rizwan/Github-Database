@@ -1,3 +1,0 @@
-SHelly wAshIngtOn
-SHelly mCdONald.txt
-NULL NULL

@@ -1,3 +1,0 @@
-stepHeN hOlMEs
-stepHeN huffman.txt
-NULL NULL

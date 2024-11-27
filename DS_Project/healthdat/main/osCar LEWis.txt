@@ -1,3 +1,0 @@
-osCar LEWis
-osCAr SImS.txt
-NULL NULL

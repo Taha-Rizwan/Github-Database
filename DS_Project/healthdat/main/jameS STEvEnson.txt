@@ -1,3 +1,0 @@
-jameS STEvEnson
-jameS WAshinGtON.txt
-jameS HArRis.txt NULL

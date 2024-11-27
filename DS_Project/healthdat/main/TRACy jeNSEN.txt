@@ -1,3 +1,0 @@
-TRACy jeNSEN
-TRACy alLEN.txt
-TRACy fLETCHER.txt TRAVIS BARretT.txt

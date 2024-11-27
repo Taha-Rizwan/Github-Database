@@ -1,3 +1,0 @@
-emma Fisher
-emma Fry.txt
-emmA tRAn.txt NULL

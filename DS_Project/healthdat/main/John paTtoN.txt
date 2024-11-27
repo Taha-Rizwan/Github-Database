@@ -1,3 +1,0 @@
-John paTtoN
-John reYnolds.txt
-NULL NULL

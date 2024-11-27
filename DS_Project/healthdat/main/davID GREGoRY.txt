@@ -1,3 +1,0 @@
-davID GREGoRY
-davID BaRnett.txt
-davID ClaRk.txt davID RHODES.txt

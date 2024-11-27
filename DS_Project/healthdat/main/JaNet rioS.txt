@@ -1,3 +1,0 @@
-JaNet rioS
-JaNeT leSTeR.txt
-JaNet pArKer.txt NULL

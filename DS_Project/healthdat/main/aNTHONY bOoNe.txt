@@ -1,3 +1,0 @@
-aNTHONY bOoNe
-aNTHONY brown.txt
-NULL NULL

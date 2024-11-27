@@ -1,3 +1,0 @@
-COnnOR oneaL
-COnnIe siMPSon.txt
-NULL NULL

@@ -1,3 +1,0 @@
-ANN MOoRe
-ANN bIRd.txt
-ANN MATHIS.txt ANN STEpHenS.txt

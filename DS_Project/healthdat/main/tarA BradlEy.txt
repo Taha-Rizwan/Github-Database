@@ -1,3 +1,0 @@
-tarA BradlEy
-tanya suaREZ.txt
-NULL NULL

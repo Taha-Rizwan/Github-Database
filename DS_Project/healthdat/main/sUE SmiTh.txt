@@ -1,3 +1,0 @@
-sUE SmiTh
-sUE MendEZ.txt
-NULL NULL

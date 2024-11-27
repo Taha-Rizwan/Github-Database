@@ -1,3 +1,0 @@
-steVeN stOUT
-steVeN rICharD.txt
-NULL NULL

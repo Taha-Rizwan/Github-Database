@@ -1,3 +1,0 @@
-rOBerT hEatH
-rOBerT fox.txt
-NULL NULL

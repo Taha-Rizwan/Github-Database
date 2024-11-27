@@ -1,3 +1,0 @@
-BRaNdi carpEnTer
-BRaNdi lOWE.txt
-NULL NULL

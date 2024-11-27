@@ -1,3 +1,0 @@
-colIN HUdsON
-colLEeN AnderSoN.txt
-NULL NULL

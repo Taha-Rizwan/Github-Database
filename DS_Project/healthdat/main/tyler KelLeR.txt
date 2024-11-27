@@ -1,3 +1,0 @@
-tyleR keLleR
-tyleR shEPPARD.txt
-tyleR giBSOn.txt NULL

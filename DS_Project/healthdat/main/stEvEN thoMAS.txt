@@ -1,3 +1,0 @@
-stEvEN thoMAS
-stEvEN tAYLOR.txt
-stEvEN thOmPSON.txt NULL

@@ -1,3 +1,0 @@
-STEphAnIe baSS
-STEphEN EngliSh.txt
-STEphAnIE DAvIdSON.txt STEphAniE JoHnson.txt

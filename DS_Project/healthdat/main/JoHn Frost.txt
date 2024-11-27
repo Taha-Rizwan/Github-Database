@@ -1,3 +1,0 @@
-JOHN frost
-JOHN fORd.txt
-NULL NULL

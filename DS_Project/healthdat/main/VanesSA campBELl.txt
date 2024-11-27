@@ -1,3 +1,0 @@
-VanesSA campBELl
-VanesSA pOtTER.txt
-NULL NULL

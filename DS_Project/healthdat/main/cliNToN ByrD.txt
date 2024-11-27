@@ -1,3 +1,0 @@
-cliNToN ByrD
-clifFoRd belL.txt
-NULL NULL

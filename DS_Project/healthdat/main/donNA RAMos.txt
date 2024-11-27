@@ -1,3 +1,0 @@
-donNA RAMos
-donNA PierCe.txt
-NULL NULL

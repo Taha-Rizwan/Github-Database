@@ -1,3 +1,0 @@
-maRgARET aLvareZ
-maRgARET Cowan.txt
-NULL NULL

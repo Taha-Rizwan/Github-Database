@@ -1,3 +1,0 @@
-dEVIn GoNzALez
-dEVOn BRaDFORD.txt
-NULL NULL

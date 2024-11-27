@@ -1,3 +1,0 @@
-GLEN wooDArD
-GIna CoNLEY.txt
-GIna smIth.txt NULL

@@ -1,3 +1,0 @@
-KaRen leoNard
-KaRen gray.txt
-NULL NULL

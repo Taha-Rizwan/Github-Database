@@ -1,3 +1,0 @@
-ROBERt oCONnor
-ROBERt fuller.txt
-NULL ROBERt sCOtt.txt

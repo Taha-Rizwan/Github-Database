@@ -1,3 +1,0 @@
-ALeXIs hArpER
-ALeXIs conNER.txt
-NULL NULL

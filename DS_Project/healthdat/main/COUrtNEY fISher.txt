@@ -1,3 +1,0 @@
-COUrtNEY fISher
-COUrtNEY boyd.txt
-NULL NULL

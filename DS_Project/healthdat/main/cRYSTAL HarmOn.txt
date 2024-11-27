@@ -1,3 +1,0 @@
-cRYSTAL HarmOn
-cRYSTAL LiNDSey.txt
-NULL NULL

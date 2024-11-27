@@ -1,3 +1,0 @@
-gene Garcia
-genE WrIGht.txt
-NULL NULL

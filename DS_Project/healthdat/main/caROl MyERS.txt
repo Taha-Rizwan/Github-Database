@@ -1,3 +1,0 @@
-caROl MyERS
-caRLA NEAl.txt
-caRLoS smiTH.txt caROl camPbelL.txt

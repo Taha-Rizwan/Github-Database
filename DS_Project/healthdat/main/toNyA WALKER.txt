@@ -1,3 +1,0 @@
-toNyA WALKER
-toNyA WIlsoN.txt
-toNy wIlSoN.txt NULL

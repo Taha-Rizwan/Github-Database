@@ -1,3 +1,0 @@
-terESa bELL
-terEsA Fox.txt
-teRry moRRis.txt NULL

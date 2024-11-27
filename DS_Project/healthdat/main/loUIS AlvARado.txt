@@ -1,3 +1,0 @@
-loUIS AlvARado
-loRi JOHnsOn.txt
-loRi meLton.txt NULL

@@ -1,3 +1,0 @@
-lISA miRanDA
-lISA mCcArTy.txt
-NULL NULL

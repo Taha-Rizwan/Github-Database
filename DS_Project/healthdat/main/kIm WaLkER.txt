@@ -1,3 +1,0 @@
-kIm WaLkER
-kIm fIeLdS.txt
-NULL kIm bOoTH.txt

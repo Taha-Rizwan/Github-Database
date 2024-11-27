@@ -1,3 +1,0 @@
-jAmES SmALL
-jAmES Rice.txt
-NULL NULL

@@ -1,3 +1,0 @@
-gerAld dAviS
-gerAld whItE.txt
-george wasHinGton.txt NULL

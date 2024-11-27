@@ -1,3 +1,0 @@
-debrA DAVIS
-debrA rIcHarDsOn.txt
-NULL NULL

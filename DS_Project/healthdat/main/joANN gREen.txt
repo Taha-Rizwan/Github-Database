@@ -1,3 +1,0 @@
-joANN gREen
-joANN sAndOVAl.txt
-NULL NULL

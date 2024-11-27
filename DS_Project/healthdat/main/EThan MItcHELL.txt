@@ -1,3 +1,0 @@
-EThan MItcHELL
-EUGeNE bell.txt
-EThan GiLbeRt.txt NULL

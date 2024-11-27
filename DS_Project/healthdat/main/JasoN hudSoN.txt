@@ -1,3 +1,0 @@
-JasoN hudSoN
-JasoN logAn.txt
-NULL NULL

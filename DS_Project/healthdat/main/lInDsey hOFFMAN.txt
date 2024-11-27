@@ -1,3 +1,0 @@
-lInDsey hOFFMAN
-lIndA PArker.txt
-lInDsay aLLison.txt NULL

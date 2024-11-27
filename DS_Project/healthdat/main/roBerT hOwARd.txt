@@ -1,3 +1,0 @@
-roBerT hOwARd
-roBin lOPEZ.txt
-roBeRt DecKEr.txt roBert daVis.txt

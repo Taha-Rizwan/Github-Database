@@ -1,3 +1,0 @@
-cARRIE hernAndEZ
-cARRIE MCCarTy.txt
-NULL NULL

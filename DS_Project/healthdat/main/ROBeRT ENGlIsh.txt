@@ -1,3 +1,0 @@
-ROBeRT ENGlIsh
-ROBeRT COoper.txt
-NULL NULL

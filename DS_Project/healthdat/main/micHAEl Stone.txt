@@ -1,3 +1,0 @@
-micHAEl Stone
-micHAEl Smith.txt
-NULL NULL

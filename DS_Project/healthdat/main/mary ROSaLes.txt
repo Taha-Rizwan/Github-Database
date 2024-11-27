@@ -1,3 +1,0 @@
-mary ROSaLes
-mary ObRIEn.txt
-NULL NULL

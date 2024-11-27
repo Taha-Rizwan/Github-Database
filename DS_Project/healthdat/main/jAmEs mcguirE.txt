@@ -1,3 +1,0 @@
-jAmEs mcguirE
-jAmEs lOGAn.txt
-jAmEs laMBERT.txt NULL

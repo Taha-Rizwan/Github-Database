@@ -1,3 +1,0 @@
-stEpHanIE bEll
-stEpHanIe dAViS.txt
-stEpHanIE MURilLo.txt NULL

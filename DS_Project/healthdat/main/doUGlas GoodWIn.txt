@@ -1,3 +1,0 @@
-doUGlas GoodWIn
-doUGLaS sTewART.txt
-doUGLas dAvis.txt NULL

@@ -1,3 +1,0 @@
-sHEILa sIMPSOn
-sHELBy SHeLtoN.txt
-sHEILa mClean.txt NULL

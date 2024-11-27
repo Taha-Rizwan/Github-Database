@@ -1,3 +1,0 @@
-john OLIver
-john JOsepH.txt
-john NeWtoN.txt NULL

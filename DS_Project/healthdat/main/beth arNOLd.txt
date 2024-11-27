@@ -1,3 +1,0 @@
-beth arNOLd
-beth bakEr.txt
-beth SOTo.txt NULL

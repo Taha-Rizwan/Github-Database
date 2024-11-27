@@ -1,3 +1,0 @@
-GLeNda gRay
-GLeNn fUENTEs.txt
-NULL NULL

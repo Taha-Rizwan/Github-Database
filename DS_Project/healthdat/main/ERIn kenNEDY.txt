@@ -1,3 +1,0 @@
-ERIn kenNEDY
-ERIn WallACe.txt
-ERIn brOwn.txt ERIn pOweRs.txt

@@ -1,3 +1,0 @@
-brandOn maLdOnADo
-brandY fox.txt
-brandOn FIsher.txt brandOn soSA.txt

@@ -1,3 +1,0 @@
-roBerT PHAM
-roBeRtA baSs.txt
-roBerT GoNzalEZ.txt roBerT bUTLer iI.txt

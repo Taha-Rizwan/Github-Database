@@ -1,3 +1,0 @@
-luIS pETersOn
-luIS pearSON.txt
-NULL NULL

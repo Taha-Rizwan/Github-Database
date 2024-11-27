@@ -1,3 +1,0 @@
-SharOn fLETCHER
-SharOn BArtLEtt.txt
-NULL NULL

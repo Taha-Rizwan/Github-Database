@@ -1,3 +1,0 @@
-JAMES fReNCh
-JAMES garcIA.txt
-JAMES cartEr.txt NULL

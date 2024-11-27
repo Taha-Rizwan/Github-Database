@@ -1,3 +1,0 @@
-pAul logAn
-pAul grifFith.txt
-NULL NULL

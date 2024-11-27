@@ -1,3 +1,0 @@
-DanA cOmPtoN
-DanA dAViS.txt
-NULL NULL

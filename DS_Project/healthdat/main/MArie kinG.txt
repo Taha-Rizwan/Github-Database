@@ -1,3 +1,0 @@
-MArie kinG
-MArie smIth.txt
-NULL NULL

@@ -1,3 +1,0 @@
-lisA maLOnE
-lisA grIfFiN.txt
-NULL NULL

@@ -1,3 +1,0 @@
-sUSAN StANLEY
-sUSAN wILlIAMS.txt
-NULL sUSAN daViS.txt

@@ -1,3 +1,0 @@
-liSa HOOPer
-liSa GlasS.txt
-NULL NULL

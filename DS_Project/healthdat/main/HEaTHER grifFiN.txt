@@ -1,3 +1,0 @@
-HEATheR gRIfFIN
-HEATheR heRriNg.txt
-NULL NULL

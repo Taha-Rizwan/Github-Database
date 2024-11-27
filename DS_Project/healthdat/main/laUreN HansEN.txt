@@ -1,3 +1,0 @@
-laUreN HansEN
-laUreN JONES.txt
-NULL NULL

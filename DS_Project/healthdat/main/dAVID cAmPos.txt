@@ -1,3 +1,0 @@
-dAvid camPOS
-dAvid fLYNN.txt
-NULL NULL

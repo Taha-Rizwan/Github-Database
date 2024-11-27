@@ -1,3 +1,0 @@
-CLIFforD brOwN
-CLIFFord cOok.txt
-NULL CLIfforD fOwlER.txt

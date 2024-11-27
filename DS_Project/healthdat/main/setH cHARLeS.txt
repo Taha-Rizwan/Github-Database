@@ -1,3 +1,0 @@
-setH cHARLeS
-seth NIcHoLS.txt
-serGiO BREnnAn.txt seth MOSS.txt

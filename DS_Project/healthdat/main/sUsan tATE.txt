@@ -1,3 +1,0 @@
-sUsan tATE
-sUzANNE kINg.txt
-sUsan oRtega.txt NULL

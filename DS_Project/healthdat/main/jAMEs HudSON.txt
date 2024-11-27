@@ -1,3 +1,0 @@
-JAMES hUDSon
-JAMES neLSOn.txt
-NULL NULL

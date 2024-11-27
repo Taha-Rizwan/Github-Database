@@ -1,3 +1,0 @@
-arThur JONES
-arieL patEl.txt
-NULL NULL

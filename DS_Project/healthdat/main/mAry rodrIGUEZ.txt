@@ -1,3 +1,0 @@
-mary roDRIGUez
-mary perEZ.txt
-mary rObINSoN.txt NULL

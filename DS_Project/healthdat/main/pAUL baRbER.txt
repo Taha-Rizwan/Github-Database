@@ -1,3 +1,0 @@
-pAUL baRbER
-pAUL cartEr.txt
-NULL NULL

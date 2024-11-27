@@ -1,3 +1,0 @@
-erIn BRAdFORD
-erIn BaKEr.txt
-NULL NULL

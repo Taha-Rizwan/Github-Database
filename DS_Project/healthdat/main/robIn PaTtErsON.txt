@@ -1,3 +1,0 @@
-rOBIN PATtErSON
-rOBIN mcCARtY.txt
-NULL rOBIN kIM.txt

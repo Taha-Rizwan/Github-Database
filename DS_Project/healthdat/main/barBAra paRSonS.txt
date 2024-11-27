@@ -1,3 +1,0 @@
-barBAra paRSonS
-barBArA maCk.txt
-NULL NULL

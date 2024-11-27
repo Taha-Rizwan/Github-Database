@@ -1,3 +1,0 @@
-eric STEvens
-eric Park.txt
-NULL NULL

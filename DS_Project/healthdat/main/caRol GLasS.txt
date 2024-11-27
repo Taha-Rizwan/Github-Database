@@ -1,3 +1,0 @@
-caRol GLasS
-caRol TOrres.txt
-caRoLyn rOWe.txt NULL

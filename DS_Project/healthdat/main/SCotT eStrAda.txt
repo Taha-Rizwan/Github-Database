@@ -1,3 +1,0 @@
-SCotT eStrAda
-SCotT broWN.txt
-NULL NULL

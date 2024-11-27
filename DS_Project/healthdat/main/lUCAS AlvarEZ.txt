@@ -1,3 +1,0 @@
-lUCAS AlvarEZ
-lOuis SCHmItt.txt
-NULL NULL

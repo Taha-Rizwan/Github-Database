@@ -1,3 +1,0 @@
-aMy bERRy
-aMy carPenTer.txt
-NULL NULL

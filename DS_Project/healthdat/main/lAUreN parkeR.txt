@@ -1,3 +1,0 @@
-lAUreN parkeR
-lAUreN yOung.txt
-NULL NULL

@@ -1,3 +1,0 @@
-lori FOx
-lorI hunteR.txt
-lorI sMith.txt lori hollanD.txt

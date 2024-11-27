@@ -1,3 +1,0 @@
-JANE bRoCK
-JANE lOPez.txt
-NULL NULL

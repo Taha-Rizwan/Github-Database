@@ -1,3 +1,0 @@
-BranDI StOuT mD
-BranDI barker.txt
-NULL NULL

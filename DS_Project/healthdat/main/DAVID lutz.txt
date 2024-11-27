@@ -1,3 +1,0 @@
-DAVID lutz
-DAVID kELLEy.txt
-NULL NULL

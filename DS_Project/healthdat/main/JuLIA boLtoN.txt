@@ -1,3 +1,0 @@
-JuLIA boLtoN
-JuLIA cruz.txt
-NULL NULL

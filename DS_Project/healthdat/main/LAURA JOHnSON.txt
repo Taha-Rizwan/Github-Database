@@ -1,3 +1,0 @@
-lauRA JOHNsOn
-lauRA DavIS.txt
-lauRA HaRt.txt NULL

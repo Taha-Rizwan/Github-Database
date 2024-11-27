@@ -1,3 +1,0 @@
-sElEnA corDOva
-sEan sHaw.txt
-sEan vegA.txt NULL

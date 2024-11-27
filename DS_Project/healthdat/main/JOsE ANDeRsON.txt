@@ -1,3 +1,0 @@
-JOsE ANDeRsON
-JOsE JoNes.txt
-JOrge smiTH.txt JOsE JONES.txt

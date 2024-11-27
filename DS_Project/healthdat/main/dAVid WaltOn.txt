@@ -1,3 +1,0 @@
-davID walton
-davId ADams.txt
-NULL NULL

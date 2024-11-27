@@ -1,3 +1,0 @@
-DaLE CaLdweLL
-DaLE RoBERtS.txt
-NULL NULL

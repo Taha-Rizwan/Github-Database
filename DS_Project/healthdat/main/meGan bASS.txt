@@ -1,3 +1,0 @@
-meGan bASS
-meGan esTRADa.txt
-meGan WAlKeR.txt NULL

@@ -1,3 +1,0 @@
-tErrY LONG
-tErrY LOVE.txt
-NULL NULL

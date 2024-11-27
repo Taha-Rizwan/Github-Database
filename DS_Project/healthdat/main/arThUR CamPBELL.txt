@@ -1,3 +1,0 @@
-arThUR CamPBELL
-arTHUr smith.txt
-NULL NULL

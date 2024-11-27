@@ -1,3 +1,0 @@
-aMBER NGuyEN
-aMBER ORtiz.txt
-aMBER JohnsoN.txt NULL

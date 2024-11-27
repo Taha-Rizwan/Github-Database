@@ -1,3 +1,0 @@
-tiNA hEnDeRsoN
-tiNA cOhEN.txt
-NULL NULL
