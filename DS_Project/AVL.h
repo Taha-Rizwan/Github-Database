@@ -3,12 +3,13 @@
 #include<iostream>
 #include<filesystem>
 #include<fstream>
-#include<cstdio>
 #include<string>
 #include<cmath>
 #include<queue>
+#include"Tree.h"
 namespace fs = std::filesystem;
 using namespace std;
+
 template<class T>
 class Node {
 public:
@@ -25,31 +26,33 @@ public:
 
 };
 template<class T>
-class AVL {
+class AVL :public Tree<T>{
 public:
 	Node<T>* root;
 	int nNodes;
+	Repository<T> repo;
 	string dirName;
-	AVL() :root(nullptr), nNodes(0) {
+	AVL() :root(nullptr), nNodes(0),repo(this) {
 		dirName = "Nodes";
 	}
 
-	//File Handling
-
-	//creates a directory
-	void createDirectory(const string& dirName) {
-		if (!fs::exists(dirName)) {
-			fs::create_directory(dirName);
-			cout << "Directory " << dirName << " has been created\n";
-		}
+	void deleteByVal(T val) {
+		deleteNode(root, val);
+		//deleteFile(val);
 	}
+
+	void display() {
+		printTree(root);
+	}
+
+
+	//File Handling
 
 	//Creates a file in that directory(basically a node)
 
 	void createFileInDirectory(const string& dirName, const string& fileName, Node<T>* n) {
-		createDirectory(dirName);
 		fstream file;
-		file.open(dirName + '/' + fileName, ios::out);
+		file.open(repo.name + "/" + repo.currBranch + "/" + fileName, ios::out);
 		cout << "File " << fileName << " has been created\n";
 		file << n->data << endl;
 		if (n->parent) {
@@ -74,12 +77,20 @@ public:
 
 	void updateNodeFile(Node<T>* node) {
 		if (!node) return;
-		fstream file(dirName + '/' + node->fileName, ios::out);
+		fstream file;
+		file.open(repo.name + "/" + repo.currBranch + "/" + node->fileName, ios::out);
 		file << node->data << endl;
 		file << (node->parent ? to_string(node->parent->data) + ".txt" : "NULL") << " ";
 		file << (node->left ? to_string(node->left->data) + ".txt" : "NULL") << " ";
 		file << (node->right ? to_string(node->right->data) + ".txt" : "NULL") << endl;
 		file.close();
+	}
+
+
+	void deleteFile(T val) {
+		cout << "deleting " << val << ".txt\n";
+		string filePath = repo.name + "/" + repo.currBranch + "/" + to_string_generic(val) + ".txt";
+		remove(filePath.c_str());
 	}
 
 
@@ -120,15 +131,15 @@ public:
 		return 0;
 	}
 
-	Node<T>* rotateLeft(Node<T>* k1) {
+	Node<T>* rotateLeft(Node<T>*& k1) {
 		cout << "Rotating left\n";
 		Node<T>* temp = k1->right;
 		k1->right = temp->left;
-		if (k1->right)
+		if (k1->right) {
 			k1->right->parent = k1;
-		if (temp->left)
-			temp->left->parent = k1;
+		}
 		temp->left = k1;
+		updateNodeFile(k1->parent);
 		temp->parent = k1->parent;
 		k1->parent = temp;
 		k1->height = max(Height(k1->left), Height(k1->right)) + 1;
@@ -136,22 +147,22 @@ public:
 
 		updateNodeFile(k1);
 		updateNodeFile(temp);
-		if (k1->parent) updateNodeFile(k1->parent);
 		if (temp->parent) updateNodeFile(temp->parent);
 		if (k1->right) updateNodeFile(k1->right);
 
 		return temp;
 	}
 
-	Node<T>* rotateRight(Node<T>* k1) {
+	Node<T>* rotateRight(Node<T>*& k1) {
 		cout << "Rotating Right\n";
 
 		Node<T>* temp = k1->left;
 		k1->left = temp->right;
-		if (k1->left)
+		if (k1->left) {
 			k1->left->parent = k1;
-
+		}
 		temp->right = k1;
+		updateNodeFile(k1->parent);
 		temp->parent = k1->parent;
 		k1->parent = temp;
 		k1->height = max(Height(k1->left), Height(k1->right)) + 1;
@@ -159,30 +170,41 @@ public:
 
 		updateNodeFile(k1);
 		updateNodeFile(temp);
-		if (k1->parent) updateNodeFile(k1->parent);
 		if (temp->parent) updateNodeFile(temp->parent);
 		if (k1->left) updateNodeFile(k1->left);
 
 		return temp;
 	}
 
-	Node<T>* rightLeft(Node<T>* k1) {
+	Node<T>* rightLeft(Node<T>*& k1) {
 		cout << "Rotating rightleft\n";
 
 		k1->left = rotateLeft(k1->left);
 		if (k1->left)
 			k1->left->parent = k1;
 		k1 = rotateRight(k1);
+
+		updateNodeFile(k1);
+		if (k1->left) updateNodeFile(k1->left);
+		if (k1->right) updateNodeFile(k1->right);
+		if (k1->parent) updateNodeFile(k1->parent);
+
 		return k1;
 	}
 
 
 
-	Node<T>* leftRight(Node<T>* k1) {
+	Node<T>* leftRight(Node<T>*& k1) {
 		k1->right = rotateRight(k1->right);
 		if (k1->right)
 			k1->right->parent = k1;
 		k1 = rotateLeft(k1);
+
+		updateNodeFile(k1);
+		if (k1->left) updateNodeFile(k1->left);
+		if (k1->right) updateNodeFile(k1->right);
+		if (k1->parent) updateNodeFile(k1->parent);
+
 		return k1;
 	}
 
@@ -192,7 +214,6 @@ public:
 			nNodes++;
 			root->height = max(Height(root->left), Height(root->right)) + 1;
 			root->parent = nullptr;
-			createDirectory(dirName);
 			createFileInDirectory(dirName, root->fileName, root);
 			return;
 		}
@@ -281,9 +302,6 @@ public:
 		printTree(node->left, space);
 	}
 
-	void display() {
-		printTree(root);
-	}
 	Node<T>* search(Node<T>* tRoot, T k) {
 		if (tRoot == nullptr) {
 			return nullptr;
@@ -329,20 +347,44 @@ public:
 		}
 		else {
 			if (!tRoot->left || !tRoot->right) {
+				Node<T>* tempParent = tRoot->parent;
 				Node<T>* temp = tRoot->left ? tRoot->left : tRoot->right;
-				//string filename = to_string(key) + ".txt";
-				//fs::remove(filename);
+				if (tRoot->parent) {
+					updateNodeFile(tRoot->parent);
+				}
+				if (temp) {
+					temp->parent = tempParent;
+				}
+				deleteFile(tRoot->data);
 				delete tRoot;
 				tRoot = temp;
 				nNodes--;
+
+				if (tRoot) {
+					//tRoot->parent = tempParent;
+					updateNodeFile(tRoot);
+				}
+				if (tempParent) {
+					updateNodeFile(tempParent);
+				}
 			}
 			else {
 				Node<T>* succ = tRoot->right;
 				while (succ->left) {
 					succ = succ->left;
 				}
+
+
 				tRoot->data = succ->data;
+				cout << "Succ = " << succ->data << endl;
+
 				deleteNode(tRoot->right, succ->data);
+
+				deleteFile(key);
+				tRoot->fileName = to_string(tRoot->data) + ".txt";
+				updateNodeFile(tRoot);
+				updateNodeFile(tRoot->left);
+				updateNodeFile(tRoot->right);
 			}
 		}
 
@@ -369,7 +411,41 @@ public:
 				root = rotateLeft(root);
 			}
 		}
+
+		updateNodeFile(tRoot);
+
+		if (tRoot->parent) {
+			updateNodeFile(tRoot->parent);
+		}
+
 	}
+
+	//Updates value of a node
+	void updateNode(Node<T>*& tRoot, T oldData, T newData) {
+		Node<T>* targetNode = search(tRoot, oldData);
+
+		if (!targetNode) {
+			cout << "Node with data " << oldData << " not found!" << endl;
+			return;
+		}
+
+		targetNode->data = newData;
+		targetNode->fileName = std::to_string(newData) + ".txt";
+		deleteFile(oldData);
+		updateNodeFile(targetNode);
+
+		if (targetNode->parent) {
+			updateNodeFile(targetNode->parent);
+		}
+		if (targetNode->left) {
+			updateNodeFile(targetNode->left);
+		}
+		if (targetNode->right) {
+			updateNodeFile(targetNode->right);
+		}
+	}
+
+
 
 
 	bool isAVL() {
