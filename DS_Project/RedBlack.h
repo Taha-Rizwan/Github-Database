@@ -8,6 +8,8 @@
 using namespace std;
 using namespace std::filesystem;
 
+
+
 bool RED = 1;
 bool BLACK = 0;
 
@@ -18,6 +20,29 @@ std::string to_string_generic(const T& data) {
    
     return ss.str();
 }
+string instructorHash(int number) {
+    int hash = 1;
+
+    while (number > 0) {
+        int digit = number % 10; // Extract the last digit
+        hash *= digit;           // Multiply the digit
+        number /= 10;            // Remove the last digit
+    }
+
+    return to_string_generic(hash); // Take the result modulo 29
+}
+
+// Function to calculate hash for a string
+string instructorHash(const std::string& text) {
+    int hash = 1;
+
+    for (char ch : text) {
+        hash *= static_cast<int>(ch); // Multiply ASCII values of characters
+        hash %= 29;                   // To avoid integer overflow, take modulo 29 after each step
+    }
+
+    return to_string_generic(hash);
+}
 
 // Node structure for the Red-Black Tree
 template<class T>
@@ -27,13 +52,15 @@ struct RedBlackNode {
     int occurences;
     //0 for black, 1 for red
     RedBlackNode<T>* left, * right, * parent;
-
+    string hash;
     RedBlackNode(T data): data(data), color(RED), left(nullptr), right(nullptr), parent(nullptr) , occurences(1)
     {
+        hash = "";
         //cout << to_string_generic(data);
     }
     RedBlackNode() :  color(BLACK), left(nullptr), right(nullptr), parent(nullptr), occurences(1)
     {}
+
 };
 
 // Red-Black Tree class
@@ -451,13 +478,23 @@ private:
         }
         return node;
     }
-
+    string computeHashHelper(RedBlackNode<T>* node) {
+        if (node == nullptr || node == nil)
+            return "";
+        //Currently a placeholder for computing actual has, implement later
+        node->hash = instructorHash(node->data) + computeHashHelper(node->left) + computeHashHelper(node->right);
+        return node->hash;
+        
+    }
 public:
     RedBlackTree():repo(this) {
         root = nullptr;
         nil = new RedBlackNode<T>();
         repo.create();
+        computeHash();
+        cout<<root->hash << endl;
         repo.main();
+
     }
 
    
@@ -540,6 +577,11 @@ public:
     }
     void inorder() {
         inorderHelper(root);
+    }
+
+    void computeHash() {
+        computeHashHelper(root);
+        cout << root->hash;
     }
 
 };

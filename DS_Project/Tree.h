@@ -9,4 +9,5 @@ public:
 	virtual void insert(T data) {}
 	virtual void display(){}
 	virtual void deleteByVal(T data) {}
+	virtual void computeHash() {}
 };

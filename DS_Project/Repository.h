@@ -71,6 +71,9 @@ public:
 
         file.close();
         tree->display();
+        tree->computeHash();
+        cout << endl;
+       
     }
 
     void main() {
@@ -119,6 +122,7 @@ public:
         cin >> val;
         tree->insert(val);
         tree->display();
+        tree->computeHash();
     }
     void deleteNode() {
         T val;
@@ -126,6 +130,7 @@ public:
         cin >> val;
         tree->deleteByVal(val);
         tree->display();
+        tree->computeHash();
     }
     void updateNode() {
         T val,newVal;
@@ -136,6 +141,7 @@ public:
         tree->deleteByVal(val);
         tree->insert(newVal);
         tree->display();
+        tree->computeHash();
         //tree->updateNode(val);
     }
     void switchBranch() {
