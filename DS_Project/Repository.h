@@ -18,6 +18,7 @@ private:
         cout << "\t5: Add A Branch" << endl;
         cout << "\t6: Delete A Branch" << endl;
         cout << "\t7: Merge Branches" << endl;
+        cout << "\t8: Display Tree" << endl;
         cout << "\tChoose: ";
     }
 	
@@ -70,7 +71,6 @@ public:
         }
 
         file.close();
-        tree->display();
         tree->computeHash();
         cout << endl;
        
@@ -106,6 +106,10 @@ public:
                 break;
             case 7:
                 mergeBranch();
+                break;
+            case 8:
+                visualizeTree();
+                break;
             default:
                 logic = false;
                 break;
@@ -121,15 +125,13 @@ public:
         cout << "Value to add: ";
         cin >> val;
         tree->insert(val);
-        tree->display();
         tree->computeHash();
     }
     void deleteNode() {
         T val;
         cout << "Value to delete: ";
         cin >> val;
-        tree->deleteByVal(val);
-        tree->display();
+        tree->deleteByVal(val);     
         tree->computeHash();
     }
     void updateNode() {
@@ -140,15 +142,56 @@ public:
         cin >> newVal;
         tree->deleteByVal(val);
         tree->insert(newVal);
-        tree->display();
+     
         tree->computeHash();
         //tree->updateNode(val);
     }
+    void visualizeTree() {
+        tree->display();
+    }
     void switchBranch() {
 
+        
+
+        cout << "Select which branch you want: ";
+        int n;
+        for (int i = 0; i < branches.size(); i++) {
+            cout << i + 1 << ": " << branches[i]<<endl;
+        }
+        cin >> n;
+        if (n - 1 >= 0 && n <= branches.size()) {
+            currBranch = branches[n - 1];
+            cout << "Current Branch is set to: " << currBranch << endl;
+        }
+        else {
+            cout << "Branch not found!" << endl;
+        }
     }
     void addBranch() {
+        string newBranch;
+        cout << "Enter the name for your new branch: ";
+        cin >> newBranch;
 
+
+        branches.push_back(newBranch);
+        currBranch = newBranch;
+        cout << "New branch has been created and cloned by current version of main" << endl;
+        cout << "Current Branch is set to: " << currBranch << endl;
+
+
+        path sourceDir = name +  "/"+ "main";
+        path destinationDir = name +"/"+ newBranch;
+
+        create_directory(destinationDir);
+
+        for (const auto& entry : directory_iterator(sourceDir)) {
+            const auto& sourcePath = entry.path();
+            auto destinationPath = destinationDir / sourcePath.filename();
+
+                // Copy files
+                copy_file(sourcePath, destinationPath, copy_options::overwrite_existing);
+            
+        }
     }
     void deleteBranch() {
 
