@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <sstream>
+#include<string>
 #include "Repository.h"
 using namespace std;
 using namespace std::filesystem;
@@ -10,6 +11,13 @@ using namespace std::filesystem;
 bool RED = 1;
 bool BLACK = 0;
 
+template <class T>
+std::string to_string_generic(const T& data) {
+    std::stringstream ss;
+    ss << data;
+   
+    return ss.str();
+}
 
 // Node structure for the Red-Black Tree
 template<class T>
@@ -21,7 +29,9 @@ struct RedBlackNode {
     RedBlackNode<T>* left, * right, * parent;
 
     RedBlackNode(T data): data(data), color(RED), left(nullptr), right(nullptr), parent(nullptr) , occurences(1)
-    {}
+    {
+        //cout << to_string_generic(data);
+    }
     RedBlackNode() :  color(BLACK), left(nullptr), right(nullptr), parent(nullptr), occurences(1)
     {}
 };
@@ -34,10 +44,66 @@ private:
     RedBlackNode<T>* nil;
     Repository<T> repo;
     void createFile(RedBlackNode<T>* node) {
-        
+       if (!node || node == nil)
+            return;
+        fstream file;
+        string fileName = to_string_generic(node->data) + ".txt";
+        file.open(repo.name + "/" + repo.currBranch + "/" + fileName, ios::out);
+
+
+        file << node->data << endl;
+        if (node->parent && node->parent!=nil) {
+            file << node->parent->data << ".txt ";
+            updateFile(node->parent);
+        }
+        else {
+            file << "NULL ";
+        }
+        if (node->left&&node->left!=nil) {
+            file << node->left->data << ".txt ";
+        }
+        else {
+            file << "NULL ";
+        }
+        if (node->right && node->right != nil) {
+            file << node->right->data << ".txt" << endl;
+        }
+        else {
+            file << "NULL" << endl;
+        }
+
+
+        file.close();
     }
 
     void updateFile(RedBlackNode<T>* node){
+        if (!node || node == nil)
+            return;
+        fstream file;
+        file.open(repo.name + "/" + repo.currBranch + "/" + to_string_generic(node->data) + ".txt", std::ofstream::out | std::ofstream::trunc);
+
+
+        file << node->data << endl;
+        if (node->parent && node->parent != nil) {
+            file << node->parent->data << ".txt ";
+        }
+        else {
+            file << "NULL ";
+        }
+        if (node->left && node->left != nil) {
+            file << node->left->data << ".txt ";
+        }
+        else {
+            file << "NULL ";
+        }
+        if (node->right && node->right != nil) {
+            file << node->right->data << ".txt" << endl;
+        }
+        else {
+            file << "NULL" << endl;
+        }
+
+        file.close();
     }
     int isEqual(char c, char d) {
         return isEqual(int(c), int(d));
@@ -74,6 +140,7 @@ private:
         //Change Parent
         if (temp->left) {
             temp->left->parent = k1;
+            updateFile(temp->left);
         }
         temp->parent = k1->parent;
         //Rotation involving root
@@ -83,15 +150,18 @@ private:
         //in case node is at left of parent
         else if (k1== k1->parent -> left) {
             k1->parent->left = temp;
+           
         }
         //in case node is at right of parent
         else {
             k1->parent->right = temp;
         }
-
+        updateFile(k1->parent);
         temp->left = k1;
         k1->parent = temp;
-        
+        updateFile(temp);
+        updateFile(k1);
+
     }
 
     void rotateRight(RedBlackNode<T>* k1) {
@@ -100,6 +170,7 @@ private:
         //Change Parent
         if (temp->right) {
             temp->right->parent = k1;
+            updateFile(temp->right);
         }
         temp->parent = k1->parent;
         //Rotation involving root
@@ -114,10 +185,11 @@ private:
         else {
             k1->parent->left = temp;
         }
-
+        updateFile(k1->parent);
         temp->right = k1;
         k1->parent = temp;
-
+        updateFile(temp);
+        updateFile(k1);
     }
 
     void change(RedBlackNode<T>* node) {
@@ -132,7 +204,7 @@ private:
                     node->parent->parent->color = RED;
                     //Since upto grandfather now satisfies properties, move to grandfather
                     node = node->parent->parent;
-                    cout << "RECOLOR" << endl;
+                    //cout << "RECOLOR" << endl;
                 }
                 else {
                    //Additional Case for double rotation LR
@@ -144,7 +216,7 @@ private:
                     node->parent->color = BLACK;
                     node->parent->parent->color = RED;
                     rotateRight(node->parent->parent);
-                    cout << "ROTATION" << endl;
+                   // cout << "ROTATION" << endl;
                 }
             }
             //node's parent is on right of grandfather
@@ -157,7 +229,7 @@ private:
                     node->parent->parent->color = RED;
                     //Since upto grandfather now satisfies properties, move to grandfather
                     node = node->parent->parent;
-                    cout << "RECOLOR" << endl;
+                   // cout << "RECOLOR" << endl;
                 }
                 else {
                     //Additional Case for double rotation RL
@@ -170,7 +242,7 @@ private:
                     node->parent->color = BLACK;
                     node->parent->parent->color = RED;
                     rotateLeft(node->parent->parent);
-                    cout << "ROTATION" << endl;
+                  //  cout << "ROTATION" << endl;
                 }
             }
         }
@@ -379,6 +451,7 @@ public:
             root->color = BLACK;
             root->left = nil;
             root->right = nil;
+            createFile(root);
             return;
         }
         else {
@@ -413,6 +486,8 @@ public:
                 par->left->parent = par;
                 yo = par->left;
             }
+
+            createFile(yo);
             yo->left = nil;
             yo->right = nil;
             if (yo->parent == nullptr) {

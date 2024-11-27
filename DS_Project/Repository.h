@@ -5,17 +5,18 @@
 #include "Tree.h"
 #include <vector>
 using namespace std;
-
+using namespace std::filesystem;
 
 template<class T>
 class Repository {
-	string name;
-	string csv_path;
-	int column;
-    //Create vector class later
-	vector<string> branches;
-    string currBranch;
+	
 public:
+    string name;
+    string csv_path;
+    int column;
+    //Create vector class later
+    vector<string> branches;
+    string currBranch;
 	Repository(Tree<T>* tree) {
         cout << "Enter Repo Name: ";
         cin >> name;
@@ -28,11 +29,13 @@ public:
             cerr << "Error: Could not open file!" << endl;
             return;
         }
-
+        create_directory(name);
+        
         string line;
         getline(file, line); // Read the header line and skip it
         cout << "Reading CSV to main branch(default): "<<endl;
         currBranch = "main";
+        create_directory(name + "/" + currBranch);
         branches.push_back("main");
         while (getline(file, line)) {
             stringstream ss(line);
