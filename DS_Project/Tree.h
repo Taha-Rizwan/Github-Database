@@ -19,6 +19,8 @@ public:
 	int isEqual(char c, char d) {
 		return isEqual(int(c), int(d));
 	}
+
+
 	//int
 	int isEqual(int c, int d) {
 		if (c == d) {
@@ -31,6 +33,7 @@ public:
 			return -1;
 		}
 	}
+
 	//string
 	int isEqual(string c, string d) {
 		int len1 = c.length();
@@ -55,7 +58,7 @@ public:
 	}
 
 
-    //
+    //instructor's hash
 	
     string instructorHash(int number) {
         int hash = 1;
