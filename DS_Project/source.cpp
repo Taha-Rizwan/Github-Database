@@ -1,8 +1,6 @@
-#include <iostream>
 #include "RedBlack.h"
 #include"AVL.h"
-using namespace std;
-
+#include "BTree.h"
 
 int main() {
 

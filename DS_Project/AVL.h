@@ -14,16 +14,16 @@ using namespace std;
 
 
 template<class T>
-class Node {
+class AVLNode {
 public:
-	Node<T>* left;
-	Node<T>* right;
-	Node<T>* parent;
-
+	AVLNode<T>* left;
+	AVLNode<T>* right;
+	AVLNode<T>* parent;
 	T data;
 	int height;
+	string hash;
 	string fileName;
-	Node(T c) :data(c), left(nullptr), right(nullptr), parent(nullptr), height(0) {
+	AVLNode(T c) :data(c), left(nullptr), right(nullptr), parent(nullptr), height(0),hash("") {
 		fileName = to_string_generic(data) + ".txt";
 	}
 
@@ -31,12 +31,13 @@ public:
 template<class T>
 class AVL :public Tree<T>{
 public:
-	Node<T>* root;
+	AVLNode<T>* root;
 	int nNodes;
 	Repository<T> repo;
-	AVL() :root(nullptr), nNodes(0),repo(this) {
+	AVL() :root(nullptr), nNodes(0), repo(this) {
 		repo.create();
 		repo.main();
+		computeHash();
 	}
 
 	void deleteByVal(T val) {
@@ -51,9 +52,9 @@ public:
 
 	//File Handling
 
-	//Creates a file in that directory(basically a node)
+	//Creates a file in that directory(basically an AVLNode)
 
-	void createFile(const string& fileName, Node<T>* n) {
+	void createFile(const string& fileName, AVLNode<T>* n) {
 		fstream file;
 		file.open(repo.name + "/" + repo.currBranch + "/" + fileName, ios::out);
 		cout << "File " << fileName << " has been created\n";
@@ -78,7 +79,7 @@ public:
 		}
 	}
 
-	void updateNodeFile(Node<T>* node) {
+	void updateNodeFile(AVLNode<T>* node) {
 		if (!node) return;
 		fstream file;
 		file.open(repo.name + "/" + repo.currBranch + "/" + node->fileName, ios::out);
@@ -112,16 +113,16 @@ public:
 	}
 
 
-	int Height(Node<T>* k1) {
+	int Height(AVLNode<T>* k1) {
 		if (k1 == nullptr) {
 			return -1;
 		}
 		return k1->height;
 	}
 
-	Node<T>* rotateLeft(Node<T>*& k1) {
+	AVLNode<T>* rotateLeft(AVLNode<T>*& k1) {
 		cout << "Rotating left\n";
-		Node<T>* temp = k1->right;
+		AVLNode<T>* temp = k1->right;
 		k1->right = temp->left;
 		if (k1->right) {
 			k1->right->parent = k1;
@@ -141,10 +142,10 @@ public:
 		return temp;
 	}
 
-	Node<T>* rotateRight(Node<T>*& k1) {
+	AVLNode<T>* rotateRight(AVLNode<T>*& k1) {
 		cout << "Rotating Right\n";
 
-		Node<T>* temp = k1->left;
+		AVLNode<T>* temp = k1->left;
 		k1->left = temp->right;
 		if (k1->left) {
 			k1->left->parent = k1;
@@ -164,7 +165,7 @@ public:
 		return temp;
 	}
 
-	Node<T>* rightLeft(Node<T>*& k1) {
+	AVLNode<T>* rightLeft(AVLNode<T>*& k1) {
 		cout << "Rotating rightleft\n";
 
 		k1->left = rotateLeft(k1->left);
@@ -182,7 +183,7 @@ public:
 
 
 
-	Node<T>* leftRight(Node<T>*& k1) {
+	AVLNode<T>* leftRight(AVLNode<T>*& k1) {
 		k1->right = rotateRight(k1->right);
 		if (k1->right)
 			k1->right->parent = k1;
@@ -198,7 +199,7 @@ public:
 
 	void insert(T c) {
 		if (root == nullptr) {
-			root = new Node<T>(c);
+			root = new AVLNode<T>(c);
 			nNodes++;
 			root->height = max(Height(root->left), Height(root->right)) + 1;
 			root->parent = nullptr;
@@ -207,12 +208,14 @@ public:
 		}
 		else {
 			insertNode(root, root->parent, c);
+			insertNode(root, root->parent, c);
 		}
+		computeHash();
 	}
 
-	void insertNode(Node<T>*& tRoot, Node<T>*& parent, T c) {
+	void insertNode(AVLNode<T>*& tRoot, AVLNode<T>*& parent, T c) {
 		if (tRoot == nullptr) {
-			tRoot = new Node<T>(c);
+			tRoot = new AVLNode<T>(c);
 			nNodes++;
 			tRoot->height = max(Height(tRoot->left), Height(tRoot->right)) + 1;
 			tRoot->parent = parent;
@@ -220,10 +223,10 @@ public:
 			createFile(tRoot->parent->fileName, tRoot->parent);
 			return;
 		}
-		else if (isEqual(c, tRoot->data) == -1) {
+		else if (Tree<T>::isEqual(c, tRoot->data) == -1) {
 			insertNode(tRoot->left, tRoot, c);
 			if (abs(Height(tRoot->left) - Height(tRoot->right)) == 2) {
-				if (isEqual(c, tRoot->left->data) == -1) {
+				if (Tree<T>::isEqual(c, tRoot->left->data) == -1) {
 					tRoot = rotateRight(tRoot);
 				}
 				else {
@@ -232,10 +235,10 @@ public:
 			}
 
 		}
-		else if (isEqual(c, tRoot->data) == 1) {
+		else if (Tree<T>::isEqual(c, tRoot->data) == 1) {
 			insertNode(tRoot->right, tRoot, c);
 			if (abs(Height(tRoot->right) - Height(tRoot->left)) == 2) {
-				if (isEqual(c, tRoot->right->data) == 1) {
+				if (Tree<T>::isEqual(c, tRoot->right->data) == 1) {
 					tRoot = rotateLeft(tRoot);
 				}
 				else {
@@ -253,10 +256,10 @@ public:
 			cout << "NULL";
 			return;
 		}
-		queue<Node<T>*> q;
+		queue<AVLNode<T>*> q;
 		q.push(root);
 		while (!q.empty()) {
-			Node<T>* curr = q.front();
+			AVLNode<T>* curr = q.front();
 			q.pop();
 			cout << curr->data << "->";
 			if (curr->left) {
@@ -268,7 +271,7 @@ public:
 		}
 		cout << "NULL\n";
 	}
-	void printTree(Node<T>* node, int space = 0, int indent = 4) {
+	void printTree(AVLNode<T>* node, int space = 0, int indent = 4) {
 		if (node == nullptr) {
 			return;
 		}
@@ -290,7 +293,7 @@ public:
 		printTree(node->left, space);
 	}
 
-	Node<T>* search(Node<T>* tRoot, T k) {
+	AVLNode<T>* search(AVLNode<T>* tRoot, T k) {
 		if (tRoot == nullptr) {
 			return nullptr;
 		}
@@ -307,7 +310,7 @@ public:
 	}
 
 	T minimum() {
-		Node<T>* curr = root;
+		AVLNode<T>* curr = root;
 		while (curr->left) {
 			curr = curr->left;
 		}
@@ -315,28 +318,28 @@ public:
 	}
 
 	T maximum() {
-		Node<T>* curr = root;
+		AVLNode<T>* curr = root;
 		while (curr->right) {
 			curr = curr->right;
 		}
 		return curr->data;
 	}
 
-	void deleteNode(Node<T>*& tRoot, T key) {
+	void deleteNode(AVLNode<T>*& tRoot, T key) {
 		if (!tRoot) {
 			return;
 		}
 
-		if (isEqual(key, tRoot->data) == -1) {
+		if (Tree<T>::isEqual(key, tRoot->data) == -1) {
 			deleteNode(tRoot->left, key);
 		}
-		else if (isEqual(key, tRoot->data) == 1) {
+		else if (Tree<T>::isEqual(key, tRoot->data) == 1) {
 			deleteNode(tRoot->right, key);
 		}
 		else {
 			if (!tRoot->left || !tRoot->right) {
-				Node<T>* tempParent = tRoot->parent;
-				Node<T>* temp = tRoot->left ? tRoot->left : tRoot->right;
+				AVLNode<T>* tempParent = tRoot->parent;
+				AVLNode<T>* temp = tRoot->left ? tRoot->left : tRoot->right;
 				if (tRoot->parent) {
 					updateNodeFile(tRoot->parent);
 				}
@@ -357,7 +360,7 @@ public:
 				}
 			}
 			else {
-				Node<T>* succ = tRoot->right;
+				AVLNode<T>* succ = tRoot->right;
 				while (succ->left) {
 					succ = succ->left;
 				}
@@ -405,7 +408,7 @@ public:
 		if (tRoot->parent) {
 			updateNodeFile(tRoot->parent);
 		}
-
+		computeHash();
 	}
 
 	//Virtual function update
@@ -414,7 +417,7 @@ public:
 	}
 
 	//Updates value of a node
-	void updateNode(Node<T>*& tRoot, T oldData, T newData) {
+	void updateNode(AVLNode<T>*& tRoot, T oldData, T newData) {
 		deleteByVal(oldData);
 		insert(newData);
 		cout << "Updated Node with value " << oldData << " with " << newData << endl;
@@ -431,16 +434,27 @@ public:
 		return abs(Height(root->right) - Height(root->left));
 	}
 
-	void computeHash() {
-		computeHashHelper(root);
-		cout << root->hash;
+	//ConstructTree
+	void constructTree() {
+		
 	}
 
-	string computeHashHelper(AVL<T>* node) {
+
+	//Hashing 
+	
+	
+	//Computes Hash for the whole tree
+	void computeHash() {
+		computeHashHelper(root);
+		cout << root->hash<<endl;
+	}
+	
+	//Recursive function that calculates hashes
+	string computeHashHelper(AVLNode<T>* node) {
 		if (node == nullptr)
 			return "";
 		//Currently a placeholder for computing actual has, implement later
-		node->hash = instructorHash(node->data) + computeHashHelper(node->left) + computeHashHelper(node->right);
+		node->hash = Tree<T>::instructorHash(node->data) + computeHashHelper(node->left) + computeHashHelper(node->right);
 		return node->hash;
 	}
 
