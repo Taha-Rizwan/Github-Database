@@ -1,12 +1,12 @@
 #include "RedBlack.h"
-#include"AVL.h"
-#include "BTree.h"
+//#include"AVL.h"
+//#include "BTree.h"
 
 int main() {
 
-	RedBlackTree<string> t;
+	//RedBlackTree<string> t;
 	//AVL<string> tree;
-	
+	//BTree <int, 3> t;
 	return 0;
 }
 

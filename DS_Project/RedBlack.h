@@ -52,13 +52,6 @@ int isEqual(string c, string d) {
 }
 
 
-template<class T>
-string to_string_generic(T data) {
-    std::stringstream ss;
-    ss << data;
-
-    return ss.str();
-}
 string instructorHash(int number) {
     int hash = 1;
 
