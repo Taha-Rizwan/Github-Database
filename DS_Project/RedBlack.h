@@ -281,9 +281,9 @@ private:
             return nullptr;
 
 
-        if (isEqual(n,node->data)==1)
+        if (Tree<T>::isEqual(n,node->data)==1)
             return searchHelper(node->right, n);
-        else if (isEqual(n, node->data) == -1) {
+        else if (Tree<T>::isEqual(n, node->data) == -1) {
             return searchHelper(node->left, n);
         }
         else {
@@ -424,7 +424,7 @@ private:
         if (node == nullptr || node == nil)
             return "";
         //Currently a placeholder for computing actual has, implement later
-        node->hash = instructorHash(node->data) + computeHashHelper(node->left) + computeHashHelper(node->right);
+        node->hash = Tree<T>::instructorHash(node->data) + computeHashHelper(node->left) + computeHashHelper(node->right);
         return node->hash;
     }
 public:
@@ -454,11 +454,11 @@ public:
             RedBlackNode<T>* par = nullptr;
             while (curr&&curr!=nil) {
                 par = curr;
-                if (isEqual(data, curr->data) == 0) {
+                if (Tree<T>::isEqual(data, curr->data) == 0) {
                     curr->occurences++;
                     return;
                 }
-                else if (isEqual(data, curr->data) == 1) {
+                else if (Tree<T>::isEqual(data, curr->data) == 1) {
                     curr = curr->right;
                 }
                 else {
@@ -467,11 +467,11 @@ public:
             }
             RedBlackNode<T>* yo;
             //if greater or equal add to right
-            if (isEqual(data, par->data) == 0) {
+            if (Tree<T>::isEqual(data, par->data) == 0) {
                 par->occurences++;
                 return;
             }
-            else if (isEqual(data, par->data)==1) {
+            else if (Tree<T>::isEqual(data, par->data)==1) {
                 par->right = new RedBlackNode<T>(data);
                 par->right->parent = par;
                 yo = par->right;
@@ -522,7 +522,7 @@ public:
 
     void computeHash() {
         computeHashHelper(root);
-        cout << root->hash;
+        cout <<"Root Hash: " << root->hash << endl;
     }
 
 };

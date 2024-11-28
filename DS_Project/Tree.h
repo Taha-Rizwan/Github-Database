@@ -3,6 +3,14 @@
 using namespace std;
 
 template<class T>
+string to_string_generic(const T& data) {
+	std::stringstream ss;
+	ss << data;
+
+	return ss.str();
+}
+
+template<class T>
 class Tree {
 
 public:
@@ -48,12 +56,7 @@ public:
 
 
     //
-	std::string to_string_generic(const T& data) {
-		std::stringstream ss;
-		ss << data;
-
-		return ss.str();
-	}
+	
     string instructorHash(int number) {
         int hash = 1;
 
@@ -77,7 +80,7 @@ public:
 
         return to_string_generic(hash);
     }
-	virtual string computeHashHelper(Tree<T>* node) {}
+	virtual string computeHashHelper(Tree<T>* node) { return " "; }
 	virtual void computeHash() {}
 	virtual void insert(T data) {}
 	virtual void display(){}
