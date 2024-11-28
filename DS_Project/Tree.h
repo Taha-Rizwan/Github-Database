@@ -1,7 +1,5 @@
 #pragma once
 #include <iostream>
-#include <fstream>
-#include <string>
 using namespace std;
 
 template<class T>
@@ -21,6 +19,8 @@ public:
 	int isEqual(char c, char d) {
 		return isEqual(int(c), int(d));
 	}
+
+
 	//int
 	int isEqual(int c, int d) {
 		if (c == d) {
@@ -33,6 +33,7 @@ public:
 			return -1;
 		}
 	}
+
 	//string
 	int isEqual(string c, string d) {
 		int len1 = c.length();
@@ -49,7 +50,7 @@ public:
 		if (len1 > len2) {
 			return 1;
 		}
-		else if(len1 < len2){
+		else if (len1 < len2) {
 			return -1;
 		}
 
@@ -57,38 +58,37 @@ public:
 	}
 
 
-    //
-	
-    string instructorHash(int number) {
-        int hash = 1;
+	//instructor's hash
 
-        while (number > 0) {
-            int digit = number % 10; // Extract the last digit
-            hash *= digit;           // Multiply the digit
-            number /= 10;            // Remove the last digit
-        }
+	string instructorHash(int number) {
+		int hash = 1;
 
-        return to_string_generic(hash); // Take the result modulo 29
-    }
+		while (number > 0) {
+			int digit = number % 10; // Extract the last digit
+			hash *= digit;           // Multiply the digit
+			number /= 10;            // Remove the last digit
+		}
 
-    // Function to calculate hash for a string
-    string instructorHash(const std::string& text) {
-        int hash = 1;
+		return to_string_generic(hash); // Take the result modulo 29
+	}
 
-        for (char ch : text) {
-            hash *= static_cast<int>(ch); // Multiply ASCII values of characters
-            hash %= 29;                   // To avoid integer overflow, take modulo 29 after each step
-        }
+	// Function to calculate hash for a string
+	string instructorHash(const std::string& text) {
+		int hash = 1;
 
-        return to_string_generic(hash);
-    }
+		for (char ch : text) {
+			hash *= static_cast<int>(ch); // Multiply ASCII values of characters
+			hash %= 29;                   // To avoid integer overflow, take modulo 29 after each step
+		}
+
+		return to_string_generic(hash);
+	}
 	virtual string computeHashHelper(Tree<T>* node) { return " "; }
 	virtual void computeHash() {}
 	virtual void insert(T data) {}
-	virtual void display(){}
+	virtual void display() {}
 	virtual void deleteByVal(T data) {}
 	virtual void update(T oldData, T newData) {}
-	virtual void makeTree(string rootPath) {}
 };
 
 

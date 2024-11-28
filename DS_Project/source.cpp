@@ -4,9 +4,9 @@
 
 int main() {
 
-	//RedBlackTree<string> t;
-	//AVL<string> tree;
-	//BTree <int, 3> t;
+	RedBlackTree<string> t;
+	AVL<string> tree;
+	
 	return 0;
 }
 
