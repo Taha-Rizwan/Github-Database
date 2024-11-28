@@ -6,21 +6,13 @@ using namespace std;
 
 int main() {
 
-	//RedBlackTree<string> t;
-	AVL<string> tree;
+	RedBlackTree<string> t;
+	//AVL<string> tree;
 	
 	return 0;
 }
 
-/*
-* 
-* 
-* 
-* 
-* 
-* 
-* 
-	
+/*	
 	Things to do
 
 	Dealing with dups:
@@ -49,10 +41,4 @@ int main() {
 
 	SAVE REPO TO FILE
 	Saves the current repo to file, the tree structure, root node and other stuff etc and similarly loading that would be a function
-
-
-
-
-
-
 */

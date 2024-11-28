@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <sstream>
+#include "Functions.h"
 #include<string>
 #include "Repository.h"
 using namespace std;
@@ -12,7 +13,75 @@ using namespace std::filesystem;
 
 bool RED = 1;
 bool BLACK = 0;
+int isEqual(char c, char d) {
+    return isEqual(int(c), int(d));
+}
+//int
+int isEqual(int c, int d) {
+    if (c == d) {
+        return 0;
+    }
+    else if (c > d) {
+        return 1;
+    }
+    else {
+        return -1;
+    }
+}
+//string
+int isEqual(string c, string d) {
+    int len1 = c.length();
+    int len2 = d.length();
+    for (int i = 0; i < min(len1, len2); i++) {
+        if (c[i] > d[i]) {
+            return 1;
+        }
+        else if (c[i] < d[i]) {
+            return -1;
+        }
+    }
 
+    if (len1 > len2) {
+        return 1;
+    }
+    else if (len1 < len2) {
+        return -1;
+    }
+
+    return 0;
+}
+
+
+template<class T>
+string to_string_generic(T data) {
+    std::stringstream ss;
+    ss << data;
+
+    return ss.str();
+}
+string instructorHash(int number) {
+    int hash = 1;
+
+    while (number > 0) {
+        int digit = number % 10; // Extract the last digit
+        hash *= digit;           // Multiply the digit
+        number /= 10;            // Remove the last digit
+    }
+
+    return to_string_generic(hash); // Take the result modulo 29
+}
+
+// Function to calculate hash for a string
+string instructorHash(string& text) {
+    int hash = 1;
+
+    for (char ch : text) {
+        hash *= static_cast<int>(ch); // Multiply ASCII values of characters
+        hash %= 29;                   // To avoid integer overflow, take modulo 29 after each step
+    }
+
+    return to_string_generic(hash);
+}
 
 // Node structure for the Red-Black Tree
 template<class T>
@@ -107,6 +176,17 @@ private:
             
             remove(repo.name + "/" + repo.currBranch + "/" + to_string_generic(data) + ".txt");
         
+    }
+
+    RedBlackNode<T>* createNodeFromFile(string node,RedBlackNode<T>* prev) {
+        if (node == "NULL") {
+            return nil;
+        }
+
+        //if(prev)
+
+       // file.open(repo.name + "/" + repo.currBranch + "/" +)
+
     }
    
     void rotateLeft(RedBlackNode<T>* k1) {
@@ -427,6 +507,14 @@ private:
         node->hash = instructorHash(node->data) + computeHashHelper(node->left) + computeHashHelper(node->right);
         return node->hash;
     }
+    void emptyTreeHelper(RedBlackNode<T>* node) {
+        if (node == nullptr || node == nil)
+            return;
+        emptyTreeHelper(node->left);
+        emptyTreeHelper(node->right);
+
+        delete node;
+    }
 public:
     RedBlackTree():repo(this) {
         root = nullptr;
@@ -525,5 +613,15 @@ public:
         cout << root->hash;
     }
 
+    void emptyTree() {
+        emptyTreeHelper(root);
+        root = nullptr;
+    }
+    void makeTree(string rootPath) {
+        if(root)
+            emptyTree();
+
+
+    }
 };
 
