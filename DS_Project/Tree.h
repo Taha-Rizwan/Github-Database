@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <fstream>
+#include <string>
 using namespace std;
 
 template<class T>
@@ -19,8 +21,6 @@ public:
 	int isEqual(char c, char d) {
 		return isEqual(int(c), int(d));
 	}
-
-
 	//int
 	int isEqual(int c, int d) {
 		if (c == d) {
@@ -33,7 +33,6 @@ public:
 			return -1;
 		}
 	}
-
 	//string
 	int isEqual(string c, string d) {
 		int len1 = c.length();
@@ -58,7 +57,7 @@ public:
 	}
 
 
-    //instructor's hash
+    //
 	
     string instructorHash(int number) {
         int hash = 1;
@@ -89,6 +88,7 @@ public:
 	virtual void display(){}
 	virtual void deleteByVal(T data) {}
 	virtual void update(T oldData, T newData) {}
+	virtual void makeTree(string rootPath) {}
 };
 
 
