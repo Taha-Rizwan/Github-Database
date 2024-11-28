@@ -5,7 +5,7 @@
 int main() {
 
 	RedBlackTree<string> t;
-	//AVL<string> tree;
+	AVL<string> tree;
 	
 	return 0;
 }
