@@ -44,5 +44,8 @@
     <ClInclude Include="Tree.h">
       <Filter>Trees</Filter>
     </ClInclude>
+    <ClInclude Include="RedBlack2.h">
+      <Filter>Trees</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

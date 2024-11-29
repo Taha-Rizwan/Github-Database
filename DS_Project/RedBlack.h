@@ -9,8 +9,6 @@
 using namespace std;
 using namespace std::filesystem;
 
-
-
 bool RED = 1;
 bool BLACK = 0;
 
@@ -22,6 +20,7 @@ struct RedBlackNode {
     int occurences;
     //0 for black, 1 for red
     RedBlackNode<T>* left, * right, * parent;
+    string leftPath, rightPath, parentPath;
     string hash;
     RedBlackNode(T data): data(data), color(RED), left(nullptr), right(nullptr), parent(nullptr) , occurences(1)
     {
@@ -30,7 +29,6 @@ struct RedBlackNode {
     }
     RedBlackNode() :  color(BLACK), left(nullptr), right(nullptr), parent(nullptr), occurences(1)
     {}
-
 };
 
 // Red-Black Tree class
@@ -71,6 +69,11 @@ private:
 
 
         file.close();
+    }
+   
+
+    string pathify(T data) {
+        return repo.name + "/" + repo.currBranch + "/" + to_string_generic(data) + ".txt";
     }
 
     void updateFile(RedBlackNode<T>* node){
@@ -452,7 +455,8 @@ public:
         nil = new RedBlackNode<T>();
         repo.create();
         computeHash();
-        cout<<root->hash << endl;
+        //cout<<root->hash << endl;
+       
         repo.main();
 
     }
@@ -556,3 +560,8 @@ public:
     }
 };
 
+/*
+    
+    Moving down use createnodefromfile to make nodes whilst deleting the current one 
+
+*/

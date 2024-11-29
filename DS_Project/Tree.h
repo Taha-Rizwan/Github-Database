@@ -89,6 +89,9 @@ public:
 	virtual void display() {}
 	virtual void deleteByVal(T data) {}
 	virtual void update(T oldData, T newData) {}
+	virtual void createNil() {
+
+	}
 };
 
 

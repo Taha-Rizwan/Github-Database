@@ -1,17 +1,50 @@
-#include "RedBlack.h"
-//#include"AVL.h"
+#include "RedBlack2.h"
+#include"AVL.h"
 //#include "BTree.h"
 
 int main() {
+	RedBlackTree<string> r;
 
-	RedBlackTree<string> t;
-	AVL<string> tree;
-	
 	return 0;
 }
 
 /*	
 	Things to do
+
+	Changing of file format
+
+	24(data)
+	26(parent),NULL(leftchild),NULL(rightchild)
+
+	comma seperated instead of space seperated due to issue while reading files
+
+	Aqib Rotation ke function abhi ke liye redblack2 se utha le, mazeed behter ho skte hain lekin bas hoi hoi hai
+	RedBlack2 mein abhi sirf insertion hoi hai deletion baad mein krdonga
+	again, probably bether ho skti hai lekin im ded
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	Dealing with dups:
 		Still haven't figured out how to deal with dups, one idea is using line numbers where the line number can be used to insert either to left or to the right rather than storing line numbers every time, although idk about deletion

@@ -41,19 +41,22 @@ public:
         cin >> csv_path;
         cout << "Enter column Number(0-indexed): ";
         cin >> column;
+        create_directory(name);
+        currBranch = "main";
+        create_directory(name + "/" + currBranch);
+        branches.push_back("main");
+        tree->createNil();
         ifstream file(csv_path);
         if (!file.is_open()) {
             cerr << "Error: Could not open file!" << endl;
             return;
         }
-        create_directory(name);
+      
 
         string line;
         getline(file, line); // Read the header line and skip it
         cout << "Reading CSV to main branch(default): " << endl;
-        currBranch = "main";
-        create_directory(name + "/" + currBranch);
-        branches.push_back("main");
+   
         while (getline(file, line)) {
             stringstream ss(line);
             string cell;
