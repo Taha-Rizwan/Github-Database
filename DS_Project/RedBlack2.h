@@ -12,6 +12,15 @@ using namespace std::filesystem;
 bool RED = 1;
 bool BLACK = 0;
 
+
+void toLower(string& data) {
+    for (int i = 0; i < data.length(); i++) {
+        if (data[i] >= 'A' && data[i] <= 'Z')
+            data[i] += 32;
+    }
+}
+
+
 // Node structure for the Red-Black Tree
 // Node structure for the Red-Black Tree
 template<class T>
@@ -41,6 +50,7 @@ private:
     Repository<T> repo;
 
     string pathify(string data) {
+        toLower(data);
         string path = repo.name + "/" + repo.currBranch + "/" + to_string_generic(data);
         if (path.find(".txt") == std::string::npos) {  // If ".txt" is not found
             path += ".txt";  // Append ".txt" to the string
@@ -59,12 +69,13 @@ private:
 
         // Write node data to the file
         file << node.data << "\n";                       // Node data
-        file << node.parentPath << " "                   // Parent path
-            << node.leftPath << " "                     // Left child path
+        file << node.parentPath << "\n"                   // Parent path
+            << node.leftPath << "\n"                     // Left child path
             << node.rightPath << "\n";                  // Right child path
         file << node.color << "\n";                      // Node color (0 for BLACK, 1 for RED)
 
         file.close();
+        
         return fileName;
     }
 
@@ -73,16 +84,24 @@ private:
         if (!file.is_open()) {
             throw runtime_error("Unable to open file: " + filePath);
         }
-
-        T data;
-        string parentPath, leftPath, rightPath;
-        bool color;
         RedBlackNode<T> r;
-        file >> r.data;
+        r.leftPath = "";
+        r.rightPath = "";
+        r.parentPath = "";
+        string pathsLine;
+        getline(file, pathsLine);
+        r.data = pathsLine;
 
-        file >> r.parentPath >> r.leftPath >> r.rightPath;
+  
+        getline(file, pathsLine);
+        r.parentPath = pathsLine;
+        getline(file, pathsLine);
+        r.leftPath = pathsLine;
+        getline(file, pathsLine);
+        r.rightPath = pathsLine;
+       
         file >> r.color;
-
+       
         file.close();
         return r;
     }
@@ -91,8 +110,8 @@ private:
         std::ofstream file(pathify(to_string_generic(node.data)));
 
         file << node.data << "\n";                       // Node data
-        file << node.parentPath << " "                   // Parent path
-            << node.leftPath << " "                     // Left child path
+        file << node.parentPath << "\n"                   // Parent path
+            << node.leftPath << "\n"                     // Left child path
             << node.rightPath << "\n";                  // Right child path
         file << node.color << "\n";                      // Node color (0 for BLACK, 1 for RED)
 
@@ -103,10 +122,46 @@ private:
     void createNil() {
         string niller = "nil.txt";
         ofstream file(pathify(niller));
-        file << -1 << "\nNULL NULL NULL\n0\n";
+        file << -1 << "\nNULL\nNULL\nNULL\n0\n";
         file.close();
     }
+    //Saves a couple file opening operations
+    void rotateLeft(RedBlackNode<T>& k1,string k1File) {
+        cout << "rotateleft" << endl;
 
+        RedBlackNode<T> temp = readNodeFromFile(k1.rightPath);
+        cout << k1.data << endl;
+        cout << temp.data << endl;
+        k1.rightPath = temp.leftPath;
+        if (temp.leftPath != "nil") {
+            RedBlackNode<T> tempLeft = readNodeFromFile(temp.leftPath);
+            tempLeft.parentPath = k1File;
+            writeNodeToFile(tempLeft);
+        }
+
+        temp.parentPath = k1.parentPath;
+        if (k1.parentPath == "NULL") {
+            cout << "Attempted Change" << endl;
+            rootFile = to_string_generic(temp.data);
+        }
+        else {
+            RedBlackNode<T> parent = readNodeFromFile(k1.parentPath);
+            if (k1File == parent.leftPath) {
+                parent.leftPath = to_string_generic(temp.data);
+            }
+            else {
+                parent.rightPath = to_string_generic(temp.data);
+            }
+            writeNodeToFile(parent);
+        }
+
+        temp.leftPath = k1File;
+        writeNodeToFile(temp);
+        k1.parentPath = to_string_generic(temp.data);
+        writeNodeToFile(k1);
+        k1.print();
+        temp.print();
+    }
     void rotateLeft(const string& k1File) {
         cout << "rotateleft" << endl;
        
@@ -143,6 +198,40 @@ private:
         writeNodeToFile(k1);
         k1.print();
         temp.print();
+    }
+    //Saves a couple file opening operations
+    void rotateRight(RedBlackNode<T>& k1,  string k1File) {
+        cout << "rotateright" << endl;
+        RedBlackNode<T> temp = readNodeFromFile(k1.leftPath);
+
+        k1.leftPath = temp.rightPath;
+        if (temp.rightPath != "nil") {
+
+            RedBlackNode<T> tempRight = readNodeFromFile(temp.rightPath);
+            tempRight.parentPath = k1File;
+            writeNodeToFile(tempRight);
+        }
+
+        temp.parentPath = k1.parentPath;
+        if (k1.parentPath == "NULL") {
+            cout << "Attempted Change" << endl;
+            rootFile = to_string_generic(temp.data);
+        }
+        else {
+            RedBlackNode<T> parent = readNodeFromFile(k1.parentPath);
+            if (k1File == parent.rightPath) {
+                parent.rightPath = to_string_generic(temp.data);
+            }
+            else {
+                parent.leftPath = to_string_generic(temp.data);
+            }
+            writeNodeToFile(parent);
+        }
+
+        temp.rightPath = k1File;
+        writeNodeToFile(temp);
+        k1.parentPath = to_string_generic(temp.data);
+        writeNodeToFile(k1);
     }
 
     void rotateRight(const string& k1File) {
@@ -186,9 +275,6 @@ private:
             RedBlackNode<T> node = readNodeFromFile(currFile);
             RedBlackNode<T> parent = readNodeFromFile(node.parentPath);
             cout << "changing" << endl;
-             node = readNodeFromFile(currFile);
-            parent = readNodeFromFile(node.parentPath);
-
             if (!parent.color)
                 break;
 
@@ -215,8 +301,7 @@ private:
                         currFile = node.parentPath;
                         node = parent;
                         node.print();
-                        rotateLeft(currFile);
-                        node = readNodeFromFile(currFile);
+                        rotateLeft(node,currFile);
                         parent = readNodeFromFile(node.parentPath);
                         grandParent =readNodeFromFile(parent.parentPath);
                        
@@ -225,7 +310,7 @@ private:
                     grandParent.color = RED;
                     writeNodeToFile(parent);
                     writeNodeToFile(grandParent);
-                    rotateRight(parent.parentPath);
+                    rotateRight(grandParent,parent.parentPath);
                 }
             }
             else {
@@ -249,8 +334,7 @@ private:
                         currFile = node.parentPath;
                         node = parent;
                         node.print();
-                        rotateRight(currFile);
-                        node = readNodeFromFile(currFile);
+                        rotateRight(node,currFile);
                         parent = readNodeFromFile(node.parentPath);
                         grandParent = readNodeFromFile(parent.parentPath);
                     }
@@ -258,7 +342,7 @@ private:
                     grandParent.color = RED;
                     writeNodeToFile(parent);
                     writeNodeToFile(grandParent);
-                    rotateLeft(parent.parentPath);
+                    rotateLeft(grandParent,parent.parentPath);
                 }
             }
 
@@ -279,6 +363,10 @@ public:
     }
 
     void insert(T data) {
+
+        toLower(data);
+
+
         if (rootFile == "NULL") {
             RedBlackNode<T> rootNode(data);
             rootNode.color = BLACK;
@@ -298,6 +386,7 @@ public:
                 parFile = currFile;
 
                 if (Tree<T>::isEqual(data, currNode.data) == 0) {
+                    cout << "Dup" << endl;
                     return;
                 }
                 else if (Tree<T>::isEqual(data, currNode.data) == 1) {
