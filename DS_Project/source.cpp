@@ -1,12 +1,39 @@
 #include "RedBlack.h"
 //#include"AVL.h"
-//#include "BTree.h"
+#include "BTree.h"
 
 int main() {
 
-	RedBlackTree<string> t;
-	AVL<string> tree;
-	
+	//RedBlackTree<string> t;
+	//AVL<string> tree;
+	//BTree<int> r(3);
+	/*r.insert(10);
+	r.insert(11);
+	r.insert(12);
+	r.insert(13);
+	r.insert(14);
+	r.insert(15);
+	r.insert(16);
+	r.insert(17);
+	r.insert(18);
+	r.insert(19);
+	r.insert(20);
+	r.insert(21);
+	r.insert(22);
+	r.insert(23);
+	r.insert(24);
+	r.insert(25);
+	r.insert(26);
+	r.insert(27);
+	r.insert(28);
+	r.insert(29);
+	r.insert(30);
+	r.insert(31);
+	r.insert(32);
+	r.insert(33);
+	r.insert(34);
+	r.insert(35);
+	r.insert(36);*/
 	return 0;
 }
 
