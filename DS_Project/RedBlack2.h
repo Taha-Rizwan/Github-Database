@@ -40,13 +40,16 @@ struct RedBlackNode {
     string rightPath;           // File path to the right child
     string parentPath;          // File path to the parent
     string hash;                // Hash of the node (empty for now)
+    bool dirtyNode;
+    RedBlackNode(T data) : data(data), color(RED), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash(""), dirtyNode(false) {}
 
-    RedBlackNode(T data) : data(data), color(RED), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash("") {}
-
-    RedBlackNode() : color(BLACK), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash("") {}
+    RedBlackNode() : color(BLACK), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash(""), dirtyNode(false) {}
     void print() {
        /* cout << "Node Data: " << data << ", Parent: " << parentPath
             << ", Left: " << leftPath << ", Right: " <<rightPath << endl;*/
+    }
+    void dirty() {
+        dirtyNode = true;
     }
 };
 
@@ -203,6 +206,7 @@ private:
                 nodeToRemove->next->prev = nodeToRemove->prev;
             }
             if(!moveToFront)
+                if(nodeToRemove->value->dirtyNode)
                 parentTree->writeNodeToFile(nodeToRemove->value);
             delete nodeToRemove;
             nodeToRemove = nullptr;
@@ -325,6 +329,7 @@ private:
         if (temp->leftPath != "nil") {
             RedBlackNode<T>* tempLeft = readNodeFromFile(temp->leftPath);
             tempLeft->parentPath = k1File;
+            tempLeft->dirty();
             ht.insert(to_string_generic(tempLeft->data),tempLeft);
         }
 
@@ -341,53 +346,56 @@ private:
             else {
                 parent->rightPath = to_string_generic(temp->data);
             }
+            parent->dirty();
             ht.insert(to_string_generic(parent->data),parent);
         }
 
         temp->leftPath = k1File;
+        temp->dirty();
         ht.insert(to_string_generic(temp->data), temp);
         k1->parentPath = to_string_generic(temp->data);
+        k1->dirty();
         ht.insert(to_string_generic(k1->data), k1);
       //  k1->print();
       //  temp->print();
     }
-    void rotateLeft( string k1File) {
-       // cout << "rotateleft" << endl;
-       
-        RedBlackNode<T>* k1 = readNodeFromFile(k1File);
-        RedBlackNode<T>* temp = readNodeFromFile(k1->rightPath);
-      // cout << k1->data<<endl;
-      // cout << temp->data << endl;
-        k1->rightPath = temp->leftPath;
-        if (temp->leftPath != "nil") {
-            RedBlackNode<T>* tempLeft = readNodeFromFile(temp->leftPath);
-            tempLeft->parentPath = k1File;
-            insert(to_string_generic(tempLeft->data), tempLeft);
-        }
+    //void rotateLeft( string k1File) {
+    //   // cout << "rotateleft" << endl;
+    //   
+    //    RedBlackNode<T>* k1 = readNodeFromFile(k1File);
+    //    RedBlackNode<T>* temp = readNodeFromFile(k1->rightPath);
+    //  // cout << k1->data<<endl;
+    //  // cout << temp->data << endl;
+    //    k1->rightPath = temp->leftPath;
+    //    if (temp->leftPath != "nil") {
+    //        RedBlackNode<T>* tempLeft = readNodeFromFile(temp->leftPath);
+    //        tempLeft->parentPath = k1File;
+    //        insert(to_string_generic(tempLeft->data), tempLeft);
+    //    }
 
-        temp->parentPath = k1->parentPath;
-        if (k1->parentPath == "NULL") {
-         //  cout << "Attempted Change" << endl;
-            rootFile = to_string_generic(temp->data);
-        }
-        else {
-            RedBlackNode<T> parent = readNodeFromFile(k1->parentPath);
-            if (k1File == parent->leftPath) {
-                parent->leftPath = to_string_generic(temp->data);
-            }
-            else {
-                parent->rightPath = to_string_generic(temp->data);
-            }
-            ht.insert(to_string_generic(parent->data), parent);
-        }
+    //    temp->parentPath = k1->parentPath;
+    //    if (k1->parentPath == "NULL") {
+    //     //  cout << "Attempted Change" << endl;
+    //        rootFile = to_string_generic(temp->data);
+    //    }
+    //    else {
+    //        RedBlackNode<T> parent = readNodeFromFile(k1->parentPath);
+    //        if (k1File == parent->leftPath) {
+    //            parent->leftPath = to_string_generic(temp->data);
+    //        }
+    //        else {
+    //            parent->rightPath = to_string_generic(temp->data);
+    //        }
+    //        ht.insert(to_string_generic(parent->data), parent);
+    //    }
 
-        temp->leftPath = k1File;
-        ht.insert(to_string_generic(temp->data), temp);
-        k1->parentPath = to_string_generic(temp.data);
-        ht.insert(to_string_generic(k1->data), k1);
-      //  k1->print();
-      //  temp->print();
-    }
+    //    temp->leftPath = k1File;
+    //    ht.insert(to_string_generic(temp->data), temp);
+    //    k1->parentPath = to_string_generic(temp.data);
+    //    ht.insert(to_string_generic(k1->data), k1);
+    //  //  k1->print();
+    //  //  temp->print();
+    //}
     //Saves a couple file opening operations
     void rotateRight(RedBlackNode<T>* k1,  string k1File) {
       // cout << "rotateright" << endl;
@@ -398,6 +406,7 @@ private:
 
             RedBlackNode<T>* tempRight = readNodeFromFile(temp->rightPath);
             tempRight->parentPath = k1File;
+            tempRight->dirty();
             ht.insert(to_string_generic(tempRight->data), tempRight);
         }
 
@@ -414,56 +423,59 @@ private:
             else {
                 parent->leftPath = to_string_generic(temp->data);
             }
+            parent->dirty();
             //writeNodeToFile(parent);
             ht.insert(to_string_generic(parent->data), parent);
         }
 
         temp->rightPath = k1File;
        // writeNodeToFile(temp);
+        temp->dirty();
         ht.insert(to_string_generic(temp->data), temp);
         k1->parentPath = to_string_generic(temp->data);
         //writeNodeToFile(k1);
+        k1->dirty();
         ht.insert(to_string_generic(k1->data), k1);
     }
 
-    void rotateRight(string k1File) {
-      //  cout << "rotateright" << endl;
-        RedBlackNode<T>* k1 = readNodeFromFile(k1File);
-        RedBlackNode<T>* temp = readNodeFromFile(k1->leftPath);
+    //void rotateRight(string k1File) {
+    //  //  cout << "rotateright" << endl;
+    //    RedBlackNode<T>* k1 = readNodeFromFile(k1File);
+    //    RedBlackNode<T>* temp = readNodeFromFile(k1->leftPath);
 
-        k1->leftPath = temp->rightPath;
-        if (temp->rightPath != "nil") {
+    //    k1->leftPath = temp->rightPath;
+    //    if (temp->rightPath != "nil") {
 
-            RedBlackNode<T>* tempRight = readNodeFromFile(temp->rightPath);
-            tempRight->parentPath = k1File;
-            //writeNodeToFile(tempRight);
-            ht.insert(to_string_generic(tempRight->data), tempRight);
-        }
+    //        RedBlackNode<T>* tempRight = readNodeFromFile(temp->rightPath);
+    //        tempRight->parentPath = k1File;
+    //        //writeNodeToFile(tempRight);
+    //        ht.insert(to_string_generic(tempRight->data), tempRight);
+    //    }
 
-        temp->parentPath = k1->parentPath;
-        if (k1->parentPath == "NULL") {
-       //      cout << "Attempted Change" << endl;
-            rootFile = to_string_generic(temp.data);
-        }
-        else {
-            RedBlackNode<T>* parent = readNodeFromFile(k1->parentPath);
-            if (k1File == parent->rightPath) {
-                parent->rightPath = to_string_generic(temp->data);
-            }
-            else {
-                parent->leftPath = to_string_generic(temp->data);
-            }
-            //writeNodeToFile(parent);
-            ht.insert(to_string_generic(parent->data), parent);
-        }
+    //    temp->parentPath = k1->parentPath;
+    //    if (k1->parentPath == "NULL") {
+    //   //      cout << "Attempted Change" << endl;
+    //        rootFile = to_string_generic(temp.data);
+    //    }
+    //    else {
+    //        RedBlackNode<T>* parent = readNodeFromFile(k1->parentPath);
+    //        if (k1File == parent->rightPath) {
+    //            parent->rightPath = to_string_generic(temp->data);
+    //        }
+    //        else {
+    //            parent->leftPath = to_string_generic(temp->data);
+    //        }
+    //        //writeNodeToFile(parent);
+    //        ht.insert(to_string_generic(parent->data), parent);
+    //    }
 
-        temp->rightPath = k1File;
-        //writeNodeToFile(temp);
-        ht.insert(to_string_generic(temp->data), temp);
-        k1->parentPath = to_string_generic(temp->data);
-        ht.insert(to_string_generic(k1->data), k1);
-       // writeNodeToFile(k1);
-    }
+    //    temp->rightPath = k1File;
+    //    //writeNodeToFile(temp);
+    //    ht.insert(to_string_generic(temp->data), temp);
+    //    k1->parentPath = to_string_generic(temp->data);
+    //    ht.insert(to_string_generic(k1->data), k1);
+    //   // writeNodeToFile(k1);
+    //}
 
     void change( string nodeFile) {
         string currFile = nodeFile;
@@ -489,6 +501,9 @@ private:
                     parent->color = BLACK;
                     uncle->color = BLACK;
                     grandParent->color = RED;
+                    parent->dirty();
+                    uncle->dirty();
+                    grandParent->dirty();
                     ht.insert(to_string_generic(parent->data), parent);
                     ht.insert(to_string_generic(uncle->data), uncle);
                     ht.insert(to_string_generic(grandParent->data), grandParent);
@@ -504,12 +519,17 @@ private:
                         node = parent;
                       //  node->print();
                         rotateLeft(node,currFile);
+                        node->dirty();
+                      
                         parent = readNodeFromFile(node->parentPath);
                         grandParent =readNodeFromFile(parent->parentPath);
                        
                     }
                     parent->color = BLACK;
                     grandParent->color = RED;
+                    parent->dirty();
+               
+                    grandParent->dirty();
                     ht.insert(to_string_generic(parent->data), parent);
                     ht.insert(to_string_generic(grandParent->data), grandParent);
                   /*  writeNodeToFile(parent);
@@ -526,6 +546,9 @@ private:
                     parent->color = BLACK;
                     uncle->color = BLACK;
                     grandParent->color = RED;
+                    parent->dirty();
+                    uncle->dirty();
+                    grandParent->dirty();
                     ht.insert(to_string_generic(parent->data), parent);
                     ht.insert(to_string_generic(uncle->data), uncle);
                     ht.insert(to_string_generic(grandParent->data), grandParent);
@@ -538,12 +561,16 @@ private:
                         currFile = node->parentPath;
                         node = parent;
                      //   node->print();
+                        node->dirty();
                         rotateRight(node,currFile);
                         parent = readNodeFromFile(node->parentPath);
                         grandParent = readNodeFromFile(parent->parentPath);
                     }
                     parent->color = BLACK;
                     grandParent->color = RED;
+                    parent->dirty();
+                   
+                    grandParent->dirty();
                     ht.insert(to_string_generic(parent->data), parent);
                     ht.insert(to_string_generic(grandParent->data), grandParent);
                     rotateLeft(grandParent,parent->parentPath);
@@ -554,6 +581,7 @@ private:
 
         RedBlackNode<T>* rootNode = readNodeFromFile(rootFile);
         rootNode->color = BLACK;
+        rootNode->dirty();
         ht.insert(to_string_generic(rootNode->data), rootNode);
 
     }
@@ -578,6 +606,7 @@ public:
         if (rootFile == "NULL") {
             RedBlackNode<T>* rootNode = new RedBlackNode<T>(data);
             rootNode->color = BLACK;
+            rootNode->dirty();
             rootFile = createFile(rootNode);
             return;
         }
@@ -606,7 +635,7 @@ public:
 
             RedBlackNode<T>* newNode = new RedBlackNode<T>(data);
             newNode->parentPath = parFile;
-
+            newNode->dirty();
             string newNodeFile = createFile(newNode);
 
             RedBlackNode<T>* parNode = readNodeFromFile(parFile);
@@ -616,12 +645,14 @@ public:
             else {
                 parNode->leftPath = newNodeFile;
             }
+            parNode->dirty();
            // writeNodeToFile(parNode);
             ht.insert(to_string_generic(parNode->data), parNode);
             if (newNode->parentPath == "NULL") {
                 newNode->color = BLACK;
                 //writeNodeToFile(newNode);
                 ht.insert(to_string_generic(newNode->data), newNode);
+                
                 return;
             }
 
