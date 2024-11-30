@@ -558,7 +558,7 @@ private:
     }
 
 public:
-    RedBlackTree() : repo(this),ht(this) {
+    RedBlackTree() : repo(this),ht(this,60) {
         rootFile = "NULL";
         nil = "nil";
 
