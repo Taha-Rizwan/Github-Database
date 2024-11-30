@@ -61,7 +61,7 @@ class RedBlackTree : public Tree<T> {
 
 private:
     string rootFile;
-    string nil;
+    RedBlackNode<T>* nil;
     Repository<T> repo;
 
     //for cache
@@ -69,11 +69,11 @@ private:
     public:
         string key;
         RedBlackNode<T>* value;
-        Node* chainNext;
+
         Node* prev;
         Node* next;
 
-        Node(string k, RedBlackNode<T>* v) : key(k), value(v), next(nullptr), chainNext(nullptr), prev(nullptr) {}
+        Node(string k, RedBlackNode<T>* v) : key(k), value(v), next(nullptr), prev(nullptr) {}
         ~Node() {
            /* delete value;
             value = nullptr;*/
@@ -86,7 +86,7 @@ private:
     private:
         int capacity;
         int currSize;
-        Node** arr;
+        pair<string,Node*>* arr;
         Node* head, * tail;
         RedBlackTree<T>* parentTree;
         int Hash_Function(string& key) {
@@ -96,141 +96,115 @@ private:
             return j % capacity;
         }
 
+        int findSlot(string & key,bool forInsert=false) {
+            int index = Hash_Function(key);
+            int start = index;
+
+            while (arr[index].first != "" && arr[index].first != key) {
+                if (forInsert && arr[index].first == "DELETED")
+                {
+                    arr[index].first == "";
+                    break;
+                }
+                index = (index + 1) % capacity;
+                if (index == start)
+                    return -1;
+            }
+            return index;
+        }
+
     public:
         HashTable(RedBlackTree<T>* parentTree, int capacity = 10) : capacity(capacity),parentTree(parentTree) {
             head = nullptr;
             tail = nullptr;
             currSize = 0;
-            arr = new Node * [capacity];
+            arr = new pair<string, Node*>[capacity];
             for (int i = 0; i < capacity; i++) {
-                arr[i] = nullptr;
+                arr[i] = { "",nullptr };
             }
         }
 
         void insert(string key, RedBlackNode<T>* value) {
             cout << "Inserting: " << key << endl;
-            int index = Hash_Function(key);
-            //cout << "Inserting key: " << key << endl;
-            RedBlackNode<T>* dup = search(key);
-            if (dup) {
-               /* remove(key);
-                insert(key,dup);*/
+            int slot = findSlot(key,true);
+
+            if (slot == -1) {
+                remove(tail->key);
+                insert(key, value);
                 return;
             }
-             Node* newNode = new Node(key, value);
 
-            if (!arr[index]) {
-               
-                arr[index] = newNode;
+            if (arr[slot].first == key) {
+                remove(key, true);
             }
-            else {
-                //Inserting at the end, higher time complexity + Stupid
-               /* Node* ptr = arr[index];
-                while (ptr->next)
-                    ptr = ptr->next;
-                ptr->next = newNode;*/
-                Node* temp = arr[index];
-               // cout << "MEOW MEOW" << endl;
-  
-
-                newNode->chainNext = arr[index];
-
-                arr[index] = newNode;
-
+            else if (arr[slot].first == "") {
+                currSize++;
             }
-
-            if (head == nullptr) {
-
-                head = newNode;
-                tail = head;
+            Node* newNode = new Node(key, value);
+            arr[slot] = { key,newNode };
+            if (!head) {
+                head = tail = newNode;
             }
             else {
                 newNode->next = head;
                 head->prev = newNode;
                 head = newNode;
-
             }
-           // cout << "Adding Node to Cache: " << endl;
-            //newNode->value->print();
-            if (capacity == currSize) {
-      
-                remove(tail->key);
-           
-            }
-            currSize++;
-            cout << currSize << endl;
            
         }
 
-        void remove(string key) {
+        void remove(string key,bool moveToFront = false) {
             if (key == "NULL" || key == "nil")
                 return;
+            int slot = findSlot(key);
+            if (slot == -1 || arr[slot].first != key)
+                return;
+            Node* nodeToRemove = arr[slot].second;
+            arr[slot] = { "DELETED",nullptr };
             currSize--;
-            cout << "Removing key: " << key << endl;
-            int index = Hash_Function(key);
-            Node* current = arr[index];
-            Node* prev = nullptr;
-            cout << "WRITING TO FILE!" << endl;
-            while (current != nullptr) {
-                if (current->key == key) {
-                    if (prev == nullptr) {
-                        arr[index] = current->chainNext;
-                    }
-                    else {
 
-                        prev->chainNext = current->chainNext;
-                    }
-                    //cout << current->value;
-                    if (current == head) {
-                        head->next->prev = nullptr;
-                        head = head->next;
-                    }
-                    else if (current == tail) {
-                        tail->prev->next = nullptr;
-                        tail = tail->prev;
-                    }
-                    else {
-                        current->prev->next = current->next;
-                        current->next->prev = current->prev;
-                    }
-                    parentTree->writeNodeToFile(current->value);
-                    delete current;
-                    current = nullptr;
-                    return;
-                }
-                prev = current;
-                current = current->chainNext;
+            if (nodeToRemove == head) {
+                head = head->next;
+                if (head)
+                    head->prev = nullptr;
             }
+            else if (nodeToRemove == tail) {
+                tail = tail->prev;
+                if (tail)
+                    tail->next = nullptr;
+            }
+            else {
+                nodeToRemove->prev->next = nodeToRemove->next;
+                nodeToRemove->next->prev = nodeToRemove->prev;
+            }
+            if(!moveToFront)
+                parentTree->writeNodeToFile(nodeToRemove->value);
+            delete nodeToRemove;
+            nodeToRemove = nullptr;
         }
 
-        RedBlackNode<T>* search(string key) {
-            int index = Hash_Function(key);
-            cout << "Searching key: " << key << endl;
-            Node* current = arr[index];
-
-            while (current != nullptr) {
-                if (current->key == key) {
-                   // current->value->print();
-                    return current->value;
-                }
-                current = current->chainNext;
+        RedBlackNode<T>* search(string& key) {
+            
+            if (head->key == key)
+                return head->value;
+            int slot = findSlot(key);
+            if (slot == -1 || arr[slot].first != key) {
+                return nullptr;
             }
-           // cout << "Not found." << endl;
-            return nullptr;
+            return arr[slot].second->value;
         }
 
 
 
         ~HashTable() {
             cout << "Destructor" << endl;
-            for (int i = 0; i < 10; i++) {
-                if (arr[i]) {
-                    while (arr[i]) {
-                        parentTree->writeNodeToFile(arr[i]->value);
-                        arr[i] = arr[i]->chainNext;
-                    }
+            for (int i = 0; i < capacity; ++i) {
+                if (arr[i].first != "" && arr[i].first != "DELETED") {
+                    parentTree->writeNodeToFile(arr[i].second->value);
+                    delete arr[i].second;
                 }
             }
+            delete[] arr;
         }
 
     };
@@ -256,6 +230,8 @@ private:
     }
 
     RedBlackNode<T>* readNodeFromFile( string filePath) {
+        if (filePath == "nil")
+            return nil;
         cout << "reading" << endl;
         
         cout << filePath << endl;
@@ -560,7 +536,7 @@ private:
 public:
     RedBlackTree() : repo(this),ht(this,60) {
         rootFile = "NULL";
-        nil = "nil";
+        nil = new RedBlackNode<T>();
 
         createNil();
         repo.create();
