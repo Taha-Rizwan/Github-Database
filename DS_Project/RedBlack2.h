@@ -94,15 +94,18 @@ private:
             for (char c : key) {
                 hash = ((hash << 5) + hash) + c; // hash * 33 + c
             }
-            // Mix the final hash value
+
+            // Mixing the final hash value to ensure better distribution
             hash ^= (hash >> 21);
             hash ^= (hash << 35);
             hash ^= (hash >> 4);
             hash *= 0xDA3E39CB;
             hash ^= (hash >> 11);
 
-            // Return the hash modulo the capacity (151)
-            return hash % 151;
+            // Since we're using a prime number (997), we don't need to use modulo by capacity here,
+            // but rather ensure that the final result fits within the range of [0, capacity-1].
+            // Using prime numbers for the modulo ensures good distribution.
+            return hash % capacity; // 997 is a prime number, so it's good for the modulus operation
         }
 
         int findSlot(string & key,bool forInsert=false) {
@@ -559,7 +562,7 @@ private:
     }
 
 public:
-    RedBlackTree() : repo(this),ht(this,150) {
+    RedBlackTree() : repo(this),ht(this,991) {
         rootFile = "NULL";
         nil = new RedBlackNode<T>();
 
