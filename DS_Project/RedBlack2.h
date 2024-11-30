@@ -45,8 +45,8 @@ struct RedBlackNode {
 
     RedBlackNode() : color(BLACK), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash("") {}
     void print() {
-        cout << "Node Data: " << data << ", Parent: " << parentPath
-            << ", Left: " << leftPath << ", Right: " <<rightPath << endl;
+       /* cout << "Node Data: " << data << ", Parent: " << parentPath
+            << ", Left: " << leftPath << ", Right: " <<rightPath << endl;*/
     }
 };
 
@@ -90,25 +90,45 @@ private:
         Node* head, * tail;
         RedBlackTree<T>* parentTree;
         int Hash_Function(string& key) {
-            int j = 0;
-            for (int i = 0; i < key.length(); i++)
-                j += key[i];
-            return j % capacity;
+            unsigned long hash = 5381;
+            for (char c : key) {
+                hash = ((hash << 5) + hash) + c; // hash * 33 + c
+            }
+            // Mix the final hash value
+            hash ^= (hash >> 21);
+            hash ^= (hash << 35);
+            hash ^= (hash >> 4);
+            hash *= 0xDA3E39CB;
+            hash ^= (hash >> 11);
+
+            // Return the hash modulo the capacity (151)
+            return hash % 151;
         }
 
         int findSlot(string & key,bool forInsert=false) {
             int index = Hash_Function(key);
             int start = index;
 
-            while (arr[index].first != "" && arr[index].first != key) {
-                if (forInsert && arr[index].first == "DELETED")
-                {
-                    arr[index].first == "";
-                    break;
+            int i = 0;
+
+            while (true) {
+                int newIndex = (index + i * i) % capacity; // Quadratic probing
+                if (arr[newIndex].first == "" || arr[newIndex].first == key) {
+                    // Found an empty slot or the key
+                    return newIndex;
                 }
-                index = (index + 1) % capacity;
-                if (index == start)
-                    return -1;
+
+                if (forInsert && arr[newIndex].first == "DELETED") {
+                    // Reuse deleted slot
+                    arr[newIndex].first = ""; // Mark slot as usable
+                    return newIndex;
+                }
+
+                i++;
+                if (i == capacity) {
+                    // If we've looped through the entire table, stop
+                    return -1; // Indicates no available slot
+                }
             }
             return index;
         }
@@ -125,7 +145,12 @@ private:
         }
 
         void insert(string key, RedBlackNode<T>* value) {
-            cout << "Inserting: " << key << endl;
+           // cout << "Inserting: " << key << endl;
+            if (currSize == capacity) {
+                remove(tail->key);
+                insert(key, value);
+                return;
+            }
             int slot = findSlot(key,true);
 
             if (slot == -1) {
@@ -197,7 +222,7 @@ private:
 
 
         ~HashTable() {
-            cout << "Destructor" << endl;
+           // cout << "Destructor" << endl;
             for (int i = 0; i < capacity; ++i) {
                 if (arr[i].first != "" && arr[i].first != "DELETED") {
                     parentTree->writeNodeToFile(arr[i].second->value);
@@ -212,7 +237,7 @@ private:
     HashTable ht;
 
      string pathify(string data) {
-         cout << "Pathifying" << endl;
+         //cout << "Pathifying" << endl;
         toLower(data);
         string path = repo.name + "/" + repo.currBranch + "/" + to_string_generic(data);
         if (path.find(".txt") == std::string::npos) {  // If ".txt" is not found
@@ -232,9 +257,9 @@ private:
     RedBlackNode<T>* readNodeFromFile( string filePath) {
         if (filePath == "nil")
             return nil;
-        cout << "reading" << endl;
+      //  cout << "reading" << endl;
         
-        cout << filePath << endl;
+      //  cout << filePath << endl;
         RedBlackNode<T>* r = ht.search(filePath);
         if (r!=nullptr)
             return r;
@@ -264,13 +289,13 @@ private:
         file.close();
 
         ht.insert(to_string_generic(r->data),r);
-        cout << "Done reading" << endl;
-        cout << r->data<<endl;
+       // cout << "Done reading" << endl;
+       // cout << r->data<<endl;
         return r;
     }
 
    void writeNodeToFile(RedBlackNode<T>* node) {
-       cout << "Writing" << endl;
+   //    cout << "Writing" << endl;
         std::ofstream file(pathify(to_string_generic(node->data)));
 
         file << node->data << "\n";                       // Node data
@@ -291,7 +316,7 @@ private:
     }
     //Saves a couple file opening operations
     void rotateLeft(RedBlackNode<T>* k1,string k1File) {
-        cout << "rotateleft" << endl;
+     //   cout << "rotateleft" << endl;
 
         RedBlackNode<T>* temp = readNodeFromFile(k1->rightPath);
         //cout << k1->data << endl;
@@ -327,7 +352,7 @@ private:
       //  temp->print();
     }
     void rotateLeft( string k1File) {
-        cout << "rotateleft" << endl;
+       // cout << "rotateleft" << endl;
        
         RedBlackNode<T>* k1 = readNodeFromFile(k1File);
         RedBlackNode<T>* temp = readNodeFromFile(k1->rightPath);
@@ -365,7 +390,7 @@ private:
     }
     //Saves a couple file opening operations
     void rotateRight(RedBlackNode<T>* k1,  string k1File) {
-       cout << "rotateright" << endl;
+      // cout << "rotateright" << endl;
         RedBlackNode<T>* temp = readNodeFromFile(k1->leftPath);
 
         k1->leftPath = temp->rightPath;
@@ -402,7 +427,7 @@ private:
     }
 
     void rotateRight(string k1File) {
-        cout << "rotateright" << endl;
+      //  cout << "rotateright" << endl;
         RedBlackNode<T>* k1 = readNodeFromFile(k1File);
         RedBlackNode<T>* temp = readNodeFromFile(k1->leftPath);
 
@@ -447,7 +472,7 @@ private:
             RedBlackNode<T>* parent = readNodeFromFile(node->parentPath);
             node->print();
             parent->print();
-          cout << "changing" << endl;
+        //  cout << "changing" << endl;
             if (!parent->color)
                 break;
 
@@ -460,7 +485,7 @@ private:
                 RedBlackNode<T>* uncle = readNodeFromFile(uncFile);
                 uncle->print();
                 if (uncFile != "nil" && uncle->color) {
-                   cout << "Recolor" << endl;
+                  // cout << "Recolor" << endl;
                     parent->color = BLACK;
                     uncle->color = BLACK;
                     grandParent->color = RED;
@@ -497,7 +522,7 @@ private:
                 RedBlackNode<T>* uncle = readNodeFromFile(uncFile);
 
                 if (uncFile != "nil" && uncle->color) {
-                   cout << "Recolor" << endl;
+                 //  cout << "Recolor" << endl;
                     parent->color = BLACK;
                     uncle->color = BLACK;
                     grandParent->color = RED;
@@ -534,7 +559,7 @@ private:
     }
 
 public:
-    RedBlackTree() : repo(this),ht(this,60) {
+    RedBlackTree() : repo(this),ht(this,150) {
         rootFile = "NULL";
         nil = new RedBlackNode<T>();
 
@@ -604,7 +629,7 @@ public:
 
                 return;
             }
-            cout << parNode->parentPath << endl;
+          //  cout << parNode->parentPath << endl;
             change(newNodeFile);
            
         }
