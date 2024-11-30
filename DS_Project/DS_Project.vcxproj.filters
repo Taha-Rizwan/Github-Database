@@ -47,5 +47,11 @@
     <ClInclude Include="RedBlack2.h">
       <Filter>Trees</Filter>
     </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="LRUCache.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
