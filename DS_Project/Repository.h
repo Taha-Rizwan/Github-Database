@@ -56,17 +56,18 @@ public:
         string line;
         getline(file, line); // Read the header line and skip it
         cout << "Reading CSV to main branch(default): " << endl;
-   
+        int ln = 1;
         while (getline(file, line)) {
             stringstream ss(line);
             string cell;
             int currentColumnIndex = 0;
-
             // Parse the line using ',' as a delimiter
             while (getline(ss, cell, ',')) {
                 if (currentColumnIndex == column) {
-                    tree->insert(cell);
 
+                    tree->insert(cell,ln);
+
+                    ln++;
                     break; // No need to process further columns for this line
                 }
 

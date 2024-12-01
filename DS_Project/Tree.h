@@ -85,7 +85,7 @@ public:
 	}
 	virtual string computeHashHelper(Tree<T>* node) { return " "; }
 	virtual void computeHash() {}
-	virtual void insert(T data) {}
+	virtual void insert(T data,int ln) {}
 	virtual void display() {}
 	virtual void deleteByVal(T data) {}
 	virtual void update(T oldData, T newData) {}

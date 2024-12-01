@@ -4,7 +4,7 @@
 
 int main() {
 	RedBlackTree<string> t;
-
+	//t.deleteByVal("58");
 
 	//RedBlackTree2 current insertion time column 1 (Age) 35s (not handling dups currently)
 	// 
