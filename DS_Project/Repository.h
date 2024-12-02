@@ -56,7 +56,7 @@ public:
         string line;
         getline(file, line); // Read the header line and skip it
         cout << "Reading CSV to main branch(default): " << endl;
-   
+        int ln = 1;
         while (getline(file, line)) {
             stringstream ss(line);
             string cell;
@@ -64,14 +64,15 @@ public:
             // Parse the line using ',' as a delimiter
             while (getline(ss, cell, ',')) {
                 if (currentColumnIndex == column) {
-                    if constexpr (std::is_same<T, int>::value) {
-                        int value=0;
-                        value = stoi(cell);  // Converts string to int
-                        tree->insert(value);
-                    }
-                    else {
-                        tree->insert(cell);
-                    }
+                    //if constexpr (std::is_same<T, int>::value) {
+                    //    int value=0;
+                    //    value = stoi(cell);  // Converts string to int
+                    //    tree->insert(value);
+                    ////}
+                    //else {
+                        tree->insert(cell,ln);
+                        ln++;
+                    //}
                     break; // No need to process further columns for this line
                 }
 

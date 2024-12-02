@@ -3,14 +3,14 @@
 #include "BTree.h"
 
 int main() {
-	//RedBlackTree<int> r;
+	RedBlackTree<string> r;
 	
 
 	//RedBlackTree2 current insertion time column 1 (Age) 35s (not handling dups currently)
 	// 
 	//RedBlackTree current insertion time column 1 (Age) 2.78s (not handling dups currently) bro
 
-	AVL<int> r;
+	/*AVL<int> r;
 	r.insert(10);
 	r.insert(11);
 	r.insert(12);
@@ -38,7 +38,7 @@ int main() {
 	r.insert(34);
 	r.insert(35);
 	r.insert(36);
-	r.display();
+	r.display();*/
 	return 0;
 }
 

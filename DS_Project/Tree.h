@@ -1,5 +1,8 @@
 #pragma once
 #include <iostream>
+#include <string>
+#include <cctype>
+#include <algorithm>
 using namespace std;
 
 template<class T>
@@ -39,10 +42,10 @@ public:
 		int len1 = c.length();
 		int len2 = d.length();
 		for (int i = 0; i < min(len1, len2); i++) {
-			if (c[i] > d[i]) {
+			if (c[i] > d[i] && len1>=len2) {
 				return 1;
 			}
-			else if (c[i] < d[i]) {
+			else if (c[i] < d[i] && len2>=len1) {
 				return -1;
 			}
 		}
@@ -85,7 +88,7 @@ public:
 	}
 	virtual string computeHashHelper(Tree<T>* node) { return " "; }
 	virtual void computeHash() {}
-	virtual void insert(T data) {}
+	virtual void insert(T data,int ln) {}
 	virtual void display() {}
 	virtual void deleteByVal(T data) {}
 	virtual void update(T oldData, T newData) {}
