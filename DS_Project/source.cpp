@@ -1,44 +1,44 @@
 #include "RedBlack2.h"
-//#include"AVL.h"
+#include"AVL.h"
 #include "BTree.h"
 
 int main() {
-	RedBlackTree<string> t;
-
+	//RedBlackTree<int> r;
+	
 
 	//RedBlackTree2 current insertion time column 1 (Age) 35s (not handling dups currently)
 	// 
 	//RedBlackTree current insertion time column 1 (Age) 2.78s (not handling dups currently) bro
 
-	//BTree<int> r(3);
-	//r.insert(10);
-	//r.insert(11);
-	//r.insert(12);
-	//r.insert(13);
-	//r.insert(14);
-	//r.insert(15);
-	//r.insert(16);
-	//r.insert(17);
-	//r.insert(18);
-	//r.insert(19);
-	//r.insert(20);
-	//r.insert(21);
-	//r.insert(22);
-	//r.insert(23);
-	//r.insert(24);
-	//r.insert(25);
-	//r.insert(26);
-	//r.insert(27);
-	//r.insert(28);
-	//r.insert(29);
-	//r.insert(30);
-	//r.insert(31);
-	//r.insert(32);
-	//r.insert(33);
-	//r.insert(34);
-	//r.insert(35);
-	//r.insert(36);
-	//r.print(r.getRoot());
+	AVL<int> r;
+	r.insert(10);
+	r.insert(11);
+	r.insert(12);
+	r.insert(13);
+	r.insert(14);
+	r.insert(15);
+	r.insert(16);
+	r.insert(17);
+	r.insert(18);
+	r.insert(19);
+	r.insert(20);
+	r.insert(21);
+	r.insert(22);
+	r.insert(23);
+	r.insert(24);
+	r.insert(25);
+	r.insert(26);
+	r.insert(27);
+	r.insert(28);
+	r.insert(29);
+	r.insert(30);
+	r.insert(31);
+	r.insert(32);
+	r.insert(33);
+	r.insert(34);
+	r.insert(35);
+	r.insert(36);
+	r.display();
 	return 0;
 }
 
@@ -54,8 +54,8 @@ int main() {
 
 	Aqib Rotation ke function abhi ke liye redblack2 se utha le, mazeed behter ho skte hain lekin bas hoi hoi hai
 	RedBlack2 mein abhi sirf insertion hoi hai deletion baad mein krdonga
-	again, probably bether ho skti hai lekin im ded
-
+	again, probably bether ho skti hai lekin im ded  ---->me too
+	
 
 
 

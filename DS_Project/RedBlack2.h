@@ -21,6 +21,7 @@ void toLower(string& data) {
     }
 }
 
+
 string toLowerString(string data) {
     for (int i = 0; i < data.length(); i++) {
         if (data[i] >= 'A' && data[i] <= 'Z')

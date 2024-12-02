@@ -61,12 +61,17 @@ public:
             stringstream ss(line);
             string cell;
             int currentColumnIndex = 0;
-
             // Parse the line using ',' as a delimiter
             while (getline(ss, cell, ',')) {
                 if (currentColumnIndex == column) {
-                    tree->insert(cell);
-
+                    if constexpr (std::is_same<T, int>::value) {
+                        int value=0;
+                        value = stoi(cell);  // Converts string to int
+                        tree->insert(value);
+                    }
+                    else {
+                        tree->insert(cell);
+                    }
                     break; // No need to process further columns for this line
                 }
 
