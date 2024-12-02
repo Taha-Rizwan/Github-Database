@@ -56,23 +56,38 @@ public:
         string line;
         getline(file, line); // Read the header line and skip it
         cout << "Reading CSV to main branch(default): " << endl;
-        int ln = 1;
+        int ln = 2;
         while (getline(file, line)) {
             stringstream ss(line);
             string cell;
             int currentColumnIndex = 0;
+
             // Parse the line using ',' as a delimiter
             while (getline(ss, cell, ',')) {
+                // Check if the cell starts with a quotation mark
+                if (!cell.empty() && cell.front() == '"') {
+                    string quotedCell = cell;
+                    // Continue accumulating until we find the closing quote
+                    while (!quotedCell.empty() && quotedCell.back() != '"') {
+                        string nextPart;
+                        if (getline(ss, nextPart, ',')) {
+                            quotedCell += "," + nextPart; // Add delimiter and next part
+                        }
+                        else {
+                            break; // Exit if no more parts
+                        }
+                    }
+                    // Remove enclosing quotes
+                    if (!quotedCell.empty() && quotedCell.front() == '"' && quotedCell.back() == '"') {
+                        quotedCell = quotedCell.substr(1, quotedCell.size() - 2);
+                    }
+                    cell = quotedCell; // Update the cell to the accumulated quoted content
+                }
+
                 if (currentColumnIndex == column) {
-                    //if constexpr (std::is_same<T, int>::value) {
-                    //    int value=0;
-                    //    value = stoi(cell);  // Converts string to int
-                    //    tree->insert(value);
-                    ////}
-                    //else {
-                        tree->insert(cell,ln);
-                        ln++;
-                    //}
+                    tree->insert(cell, ln);
+
+                    ln++;
                     break; // No need to process further columns for this line
                 }
 

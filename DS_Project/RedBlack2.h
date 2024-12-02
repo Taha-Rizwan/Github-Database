@@ -42,9 +42,9 @@ struct RedBlackNode {
     string hash;                // Hash of the node (empty for now)
     bool dirtyNode;
     vector<int> lineNumbers;
-    RedBlackNode(T data) : data(data), color(RED), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash(""), dirtyNode(false) {}
+    RedBlackNode(T data) : data(data), color(RED), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash("-1"), dirtyNode(false) {}
 
-    RedBlackNode() : color(BLACK), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash(""), dirtyNode(false) {}
+    RedBlackNode() : color(BLACK), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash("-1"), dirtyNode(false) {}
     void print() {
         /*   cout << "Node Data: " << data << ", Parent: " << parentPath
                << ", Left: " << leftPath << ", Right: " <<rightPath << endl;*/
@@ -84,7 +84,18 @@ private:
         }
     };
 
+    string computeHashHelper(string path) {
+        if (path == "NULL" || path == "nil")
+            return "";
 
+        RedBlackNode<T>* node = readNodeFromFile(path);
+
+        //Currently a placeholder for computing actual has, implement later
+        node->hash = Tree<T>::instructorHash(node->data) + computeHashHelper(node->leftPath) + computeHashHelper(node->rightPath);
+        node->dirty();
+        ht.insert(path, node);
+        return node->hash;
+    }
 
 
 
@@ -342,7 +353,7 @@ private:
     string pathify(string data) {
         //cout << "Pathifying" << endl;
         Tree<T>::toLower(data);
-        string path = repo.name + "/" + repo.currBranch + "/" + to_string_generic(data);
+        string path = repo.name + "/" + repo.currBranch + "/" + to_string_generic(data) + ".txt";
         //if (path.find(".txt") == std::string::npos) {  // If ".txt" is not found
         //    path += ".txt";  // Append ".txt" to the string
         //}
@@ -389,6 +400,9 @@ private:
         r->rightPath = pathsLine;
 
         file >> r->color;
+
+        file.ignore();
+        file >> r->hash;
         file.ignore();
         getline(file, pathsLine);
         string number;
@@ -419,7 +433,8 @@ private:
         file << node->parentPath << "\n"                   // Parent path
             << node->leftPath << "\n"                     // Left child path
             << node->rightPath << "\n";                  // Right child path
-        file << node->color << "\n";         // Node color (0 for BLACK, 1 for RED)
+        file << node->color << "\n";// Node color (0 for BLACK, 1 for RED)
+        file << node->hash << "\n";
         for (int i = 0; i < node->lineNumbers.size(); i++) {
             file << node->lineNumbers[i];
             if (i + 1 < node->lineNumbers.size())
@@ -921,6 +936,7 @@ public:
         createNil();
         repo.create();
         ht.emptyTable();
+        cout << rootFile << endl;
         //]`#
         // 
         // 
@@ -936,7 +952,7 @@ public:
 
         Tree<T>::toLower(data);
 
-
+       // cout << data << endl;
         if (rootFile == "NULL") {
             RedBlackNode<T>* rootNode = new RedBlackNode<T>(data);
             rootNode->color = BLACK;
@@ -958,7 +974,7 @@ public:
                 if (Tree<T>::isEqual(data, currNode->data) == 0) {
                     //  cout << "Dup" << endl;
                     currNode->lineNumbers.push_back(ln);
-                    currNode->dirtyNode = true;
+                    currNode->dirty();
                   /*  ht.insert(currFile, currNode);*/
                     return;
                 }
@@ -1043,5 +1059,9 @@ public:
             deleteNode(x);
             deleteFile(x);
         }
+    }
+
+    void computeHash() {
+        computeHashHelper(rootFile);
     }
 };

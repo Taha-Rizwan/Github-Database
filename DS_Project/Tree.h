@@ -84,14 +84,15 @@ public:
 	}
 
 	// Function to calculate hash for a string
-	string instructorHash(const std::string& text) {
+	string instructorHash( string text) {
 		int hash = 1;
 
-		for (char ch : text) {
-			hash *= static_cast<int>(ch); // Multiply ASCII values of characters
-			hash %= 29;                   // To avoid integer overflow, take modulo 29 after each step
-		}
+		for (int i = 0; i < text.length();i++) {
+			hash *= text[i]; // Multiply ASCII values of characters
 
+			hash %= 29;     // To avoid integer overflow, take modulo 29 after each step
+		}
+	
 		return to_string_generic(hash);
 	}
 	virtual string computeHashHelper(Tree<T>* node) { return " "; }
