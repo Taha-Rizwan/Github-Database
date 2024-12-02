@@ -14,12 +14,12 @@ bool RED = 1;
 bool BLACK = 0;
 
 
-void toLower(string& data) {
-    for (int i = 0; i < data.length(); i++) {
-        if (data[i] >= 'A' && data[i] <= 'Z')
-            data[i] += 32;
-    }
-}
+//void toLower(string& data) {
+//    for (int i = 0; i < data.length(); i++) {
+//        if (data[i] >= 'A' && data[i] <= 'Z')
+//            data[i] += 32;
+//    }
+//}
 
 string toLowerString(string data) {
     for (int i = 0; i < data.length(); i++) {
@@ -341,11 +341,11 @@ private:
 
     string pathify(string data) {
         //cout << "Pathifying" << endl;
-        toLower(data);
+        Tree<T>::toLower(data);
         string path = repo.name + "/" + repo.currBranch + "/" + to_string_generic(data);
-        if (path.find(".txt") == std::string::npos) {  // If ".txt" is not found
-            path += ".txt";  // Append ".txt" to the string
-        }
+        //if (path.find(".txt") == std::string::npos) {  // If ".txt" is not found
+        //    path += ".txt";  // Append ".txt" to the string
+        //}
         return path;
     }
 
@@ -914,14 +914,17 @@ private:
     }
 
 public:
-    RedBlackTree() : repo(this), ht(this, 61) {
+    RedBlackTree() : repo(this), ht(this, 151) {
         rootFile = "NULL";
         nil = new RedBlackNode<T>();
 
         createNil();
         repo.create();
         ht.emptyTable();
-
+        //]`#
+        // 
+        // 
+        // repo.main();
 
     }
 
@@ -931,7 +934,7 @@ public:
 
     void insert(T data, int ln) {
 
-        toLower(data);
+        Tree<T>::toLower(data);
 
 
         if (rootFile == "NULL") {

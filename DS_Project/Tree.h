@@ -19,6 +19,12 @@ class Tree {
 public:
 	//Comparison fUNCTIONS
 	//CHAR
+	void toLower(string& data) {
+		for (int i = 0; i < data.length(); i++) {
+			if (data[i] >= 'A' && data[i] <= 'Z')
+				data[i] += 32;
+		}
+	}
 	int isEqual(char c, char d) {
 		return isEqual(int(c), int(d));
 	}
@@ -39,6 +45,8 @@ public:
 
 	//string
 	int isEqual(string c, string d) {
+		toLower(c);
+		toLower(d);
 		int len1 = c.length();
 		int len2 = d.length();
 		for (int i = 0; i < min(len1, len2); i++) {
