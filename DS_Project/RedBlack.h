@@ -93,6 +93,7 @@ private:
         node->hash = Tree<T>::instructorHash(node->data) + computeHashHelper(node->leftPath) + computeHashHelper(node->rightPath);
         node->dirty();
         ht.insert(path, node);
+
         return node->hash;
     }
 
@@ -440,7 +441,7 @@ private:
     }
 
     void createNil() {
-        string niller = "nil.txt";
+        string niller = "nil";
         ofstream file(pathify(niller));
         file << -1 << "\nNULL\nNULL\nNULL\n0\n";
         file.close();
@@ -960,7 +961,7 @@ public:
         else {
             string currFile = rootFile;
             string parFile = "NULL";
-
+           // cout<<currFile<<endl;
             while (currFile != "nil" && currFile != "NULL") {
 
                 RedBlackNode<T>* currNode = readNodeFromFile(currFile);
@@ -1065,6 +1066,39 @@ public:
     }
 
     void computeHash() {
-        computeHashHelper(rootFile);
+        cout<<computeHashHelper(rootFile);
+    }
+    int searchData(T data) {
+        string path = search(data);
+        if (path == "NULL"||path=="nil")
+            return -1;
+        RedBlackNode<T> * node = readNodeFromFile(path);
+
+        if (node->lineNumbers.size()==1)
+            return node->lineNumbers[0];
+        else {
+            cout << "From which line number do you want to see data: ";
+            for (int i = 0; i < node->lineNumbers.size(); i++) {
+                cout << "Line Number: " << node->lineNumbers[i] << endl;
+            }
+            int opt;
+            cin >> opt;
+            for (int i = 0; i < node->lineNumbers.size(); i++) {
+                if (node->lineNumbers[i] == opt) {
+                    return opt;
+                }
+            }
+                return -1;
+
+        }
+
+    }
+    void changeBranch(const string &path) {
+
+        ht.emptyTable();
+        rootFile = path;
+    }
+    string getRootFile() {
+        return rootFile;
     }
 };

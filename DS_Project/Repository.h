@@ -19,7 +19,7 @@ private:
         cout << "\t5: Add A Branch" << endl;
         cout << "\t6: Delete A Branch" << endl;
         cout << "\t7: Merge Branches" << endl;
-        cout << "\t8: Display Tree" << endl;
+        cout << "\t8: View Data" << endl;
         cout << "\tChoose: ";
     }
 	
@@ -29,6 +29,7 @@ public:
     int column, ln;
     //Create vector class later
     vector<string> branches;
+    vector<string> roots;
     string currBranch;
     Tree<T>* tree;
 	Repository(Tree<T>* tree):tree(tree) {
@@ -44,7 +45,9 @@ public:
         create_directory(name);
         currBranch = "main";
         create_directory(name + "/" + currBranch);
+	    create_directory(name + "/" + currBranch + "/data");
         branches.push_back("main");
+
         tree->createNil();
         ifstream file(csv_path);
         if (!file.is_open()) {
@@ -57,11 +60,12 @@ public:
         getline(file, line); // Read the header line and skip it
         cout << "Reading CSV to main branch(default): " << endl;
         ln = 2;
+
         while (getline(file, line)) {
             stringstream ss(line);
             string cell;
             int currentColumnIndex = 0;
-
+          //  vector<string> rowData;
             // Parse the line using ',' as a delimiter
             while (getline(ss, cell, ',')) {
                 // Check if the cell starts with a quotation mark
@@ -86,17 +90,28 @@ public:
 
                 if (currentColumnIndex == column) {
                     tree->insert(cell, ln);
-
                     ln++;
-                    break; // No need to process further columns for this line
+                    break;
+
+
                 }
 
                 currentColumnIndex++;
+                //rowData.push_back(cell);
             }
+
+           // ofstream dataFile;
+           // dataFile.open(name + "/" + currBranch + "/data/" + to_string(ln) + ".txt");
+          //  for (int i = 0; i < rowData.size(); i++) {
+         //       dataFile << rowData[i] << '\n';
+         //   }
+         //   dataFile.close();
+         //   ln++;
         }
         cout << "reading done\n";
         file.close();
         tree->computeHash();
+	    roots.push_back(tree->getRootFile());
         cout << endl;
        
     }
@@ -133,7 +148,7 @@ public:
                 mergeBranch();
                 break;
             case 8:
-                visualizeTree();
+                viewNodeData();
                 break;
             default:
                 logic = false;
@@ -171,6 +186,64 @@ public:
         tree->computeHash();
         //tree->updateNode(val);
     }
+
+    void viewNodeData() {
+
+        T data;
+	    cout<<"Enter data to view";
+	    cin>>data;
+	    int toBeViewed = tree->searchData(data);
+
+	    ifstream file(csv_path);
+	    if (!file.is_open()) {
+	        cerr << "Error: Could not open file!" << endl;
+	        return;
+	    }
+
+	    string line;
+	    int currentLine = 2;
+	    vector<string> rowData;
+
+	    while (getline(file, line)) {
+	        currentLine++;
+	        if (currentLine == toBeViewed) {
+	            stringstream ss(line);
+	            string cell;
+
+	            while (getline(ss, cell, ',')) {
+	                // Check if the cell starts with a quotation mark
+	                if (!cell.empty() && cell.front() == '"') {
+	                    string quotedCell = cell;
+	                    // Continue accumulating until we find the closing quote
+	                    while (!quotedCell.empty() && quotedCell.back() != '"') {
+	                        string nextPart;
+	                        if (getline(ss, nextPart, ',')) {
+	                            quotedCell += "," + nextPart; // Add delimiter and next part
+	                        } else {
+	                            break; // Exit if no more parts
+	                        }
+	                    }
+	                    // Remove enclosing quotes
+	                    if (!quotedCell.empty() && quotedCell.front() == '"' && quotedCell.back() == '"') {
+	                        quotedCell = quotedCell.substr(1, quotedCell.size() - 2);
+	                    }
+	                    cell = quotedCell; // Update the cell to the accumulated quoted content
+	                }
+	                rowData.push_back(cell);
+	            }
+	            break; // Stop reading after the desired line
+	        }
+	    }
+
+	    file.close();
+
+	    // Print the rowData
+	    for (const auto& cell : rowData) {
+	        cout << cell << " ";
+	    }
+	    cout << endl;
+	}
+
     void visualizeTree() {
         tree->display();
     }
@@ -186,11 +259,14 @@ public:
         cin >> n;
         if (n - 1 >= 0 && n <= branches.size()) {
             currBranch = branches[n - 1];
+            tree->changeBranch(roots[n-1]);
             cout << "Current Branch is set to: " << currBranch << endl;
         }
         else {
             cout << "Branch not found!" << endl;
         }
+
+
     }
     void addBranch() {
         string newBranch;
@@ -199,6 +275,8 @@ public:
 
 
         branches.push_back(newBranch);
+	    roots.push_back(tree->getRootFile());
+	    tree->changeBranch(tree->getRootFile());
         currBranch = newBranch;
         cout << "New branch has been created and cloned by current version of main" << endl;
         cout << "Current Branch is set to: " << currBranch << endl;
