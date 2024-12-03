@@ -929,7 +929,10 @@ public:
         createNil();
         repo.create();
         ht.emptyTable();
+
+
         cout << rootFile << endl;
+        repo.main();
         //]`#
         // 
         // 
@@ -1015,17 +1018,20 @@ public:
     void deleteFile(string x) {
         ht.deleteFile(pathify(x));
     }
-    void deleteByVal(T val) {
+    int deleteByVal(T val,bool updation =false) {
         string x = search(val);
         RedBlackNode<T>* node = readNodeFromFile(x);
         if (x == "NULL" || x == "nil")
-            return;
+            return -1;
         else if (node->lineNumbers.size() > 1) {
             cout << "From which line number do you want to delete this from: ";
             for (int i = 0; i < node->lineNumbers.size(); i++) {
                 cout << "Line Number: " << node->lineNumbers[i] << endl;
             }
-            cout << "Delete for Line Number: ";
+            if (!updation)
+                cout << "Delete for Line Number: ";
+            else
+                cout<<"Update Line Number: ";
             int opt;
             cin >> opt;
             bool exists = false;
@@ -1037,6 +1043,7 @@ public:
             }
             if (!exists) {
                 cout << "Invalid Option!" << endl;
+                return -1;
             }
             else {
                 remove(node->lineNumbers.begin(), node->lineNumbers.end(), opt);
@@ -1044,13 +1051,16 @@ public:
                 node->lineNumbers.pop_back();
 
                 ht.insert(to_string_generic(node->data), node);
+                return opt;
             }
 
         }
         else {
             cout << "Deleting";
+            int l = node->lineNumbers[0];
             deleteNode(x);
             deleteFile(x);
+            return l;
         }
     }
 

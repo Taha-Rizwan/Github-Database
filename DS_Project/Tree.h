@@ -99,7 +99,8 @@ public:
 	virtual void computeHash() {}
 	virtual void insert(T data,int ln) {}
 	virtual void display() {}
-	virtual void deleteByVal(T data) {}
+	//Return Line Number of where data is deleted from
+	virtual int deleteByVal(T data,bool updation) {return 1;}
 	virtual void update(T oldData, T newData) {}
 	virtual void createNil() {
 

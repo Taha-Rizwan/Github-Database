@@ -26,7 +26,7 @@ private:
 public:
     string name;
     string csv_path;
-    int column;
+    int column, ln;
     //Create vector class later
     vector<string> branches;
     string currBranch;
@@ -56,7 +56,7 @@ public:
         string line;
         getline(file, line); // Read the header line and skip it
         cout << "Reading CSV to main branch(default): " << endl;
-        int ln = 2;
+        ln = 2;
         while (getline(file, line)) {
             stringstream ss(line);
             string cell;
@@ -149,14 +149,14 @@ public:
         T val;
         cout << "Value to add: ";
         cin >> val;
-        tree->insert(val);
+        tree->insert(val,ln++);
         tree->computeHash();
     }
     void deleteNode() {
         T val;
         cout << "Value to delete: ";
         cin >> val;
-        tree->deleteByVal(val);     
+        tree->deleteByVal(val,false);
         tree->computeHash();
     }
     void updateNode() {
@@ -165,8 +165,8 @@ public:
         cin >> val;
         cout << "Updated Value: ";
         cin >> newVal;
-        tree->deleteByVal(val);
-        tree->insert(newVal);
+        int num =  tree->deleteByVal(val,true);
+        tree->insert(newVal,num);
      
         tree->computeHash();
         //tree->updateNode(val);
