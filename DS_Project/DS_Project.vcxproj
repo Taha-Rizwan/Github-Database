@@ -136,7 +136,6 @@
     <ClInclude Include="LRUCache.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="RedBlack.h" />
-    <ClInclude Include="RedBlack2.h" />
     <ClInclude Include="Repository.h" />
     <ClInclude Include="Tree.h" />
   </ItemGroup>

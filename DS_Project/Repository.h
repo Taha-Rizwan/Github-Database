@@ -94,7 +94,7 @@ public:
                 currentColumnIndex++;
             }
         }
-
+        cout << "reading done\n";
         file.close();
         tree->computeHash();
         cout << endl;

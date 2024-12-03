@@ -31,7 +31,6 @@ string toLowerString(string data) {
 
 
 // Node structure for the Red-Black Tree
-// Node structure for the Red-Black Tree
 template<class T>
 struct RedBlackNode {
     T data;                     // Data stored in the node
@@ -368,6 +367,7 @@ private:
 
         return fileName;
     }
+
     RedBlackNode<T>* readNodeFromFile(string filePath) {
         if (filePath == "nil")
             return nil;

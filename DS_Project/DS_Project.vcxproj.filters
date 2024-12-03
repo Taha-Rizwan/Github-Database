@@ -44,9 +44,6 @@
     <ClInclude Include="Tree.h">
       <Filter>Trees</Filter>
     </ClInclude>
-    <ClInclude Include="RedBlack2.h">
-      <Filter>Trees</Filter>
-    </ClInclude>
     <ClInclude Include="Map.h">
       <Filter>Utils</Filter>
     </ClInclude>

@@ -14,7 +14,6 @@ namespace fs = std::filesystem;
 using namespace std;
 
 
-
 int stringToInt(const std::string& str) {
 	int result = 0;
 	int sign = 1;
@@ -59,56 +58,6 @@ int stringToInt(const std::string& str) {
 }
 
 
-int isEqual(char c, char d) {
-	return isEqual(int(c), int(d));
-}
-
-
-//int
-int isEqual(int c, int d) {
-	if (c == d) {
-		return 0;
-	}
-	else if (c > d) {
-		return 1;
-	}
-	else {
-		return -1;
-	}
-}
-
-//string
-int isEqual(string c, string d) {
-	int len1 = c.length();
-	int len2 = d.length();
-	bool greater = false;
-	bool less = false;
-	if (len1 < len2) {
-
-	}
-	for (int i = 0; i < min(len1, len2); i++) {
-		if (c[i] > d[i]) {
-			return 1;
-		}
-		else if (c[i] < d[i]) {
-			return -1;
-		}
-	}
-
-	if (len1 > len2) {
-		return 1;
-	}
-	else if (len1 < len2) {
-		return -1;
-	}
-
-	return 0;
-}
-
-
-
-
-
 
 template<class T>
 class AVLNode {
@@ -117,15 +66,22 @@ public:
 	string rightPath;
 	string parentPath;
 	string fileName;
+	bool dirtyNode;
+	vector<int> lineNumbers;
 	T data;
 	int height;
 	string hash;
 	bool dups;
-	AVLNode(T c) :data(c), leftPath("NULL"), rightPath("NULL"), parentPath("NULL"), height(0), hash(""), dups(false) {
+	AVLNode(T c) :data(c), leftPath("NULL"), rightPath("NULL"), parentPath("NULL"), height(0), hash(""), dups(false),dirtyNode(0){
 		fileName = to_string_generic(data) + ".txt";
 	}
-	AVLNode() :leftPath("NULL"), rightPath("NULL"), parentPath("NULL"), height(0), hash(""), dups(false) {
+	AVLNode() :leftPath("NULL"), rightPath("NULL"), parentPath("NULL"), height(0), hash(""), dups(false),dirtyNode(0){
 	}
+
+	void dirty() {
+		dirtyNode = true;
+	}
+
 };
 template<class T>
 class AVL :public Tree<T> {
@@ -133,10 +89,17 @@ public:
 	string rootFile;
 	int nNodes;
 	Repository<T> repo;
-	AVL() :rootFile("NULL"),repo(this), nNodes(0) {
+	AVL() :rootFile("NULL"),repo(this), nNodes(0),ht(this,151) {
 		//computeHash();
 		repo.create();
+		ht.emptyTable();
+		repo.main();
 	}
+
+	//Hashing stuff
+
+
+
 
 	void deleteByVal(T val) {
 		deleteNode(rootFile, val);
@@ -149,29 +112,295 @@ public:
 	}
 
 
-	//File Handling
+	//KFKDJ
+	 //for cache
+	struct Node {
+	public:
+		string key;
+		AVLNode<T>* value;
+
+		Node* prev;
+		Node* next;
+		int index;
+		Node(string k, AVLNode<T>* v) : key(k), value(v), next(nullptr), prev(nullptr), index(-1) {}
+		~Node() {
+			/* delete value;
+			 value = nullptr;*/
+		}
+	};
+
+	string computeHashHelper(string path) {
+		if (path == "NULL" || path == "nil")
+			return "";
+
+		AVLNode<T>* node = readNodeFromFile(path);
+
+		//Currently a placeholder for computing actual has, implement later
+		node->hash = Tree<T>::instructorHash(node->data) + computeHashHelper(node->leftPath) + computeHashHelper(node->rightPath);
+		node->dirty();
+
+		ht.insert(path, node);
+		return node->hash;
+	}
 
 
-	//Creates a file in that directory(basically an AVLNode)
+
+	struct HashTable {
+	private:
+		int capacity;
+		int currSize;
+		int hits, misses;
+		pair<string, Node*>* arr;
+		Node* head, * tail;
+		AVL<T>* parentTree;
+		vector<string> toBeDeleted;
+		int Hash_Function(string& key) {
+
+			unsigned long hash = 0;
+			for (char c : key) {
+				hash = (hash * 31) + c;  // Using 31 as a simple multiplier
+			}
+			return hash % capacity;  // Modulo the capacity (11 in this case)
+		}
+		int Hash_Function2(string& key) {
+			unsigned long hash = 0;
+			for (char c : key) {
+				hash = hash * 39 + c;  // Another prime multiplier for second hash
+			}
+			return hash % capacity;
+		}
+		// Slot Finder with Quadratic Probing
+		int findSlot(string& key, bool forInsert = false) {
+			if (currSize >= capacity) {
+				// Table is full, trigger resize or eviction strategy
+				emptyHalf();  // or rehash, depending on your strategy
+				return findSlot(key, forInsert); // Retry finding slot after resizing
+			}
+			int index = Hash_Function(key);
+			int step = Hash_Function2(key);  // Second hash function for step size
+			int i = 0;
+
+			while (true) {
+				int newIndex = (index + i * step) % capacity;
+
+				// Check if the slot is empty or matches the key
+				if (arr[newIndex].first == "" || arr[newIndex].first == key) {
+					hits++;
+					return newIndex;
+				}
+
+				// Reuse deleted slots during insertion
+				if (forInsert && arr[newIndex].first == "DELETED") {
+					hits++;
+					arr[newIndex].first = "";  // Mark as usable
+					return newIndex;
+				}
+
+				misses++;
+				i++;
+				if (i == capacity) {
+					return -1;  // Table is full
+				}
+			}
+		}
+
+	public:
+		HashTable(AVL<T>* parentTree, int capacity = 10) : capacity(capacity), parentTree(parentTree) {
+			head = nullptr;
+			tail = nullptr;
+			currSize = 0;
+			arr = new pair<string, Node*>[capacity];
+			for (int i = 0; i < capacity; i++) {
+				arr[i] = { "", nullptr };
+			}
+			hits = 0;
+			misses = 0;
+		}
+
+		// Insert Method
+		void insert(string key, AVLNode<T>* value) {
+			int slot = findSlot(key, true);
+			if (slot == -1) {
+				emptyHalf(); // Evict half if the table is full
+				insert(key, value);
+				return;
+			}
+			if (arr[slot].first == key) {
+				if (head->key != key) // Only remove if not already at the head
+					remove(slot, true);
+				else {
+					return;
+				}
+			}
+			/* int arneSlot = searchPos(key);
+			 if (arneSlot!=-1) {
+
+			 }*/
+
+			Node* newNode = new Node(key, value);
+			newNode->index = slot;
+			arr[slot] = { key, newNode };
+
+			if (!head) {
+				head = tail = newNode;
+			}
+			else {
+				newNode->next = head;
+				head->prev = newNode;
+				head = newNode;
+			}
+			currSize++;
+			// Increment only when inserting a new key
+					//cout << currSize<<" ";
+
+		}
+
+		// Remove Method
+		void remove(string key, bool moveToFront = false) {
+			if (key == "NULL" || key == "nil")
+				return;
+
+			int slot = findSlot(key);
+			if (slot == -1 || arr[slot].first != key)
+				return;
+
+			Node* nodeToRemove = arr[slot].second;
+			arr[slot] = { "DELETED", nullptr };
+
+			// Correct the currSize after successful removal
+			currSize--;
+
+			if (nodeToRemove == head) {
+				head = head->next;
+				if (head)
+					head->prev = nullptr;
+			}
+			else if (nodeToRemove == tail) {
+				tail = tail->prev;
+				if (tail)
+					tail->next = nullptr;
+			}
+			else {
+				nodeToRemove->prev->next = nodeToRemove->next;
+				nodeToRemove->next->prev = nodeToRemove->prev;
+			}
+
+			if (!moveToFront && nodeToRemove->value->dirtyNode)
+				parentTree->updateNodeFile(nodeToRemove->value);
+
+			delete nodeToRemove;
+		}
+
+		void remove(int slot, bool moveToFront = false) {
+			if (!arr[slot].second)
+				return;
+			Node* nodeToRemove = arr[slot].second;
+			arr[slot] = { "DELETED", nullptr };
+
+			// Correct the currSize after successful removal
+			currSize--;
+
+			if (nodeToRemove == head) {
+				head = head->next;
+				if (head)
+					head->prev = nullptr;
+			}
+			else if (nodeToRemove == tail) {
+				tail = tail->prev;
+				if (tail)
+					tail->next = nullptr;
+			}
+			else {
+				nodeToRemove->prev->next = nodeToRemove->next;
+				nodeToRemove->next->prev = nodeToRemove->prev;
+			}
+
+			if (!moveToFront && nodeToRemove->value->dirtyNode)
+				parentTree->updateNodeFile(nodeToRemove->value);
+
+			delete nodeToRemove;
+
+		}
+
+
+
+		// Search Method
+		AVLNode<T>* search(string& key) {
+			if (head->key == key)
+				return head->value;
+
+			int slot = findSlot(key);
+			if (slot == -1 || arr[slot].first != key) {
+				return nullptr;
+			}
+			return arr[slot].second->value;
+		}
+		int searchPos(string& key) {
+			if (head->key == key)
+				return head->index;
+
+			int slot = findSlot(key);
+			if (slot == -1 || arr[slot].first != key) {
+				return -1;
+			}
+			return slot;
+		}
+		// Evict Half the Table if Full
+		void emptyHalf() {
+			for (int i = capacity; i > capacity / 2 && currSize > 0; i--) {
+				remove(tail->index);
+			}
+		}
+
+		void deleteFile(string x) {
+			toBeDeleted.push_back(x);
+		}
+		void emptyTable() {
+			cout << "Destructor" << endl;
+			Node* current = head;
+			while (current) {
+				parentTree->updateNodeFile(current->value);
+				//  current->value->print();
+				current = current->next;
+			}
+			cout << "Hits: " << hits << endl;
+			cout << "Misses: " << misses << endl;
+
+			for (int i = 0; i < toBeDeleted.size(); i++) {
+				std::filesystem::remove(toBeDeleted[i]);
+			}
+
+		}
+		~HashTable() {
+			cout << "Destructor" << endl;
+			Node* current = head;
+			while (current) {
+				parentTree->updateNodeFile(current->value);
+				//  current->value->print();
+				current = current->next;
+			}
+			delete[] arr;
+			cout << "Hits: " << hits << endl;
+			cout << "Misses: " << misses << endl;
+
+			for (int i = 0; i < toBeDeleted.size(); i++) {
+				std::filesystem::remove(toBeDeleted[i]);
+			}
+
+		}
+	};
+
+
+	HashTable ht;
+
+
+	//Creates a file in that directory(basically an AVLNode
+
 
 	string createFile(AVLNode<T>* node) {
 
 		// Open the file for the node
-		fstream file;
-		file.open(repo.name + "/" + repo.currBranch + "/" + node->fileName, std::ios::out);
-		cout << "File " << node->fileName << " has been created\n";
-		cout << "FILENAME: " << node->fileName << endl;
-		if (!file.is_open()) {
-			throw std::runtime_error("Unable to create file: " + node->fileName);
-		}
-
-		// Write node data to the file
-		file << node->data << "\n";                       // Node data
-		file << node->parentPath << "\n"                   // Parent path
-			<< node->leftPath << "\n"                     // Left child path
-			<< node->rightPath << "\n";                   // Right child path
-		file << node->height << "\n";
-		file.close();
+		ht.insert(to_string_generic(node->data), node);
 		return node->fileName;
 	}
 
@@ -179,65 +408,71 @@ public:
 	AVLNode<T>* readNodeFromFile(string filePath) {
 		if (filePath == "NULL")
 			return nullptr;
-		cout << "reading" << endl;
-		
+		string dataStr = filePath.substr(0, filePath.find(".txt"));
+		// Check hash table first
+		AVLNode<T>* cachedNode = ht.search(dataStr);
+		if (cachedNode!=nullptr) {
+			return cachedNode;
+		}
 
 		fstream file;
 		file.open(repo.name + "/" + repo.currBranch + "/" + filePath);
 		if (!file.is_open()) {
-			cout << "CAN NOT OPEN " << filePath << endl;
-			//throw runtime_error("Unable to open file: " + filePath);
-			return nullptr;
+			cerr << "Cannot open file: " << filePath << endl;
+			throw runtime_error("Unable to open file: " + filePath);
 		}
-		AVLNode<T>* r = new AVLNode<T>();
 
-		r->leftPath = "";
-		r->rightPath = "";
-		r->parentPath = "";
-		string pathsLine;
-		getline(file, pathsLine);
+		AVLNode<T>* node = new AVLNode<T>();
+		string line;
 
-		if constexpr (std::is_same<T, int>::value) {
-			r->data = stoi(pathsLine);  // Converts string to int
+		getline(file, line);
+		node->data = line; // Assuming T is string; use conversion for other types if needed
+		node->fileName = filePath;
+		getline(file, node->parentPath);
+		getline(file, node->leftPath);
+		getline(file, node->rightPath);
+		getline(file, line);
+		node->height = stoi(line);
+
+		string lineNumbers;
+		getline(file, lineNumbers);
+		stringstream ss(lineNumbers);
+		string number;
+		while (getline(ss, number, ',')) {
+			node->lineNumbers.push_back(stoi(number));
 		}
-		else {
-			r->data = pathsLine;  // For non-int types, store the string directly
-		}
-		cout << "r->data: " << r->data << endl;
-		r->fileName = to_string_generic(r->data) + ".txt";
-		getline(file, pathsLine);
-		r->parentPath = pathsLine;
-		getline(file, pathsLine);
-		r->leftPath = pathsLine;
-		getline(file, pathsLine);
-		r->rightPath = pathsLine;
-		cout << "r->rightPath: " << r->rightPath << endl;
-		getline(file, pathsLine);
-		r->height = stringToInt(pathsLine);
 
 		file.close();
-		// cout << "Done reading" << endl;
-		// cout << r->data<<endl;
-		return r;
+
+		// Cache the node
+		ht.insert(to_string_generic(node->data), node);
+		return node;
 	}
 
 	void updateNodeFile(AVLNode<T>* node) {
-		if (!node) { return; }
+		if (!node || !node->dirtyNode) { return; }
 		fstream file;
 		
 		file.open(repo.name + "/" + repo.currBranch + "/" + node->fileName, ios::out);
 		if (!file.is_open()) {
+			return;
 			throw runtime_error("Unable to create file: " + node->fileName);
 		}
-
+		node->fileName = to_string_generic(node->data) + ".txt";
 		// Write node data to the file
 		file << node->data << "\n";                       // Node data
 		file << node->parentPath << "\n"                   // Parent path
 			<< node->leftPath << "\n"                     // Left child path
 			<< node->rightPath << "\n"                    // Right child path
 			<< node->height << "\n";                      // Node height (now included)
-
+		for (int i = 0; i < node->lineNumbers.size(); i++) {
+			file << node->lineNumbers[i];
+			if (i + 1 < node->lineNumbers.size())
+				file << ',';
+		}
+		file << '\n';
 		file.close();
+		node->dirtyNode = false;
 	}
 
 
@@ -257,16 +492,14 @@ public:
 		return k1->height;
 	}
 
-
-
-
-	void insert(T data) {
-		cout << endl << "iNSERTING " << data << endl << endl;
+	void insert(T data,int ln) {
+		Tree<T>::toLower(data);
 		if (rootFile == "NULL") {
 			// Create root node
 			AVLNode<T>* rootNode = new AVLNode<T>(data);
+			rootNode->lineNumbers.push_back(ln);
+			rootNode->dirty();
 			rootFile = createFile(rootNode);
-
 			return;
 		}
 
@@ -278,22 +511,25 @@ public:
 			AVLNode<T>* currentNode = readNodeFromFile(currFile);
 			parentFile = currFile;
 
-			if (isEqual(data, currentNode->data) == 0) return; // Prevent duplicate insertions
-
-			if (isEqual(data, currentNode->data) == -1) {
+			//Deals with duplicate nodes
+			if (Tree<T>::isEqual(data, currentNode->data) == 0) {
+				currentNode->lineNumbers.push_back(ln);
+				currentNode->dirty();
+				return;
+			}
+			else if(Tree<T>::isEqual(data, currentNode->data) == -1) {
 				currFile = currentNode->leftPath;
-				cout << "going towards left: " << currFile << endl;
 			}
 			else {
-				cout << data << " is greater than " << currentNode->data << endl;
 				currFile = currentNode->rightPath;
-				cout << "goinf towards right: " << currFile << endl;
 			}
 		}
 
 		// Create new node
 		AVLNode<T>* newNode = new AVLNode<T>(data);
 		newNode->parentPath = parentFile;
+		newNode->lineNumbers.push_back(ln);
+		newNode->dirty();
 		string newNodeFile = createFile(newNode);
 
 		// Attach the new node to the parent
@@ -303,36 +539,34 @@ public:
 		else
 			parent->rightPath = newNodeFile;
 
-		updateNodeFile(parent);
+		parent->dirty();
+		ht.insert(to_string_generic(parent->data),parent);
 
 		// Start balancing the tree from the new node up to the root
 		while (newNodeFile != "NULL") {
 			AVLNode<T>* node = readNodeFromFile(newNodeFile);
 
 			updateNodeHeight(*node);  // Update the height of the node
-			updateNodeFile(node);     // Save the updated node to file
+			node->dirty();
+			ht.insert(to_string_generic(node->data),node);
 
 			int balanceFactor = getBalance(*node);
 
 			if (balanceFactor > 1) { // Left-heavy
 				AVLNode<T>* leftChild = readNodeFromFile(node->leftPath);
 				if (getBalance(*leftChild) >= 0) {
-					cout << "\n\nRotating right because " << node->data << "'s left is heavy and node's left child's " << leftChild->data << " left is heavy\n\n";
 					rotateRight(node, newNodeFile);  // Left-Left Case
 				}
 				else {
-					cout << "\n\nRotating left then right because " << node->data << "'s left is heavy and node's left child's " << leftChild->data << "'s right is heavy\n\n";
 					rotateLeftRight(node, newNodeFile);  // Left-Right Case
 				}
 			}
 			else if (balanceFactor < -1) { // Right-heavy
 				AVLNode<T>* rightChild = readNodeFromFile(node->rightPath);
 				if ((getBalance(*rightChild)) <= 0) {
-					cout << "\n\nRotating left because " << node->data << "'s right is heavy and node's right child's " << rightChild->data << "'s right is heavy\n\n";
 					rotateLeft(node, newNodeFile);  // Right-Right Case
 				}
 				else {
-					cout << "\n\nRotating right then left because " << node->data << "'s left is heavy and node's right child's " << rightChild->data << "'s left is heavy\n\n";
 					rotateRightLeft(node, newNodeFile);  // Right-Left Case
 				}
 			}
@@ -345,7 +579,7 @@ public:
 		if (rootFile != "NULL") {
 			AVLNode<T>* rootNode = readNodeFromFile(rootFile);
 			rootNode->height = 1 + max(getHeight(rootNode->leftPath), getHeight(rootNode->rightPath));
-			updateNodeFile(rootNode); // Save the updated root
+			ht.insert(to_string_generic(rootNode->data), rootNode);
 		}
 	}
 
@@ -361,15 +595,14 @@ public:
 		if (nodeFile == "NULL") return -1;  // Null node has height -1
 		AVLNode<T>* node = readNodeFromFile(nodeFile);
 
-		updateNodeHeight(*node);  // Ensure the height is updated
+		//updateNodeHeight(*node);  // Ensure the height is updated
+		
 		return node->height;
 	}
 
 
 	// Helper function to update the height of a node
 	void updateNodeHeight(AVLNode<T>& node) {
-		cout << "updting node height ofr " << node.data << endl;
-		cout << node.data << "'s right is " << node.rightPath << endl;
 		int leftHeight = getHeight(node.leftPath);
 		int rightHeight = getHeight(node.rightPath);
 		node.height = max(leftHeight, rightHeight) + 1;
@@ -382,7 +615,8 @@ public:
 		if (k2->leftPath != "NULL") {
 			AVLNode<T>* leftChild = readNodeFromFile(k2->leftPath);
 			leftChild->parentPath = k1File;
-			updateNodeFile(leftChild);  // Update file of the left child
+			leftChild->dirty();
+			ht.insert(to_string_generic(leftChild->data), leftChild);
 		}
 
 		k2->parentPath = k1->parentPath;  // k2's parent becomes k1's parent
@@ -398,7 +632,8 @@ public:
 			else {
 				parent->rightPath = k2->fileName;
 			}
-			updateNodeFile(parent);  // Update the parent's file
+			parent->dirty();
+			ht.insert(to_string_generic(parent->data), parent);
 		}
 
 		k2->leftPath = k1File;
@@ -406,9 +641,10 @@ public:
 
 		updateNodeHeight(*k1);
 		updateNodeHeight(*k2);
-		updateNodeFile(k1);
-		updateNodeFile(k2);
-
+		k1->dirty();
+		k2->dirty();
+		ht.insert(to_string_generic(k1->data), k1);
+		ht.insert(to_string_generic(k2->data), k2);
 		return k2->fileName;
 	}
 
@@ -419,12 +655,12 @@ public:
 		AVLNode<T>* k2 = readNodeFromFile(k1->leftPath);
 
 		// Update the left child of k1 to k2's right subtree
-		cout << "k2->rightpATH: " << k2->rightPath << endl;
 		k1->leftPath = k2->rightPath;
 		if (k2->rightPath != "NULL") {
 			AVLNode<T>* k2RightChild = readNodeFromFile(k2->rightPath);
 			k2RightChild->parentPath = k1File;
-			updateNodeFile(k2RightChild); // Save changes
+			k2RightChild->dirty();
+			ht.insert(to_string_generic(k2RightChild->data), k2RightChild);
 		}
 
 		// Update k2's parent pointer to k1's parent
@@ -442,7 +678,8 @@ public:
 			else {
 				parent->rightPath = k2->fileName;
 			}
-			updateNodeFile(parent); // Save changes
+			parent->dirty();
+			ht.insert(to_string_generic(parent->data), parent);
 		}
 
 		// Update k2's right child to be k1
@@ -452,8 +689,10 @@ public:
 		updateNodeHeight(*k1);
 		updateNodeHeight(*k2);
 
-		updateNodeFile(k1);
-		updateNodeFile(k2);
+		k1->dirty();
+		k2->dirty();
+		ht.insert(to_string_generic(k1->data), k1);
+		ht.insert(to_string_generic(k2->data), k2);
 
 		return k2->fileName;
 	}
@@ -462,10 +701,10 @@ public:
 		string leftPath = node->leftPath;
 		AVLNode<T>* leftChild = readNodeFromFile(leftPath);
 		node->leftPath = rotateLeft(leftChild, leftPath);
-
+		//node->dirty();
+		//ht.insert(to_string_generic(node->data), node);
 		rotateRight(node, nodeFile);
-
-		updateNodeFile(node);
+		//ht.insert(to_string_generic(node->data), node);
 		return node->fileName;
 	}
 
@@ -474,10 +713,11 @@ public:
 		string rightPath = node->rightPath;
 		AVLNode<T>* rightChild = readNodeFromFile(rightPath);
 		node->rightPath = rotateRight(rightChild, rightPath);
-
+		//node->dirty();
+		//ht.insert(to_string_generic(node->data), node);
 		rotateLeft(node, nodeFile);
 
-		updateNodeFile(node);
+		//ht.insert(to_string_generic(node->data), node);
 		return node->fileName;
 	}
 
@@ -510,13 +750,13 @@ public:
 	//	if (tRoot == nullptr) {
 	//		return nullptr;
 	//	}
-	//	if (isEqual(tRoot->data, k) == 0) {
+	//	if (Tree<T>::isEqual(tRoot->data, k) == 0) {
 	//		return root;
 	//	}
-	//	else if (isEqual(tRoot->data, k) == 1) {
+	//	else if (Tree<T>::isEqual(tRoot->data, k) == 1) {
 	//		search(tRoot->left, k);
 	//	}
-	//	else if (isEqual(tRoot->data, k) == -1) {
+	//	else if (Tree<T>::isEqual(tRoot->data, k) == -1) {
 	//		search(tRoot->right, k);
 	//	}
 
@@ -544,7 +784,7 @@ public:
 		AVLNode<T>* currNode = readNodeFromFile(currFile);
 
 		// Case 1: Node with key found
-		if (isEqual(key, currNode->data) == 0) {
+		if (Tree<T>::isEqual(key, currNode->data) == 0) {
 			// Case where node has one or no child
 			if (currNode->leftPath == "NULL" || currNode->rightPath == "NULL") {
 				string tempFile = (currNode->leftPath != "NULL") ? currNode->leftPath : currNode->rightPath;
@@ -619,7 +859,7 @@ public:
 
 			}
 		}
-		else if (isEqual(key, currNode->data) == -1) {
+		else if (Tree<T>::isEqual(key, currNode->data) == -1) {
 			deleteNode(currNode->leftPath, key);
 			string fileName = to_string_generic(key) + ".txt";
 			if (fileName == currNode->leftPath) {
@@ -635,11 +875,9 @@ public:
 		}
 
 		if (currFile == "NULL") {
-			cout << key << " has been deleted\n";
 			return;
 		}
 
-		cout << "Balacing for " << currNode->data << "\n\n\n\n\n";
 		updateNodeHeight(*currNode);
 		int balance = getBalance(*currNode);
 
@@ -675,56 +913,5 @@ public:
 		}
 		return currFile;
 	}
-
-
-
-	////Virtual function update
-	//void update(T oldData, T newData) {
-	//	updateNode(root, oldData, newData);
-	//}
-
-	////Updates value of a node
-	//void updateNode(AVLNode<T>*& tRoot, T oldData, T newData) {
-	//	deleteByVal(oldData);
-	//	insert(newData);
-	//	cout << "Updated Node with value " << oldData << " with " << newData << endl;
-	//}
-
-	//bool isAVL() {
-	//	if (abs(Height(root->right) - Height(root->left)) <= 1) {
-	//		return true;
-	//	}
-	//	return false;
-	//}
-
-	//int balanceFactor() {
-	//	return abs(Height(root->right) - Height(root->left));
-	//}
-
-	////ConstructTree
-	//void constructTree() {
-
-	//}
-
-
-
-	////Hashing 
-
-
-
-	////Computes Hash for the whole tree
-	//void computeHash() {
-	//	computeHashHelper(root);
-	//	cout << root->hash << endl;
-	//}
-
-	////Recursive function that calculates hashes
-	//string computeHashHelper(AVLNode<T>* node) {
-	//	if (node == nullptr)
-	//		return "";
-	//	//Currently a placeholder for computing actual has, implement later
-	//	node->hash = Tree<T>::instructorHash(node->data) + computeHashHelper(node->left) + computeHashHelper(node->right);
-	//	return node->hash;
-	//}
 
 };
