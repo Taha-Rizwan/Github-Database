@@ -110,6 +110,9 @@ public:
 	virtual string getRootFile() {
 		return "nil";
 	}
+	virtual int searchData(T data) {
+		return -1;
+	}
 
 };
 
