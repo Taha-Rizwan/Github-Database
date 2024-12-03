@@ -105,6 +105,12 @@ public:
 	virtual void createNil() {
 
 	}
+
+	virtual void changeBranch(const string& path){}
+	virtual string getRootFile() {
+		return "nil";
+	}
+
 };
 
 

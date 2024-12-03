@@ -94,6 +94,7 @@ private:
         node->hash = Tree<T>::instructorHash(node->data) + computeHashHelper(node->leftPath) + computeHashHelper(node->rightPath);
         node->dirty();
         ht.insert(path, node);
+
         return node->hash;
     }
 
@@ -440,7 +441,7 @@ private:
     }
 
     void createNil() {
-        string niller = "nil.txt";
+        string niller = "nil";
         ofstream file(pathify(niller));
         file << -1 << "\nNULL\nNULL\nNULL\n0\n";
         file.close();
@@ -960,7 +961,7 @@ public:
         else {
             string currFile = rootFile;
             string parFile = "NULL";
-
+            cout<<currFile<<endl;
             while (currFile != "nil" && currFile != "NULL") {
 
                 RedBlackNode<T>* currNode = readNodeFromFile(currFile);
@@ -1065,6 +1066,15 @@ public:
     }
 
     void computeHash() {
-        computeHashHelper(rootFile);
+        cout<<computeHashHelper(rootFile);
+    }
+
+    void changeBranch(const string &path) {
+
+        ht.emptyTable();
+        rootFile = path;
+    }
+    string getRootFile() {
+        return rootFile;
     }
 };

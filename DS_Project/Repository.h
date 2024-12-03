@@ -29,6 +29,7 @@ public:
     int column, ln;
     //Create vector class later
     vector<string> branches;
+    vector<string> roots;
     string currBranch;
     Tree<T>* tree;
 	Repository(Tree<T>* tree):tree(tree) {
@@ -45,6 +46,7 @@ public:
         currBranch = "main";
         create_directory(name + "/" + currBranch);
         branches.push_back("main");
+
         tree->createNil();
         ifstream file(csv_path);
         if (!file.is_open()) {
@@ -97,6 +99,7 @@ public:
 
         file.close();
         tree->computeHash();
+	    roots.push_back(tree->getRootFile());
         cout << endl;
        
     }
@@ -186,11 +189,14 @@ public:
         cin >> n;
         if (n - 1 >= 0 && n <= branches.size()) {
             currBranch = branches[n - 1];
+            tree->changeBranch(roots[n-1]);
             cout << "Current Branch is set to: " << currBranch << endl;
         }
         else {
             cout << "Branch not found!" << endl;
         }
+
+
     }
     void addBranch() {
         string newBranch;
@@ -199,6 +205,8 @@ public:
 
 
         branches.push_back(newBranch);
+	    roots.push_back(tree->getRootFile());
+	    tree->changeBranch(tree->getRootFile());
         currBranch = newBranch;
         cout << "New branch has been created and cloned by current version of main" << endl;
         cout << "Current Branch is set to: " << currBranch << endl;
