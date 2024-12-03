@@ -109,6 +109,7 @@ private:
         RedBlackTree<T>* parentTree;
         vector<string> toBeDeleted;
         int Hash_Function(string& key) {
+
             unsigned long hash = 0;
             for (char c : key) {
                 hash = (hash * 31) + c;  // Using 31 as a simple multiplier
@@ -367,62 +368,54 @@ private:
 
         return fileName;
     }
-
     RedBlackNode<T>* readNodeFromFile(string filePath) {
         if (filePath == "nil")
             return nil;
-        //  cout << "reading" << endl;
 
-        //  cout << filePath << endl;
         RedBlackNode<T>* r = ht.search(filePath);
         if (r != nullptr)
             return r;
+
         ifstream file(pathify(filePath));
         if (!file.is_open()) {
             throw runtime_error("Unable to open file: " + filePath);
         }
+
         r = new RedBlackNode<T>();
 
-        r->leftPath = "";
-        r->rightPath = "";
-        r->parentPath = "";
-        string pathsLine;
-        getline(file, pathsLine);
+        // Read data
+        getline(file, r->data);
 
-        r->data = pathsLine;
+        // Read parent path
+        getline(file, r->parentPath);
 
+        // Read left child path
+        getline(file, r->leftPath);
 
-        getline(file, pathsLine);
-        r->parentPath = pathsLine;
-        getline(file, pathsLine);
-        r->leftPath = pathsLine;
-        getline(file, pathsLine);
-        r->rightPath = pathsLine;
+        // Read right child path
+        getline(file, r->rightPath);
 
+        // Read color
         file >> r->color;
+        file.ignore(); // Ignore the newline character after the color
 
-        file.ignore();
-        file >> r->hash;
-        file.ignore();
-        getline(file, pathsLine);
+        // Read hash
+        getline(file, r->hash);
+
+        // Read line numbers
+        string lineNumbers;
+        getline(file, lineNumbers);
+        stringstream ss(lineNumbers);
         string number;
-        for (int i = 0; i < pathsLine.length(); i++) {
-            if (pathsLine[i] == ',') {
-                r->lineNumbers.push_back(stoi(number));
-                number = "";
-                continue;
-            }
-            number = number + pathsLine[i];
+        while (getline(ss, number, ',')) {
+            r->lineNumbers.push_back(stoi(number));
         }
 
         file.close();
 
         ht.insert(to_string_generic(r->data), r);
-        // cout << "Done reading" << endl;
-        // cout << r->data<<endl;
         return r;
     }
-
     void writeNodeToFile(RedBlackNode<T>* node) {
         //    cout << "Writing" << endl;
         if (!node->dirtyNode)
