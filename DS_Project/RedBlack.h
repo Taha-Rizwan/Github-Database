@@ -41,9 +41,9 @@ struct RedBlackNode {
     string hash;                // Hash of the node (empty for now)
     bool dirtyNode;
     vector<int> lineNumbers;
-    RedBlackNode(T data) : data(data), color(RED), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash("-1"), dirtyNode(false) {}
+    RedBlackNode(T data) : data(data), color(RED), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash(""), dirtyNode(false) {}
 
-    RedBlackNode() : color(BLACK), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash("-1"), dirtyNode(false) {}
+    RedBlackNode() : color(BLACK), leftPath("nil"), rightPath("nil"), parentPath("NULL"), hash(""), dirtyNode(false) {}
     void print() {
         /*   cout << "Node Data: " << data << ", Parent: " << parentPath
                << ", Left: " << leftPath << ", Right: " <<rightPath << endl;*/
@@ -60,9 +60,6 @@ template<class T>
 class RedBlackTree : public Tree<T> {
     //For Cache
     //Double Linked List
-
-
-    string rootFile;
 private:
     RedBlackNode<T>* nil;
     Repository<T> repo;
@@ -464,7 +461,7 @@ private:
         temp->parentPath = k1->parentPath;
         if (k1->parentPath == "NULL") {
             // cout << "Attempted Change" << endl;
-            rootFile = to_string_generic(temp->data);
+            Tree<T>::rootFile = to_string_generic(temp->data);
         }
         else {
             RedBlackNode<T>* parent = readNodeFromFile(k1->parentPath);
@@ -541,7 +538,7 @@ private:
         temp->parentPath = k1->parentPath;
         if (k1->parentPath == "NULL") {
             //    cout << "Attempted Change" << endl;
-            rootFile = to_string_generic(temp->data);
+            Tree<T>::rootFile = to_string_generic(temp->data);
         }
         else {
             RedBlackNode<T>* parent = readNodeFromFile(k1->parentPath);
@@ -607,7 +604,7 @@ private:
 
     void change(string nodeFile) {
         string currFile = nodeFile;
-        while (currFile != rootFile) {
+        while (currFile != Tree<T>::rootFile) {
             RedBlackNode<T>* node = readNodeFromFile(currFile);
             RedBlackNode<T>* parent = readNodeFromFile(node->parentPath);
             node->print();
@@ -707,7 +704,7 @@ private:
 
         }
 
-        RedBlackNode<T>* rootNode = readNodeFromFile(rootFile);
+        RedBlackNode<T>* rootNode = readNodeFromFile(Tree<T>::rootFile);
         rootNode->color = BLACK;
         rootNode->dirty();
         ht.insert(to_string_generic(rootNode->data), rootNode);
@@ -735,7 +732,7 @@ private:
         RedBlackNode<T>* parent = readNodeFromFile(x->parentPath);
         if (x->parentPath == "NULL") {
             //x is root
-            rootFile = path2;
+            Tree<T>::rootFile = path2;
         }
 
         else if (path1 == parent->leftPath) {
@@ -763,7 +760,7 @@ private:
     void fixDelete(RedBlackNode<T>* node) {
         RedBlackNode<T>* sibling;
 
-        while (to_string_generic(node->data) != rootFile && !node->color) {
+        while (to_string_generic(node->data) != Tree<T>::rootFile && !node->color) {
             RedBlackNode<T>* parent = readNodeFromFile(node->parentPath);
             if (to_string_generic(node->data) == parent->leftPath) {
                 sibling = readNodeFromFile(parent->rightPath);
@@ -815,7 +812,7 @@ private:
                 ht.insert(to_string_generic(sibling->data), sibling);
 
 
-                node = readNodeFromFile(rootFile);
+                node = readNodeFromFile(Tree<T>::rootFile);
 
             }
             else {
@@ -869,7 +866,7 @@ private:
                     ht.insert(to_string_generic(sibling->data), sibling);
 
 
-                    node = readNodeFromFile(rootFile);
+                    node = readNodeFromFile(Tree<T>::rootFile);
 
                 }
             }
@@ -923,8 +920,9 @@ private:
     }
 
 public:
-    RedBlackTree() : repo(this), ht(this, 151),order(2) {
-        rootFile = "NULL";
+    RedBlackTree() : repo(this), ht(this, 151) {
+        Tree<T>::order = 2;
+        Tree<T>::rootFile = "NULL";
         nil = new RedBlackNode<T>();
 
         createNil();
@@ -932,7 +930,7 @@ public:
         ht.emptyTable();
 
 
-        cout << rootFile << endl;
+        cout << Tree<T>::rootFile << endl;
         repo.main();
         //]`#
         //
@@ -942,7 +940,7 @@ public:
     }
 
     string search(T val) {
-        return searchHelper(rootFile, val);
+        return searchHelper(Tree<T>::rootFile, val);
     }
 
     void insert(T data, int ln) {
@@ -950,16 +948,16 @@ public:
         Tree<T>::toLower(data);
 
        // cout << data << endl;
-        if (rootFile == "NULL") {
+        if (Tree<T>::rootFile == "NULL") {
             RedBlackNode<T>* rootNode = new RedBlackNode<T>(data);
             rootNode->color = BLACK;
             rootNode->dirty();
             rootNode->lineNumbers.push_back(ln);
-            rootFile = createFile(rootNode);
+            Tree<T>::rootFile = createFile(rootNode);
             return;
         }
         else {
-            string currFile = rootFile;
+            string currFile = Tree<T>::rootFile;
             string parFile = "NULL";
            // cout<<currFile<<endl;
             while (currFile != "nil" && currFile != "NULL") {
@@ -1066,7 +1064,7 @@ public:
     }
 
     void computeHash() {
-        cout<<computeHashHelper(rootFile);
+        cout<<computeHashHelper(Tree<T>::rootFile);
     }
     int searchData(T data) {
         string path = search(data);
@@ -1096,9 +1094,9 @@ public:
     void changeBranch(const string &path) {
 
         ht.emptyTable();
-        rootFile = path;
+        Tree<T>::rootFile = path;
     }
     string getRootFile() {
-        return rootFile;
+        return Tree<T>::rootFile;
     }
 };

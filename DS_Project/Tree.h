@@ -10,8 +10,10 @@ using namespace std;
 
 template<class T>
 class Tree {
-	MerkleTree<T> merkle;
 public:
+	MerkleTree<T>* merkle;
+	string rootFile;
+	int order;
 	//Comparison fUNCTIONS
 	//CHAR
 	void toLower(string& data) {

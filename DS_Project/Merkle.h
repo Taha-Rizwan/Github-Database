@@ -18,6 +18,19 @@ string to_string_generic(const T& data) {
 }
 
 
+//instructor's hash
+string instructorHash(string text) {
+	int hash = 1;
+
+	for (int i = 0; i < text.length();i++) {
+		hash *= text[i]; // Multiply ASCII values of characters
+
+		hash %= 29;     // To avoid integer overflow, take modulo 29 after each step
+	}
+
+	return to_string_generic(hash);
+}
+
 
 
 template<class T>
@@ -68,9 +81,14 @@ public:
 	}
 
 	readNode<T>* readNodeFromFile(string filePath) {
-		if (filePath == "NULL")
+		if (filePath == "NULL" || filePath=="nil")
 			return nullptr;
 		string dataStr = filePath.substr(0, filePath.find(".txt"));
+
+		//if filepath is not in the format data.txt then add .txt 
+		if (filePath.find(".txt") == string::npos) {
+			filePath += ".txt";
+		}
 		fstream file;
 		file.open(repoName+ "/" +currBranch + "/" + filePath);
 		if (!file.is_open()) {
@@ -80,12 +98,12 @@ public:
 		string nodeData;
 		string line;
 
-		readNode<T>* node(order);
+		readNode<T>* node=new readNode<T>(order);
 
 
 		getline(file, line);
 		node->data = line;
-		getline(file, node->parentPath);
+		getline(file, node->parentFile);
 		for (int i = 0;i < order;i++) {
 			getline(file, node->childFiles[i]);
 		}
@@ -106,19 +124,7 @@ public:
 	//	return std::string(buffer);
 	//}
 
-	//instructor's hash
-	string instructorHash(string text) {
-		int hash = 1;
-
-		for (int i = 0; i < text.length();i++) {
-			hash *= text[i]; // Multiply ASCII values of characters
-
-			hash %= 29;     // To avoid integer overflow, take modulo 29 after each step
-		}
-
-		return to_string_generic(hash);
-	}
-
+	
 	//gathers all the nodes and computes their hashes
 	vector<string> computeLeafFilesFromRoot(string rootFile) {
 		vector<string> leafFiles; 

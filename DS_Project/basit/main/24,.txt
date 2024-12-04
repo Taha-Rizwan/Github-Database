@@ -1,4 +1,0 @@
-leaf
-24,
-null
-basit/main/24,.txt
