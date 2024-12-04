@@ -62,9 +62,8 @@ class RedBlackTree : public Tree<T> {
     //Double Linked List
 
 
-private:
-    int order;
     string rootFile;
+private:
     RedBlackNode<T>* nil;
     Repository<T> repo;
 

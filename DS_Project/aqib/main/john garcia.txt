@@ -1,7 +1,0 @@
-john garcia
-john flores
-nil
-nil
-0
--1
-160,1913

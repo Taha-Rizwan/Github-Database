@@ -1,7 +1,0 @@
-julia reynolds
-julie gonzalez
-nil
-nil
-0
--1
-971

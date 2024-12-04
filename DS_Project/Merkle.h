@@ -4,9 +4,22 @@
 #include<string>
 #include<fstream>
 #include<filesystem>
+#include"Repository.h"
 //#include <openssl/sha.h> //error couldnt find header
 
 using namespace std;
+
+template<class T>
+string to_string_generic(const T& data) {
+	std::stringstream ss;
+	ss << data;
+
+	return ss.str();
+}
+
+
+
+
 template<class T>
 class MerkleNode {
 	//data field only for leaf nodes
@@ -14,13 +27,13 @@ class MerkleNode {
 	string hash;
 	MerkleNode* left;
 	MerkleNode* right;
-	bool leaf
+	bool leaf;
 public:
 	MerkleNode(T data, bool leaf) :data(data),left(nullptr),right(nullptr), leaf(leaf),hash(" ") {
-		hash = computeHash(data);
+		hash = instructorHash(data);
 	}
 	MerkleNode(MerkleNode* left, MerkleNode* right) : left(left), right(right), leaf(false) {
-		hash = computeHash(left->hash + right->hash); 
+		hash = instructorHash(left->hash + right->hash); 
 	}
 };
 
@@ -46,18 +59,20 @@ public:
 template<class T>
 class MerkleTree {
 	MerkleNode<T>* root;
+	string repoName;
+	string currBranch;
 	int order;
 public:
-	MerkleTree(int order) :order(order), root(nullptr) {
+	MerkleTree(int order, string repoName,string branch) :order(order), root(nullptr),repoName(repoName),currBranch(branch) {
 	
 	}
 
-	readNode* readNodeFromFile(string filePath) {
+	readNode<T>* readNodeFromFile(string filePath) {
 		if (filePath == "NULL")
 			return nullptr;
 		string dataStr = filePath.substr(0, filePath.find(".txt"));
 		fstream file;
-		file.open(repo.name + "/" + repo.currBranch + "/" + filePath);
+		file.open(repoName+ "/" +currBranch + "/" + filePath);
 		if (!file.is_open()) {
 			cerr << "Cannot open file: " << filePath << endl;
 			throw runtime_error("Unable to open file: " + filePath);
@@ -81,15 +96,15 @@ public:
 	}
 
 	//computes Hash,,,(gpt)
-	string computeHash(const string& data) {
-		unsigned char hash[SHA256_DIGEST_LENGTH];
-		SHA256((unsigned char*)data.c_str(), data.size(), hash);
+	//string computeHash(const string& data) {
+	//	unsigned char hash[SHA256_DIGEST_LENGTH];
+	//	SHA256((unsigned char*)data.c_str(), data.size(), hash);
 
-		char buffer[2 * SHA256_DIGEST_LENGTH + 1];
-		for (int i = 0; i < SHA256_DIGEST_LENGTH; ++i)
-			sprintf(buffer + i * 2, "%02x", hash[i]);
-		return std::string(buffer);
-	}
+	//	char buffer[2 * SHA256_DIGEST_LENGTH + 1];
+	//	for (int i = 0; i < SHA256_DIGEST_LENGTH; ++i)
+	//		sprintf(buffer + i * 2, "%02x", hash[i]);
+	//	return std::string(buffer);
+	//}
 
 	//instructor's hash
 	string instructorHash(string text) {
@@ -133,7 +148,7 @@ public:
 	}
 
 
-	vector<MerkleNode<T>*> createLeafNodes() {
+	vector<MerkleNode<T>*> createLeafNodes(string rootFile) {
 		vector<string> leafFiles = computeLeafFilesFromRoot(rootFile);
 
 		vector<MerkleNode<T>*> leafNodes;
@@ -150,8 +165,8 @@ public:
 	}
 
 	// Build the Merkle tree after creating the leaf nodes
-	MerkleNode<T>* buildMerkleTree(vector<MerkleNode<T>*>& leafNodes) {
-		vector<MerkleNode<T>*> leafNodes = createLeafFiles();
+	MerkleNode<T>* buildMerkleTree(string rootFile) {
+		vector<MerkleNode<T>*> leafNodes = createLeafNodes(rootFile);
 		if (leafNodes.empty()) return nullptr;
 
 		vector<MerkleNode<T>*> currentLevel = leafNodes;

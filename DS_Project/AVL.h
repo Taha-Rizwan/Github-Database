@@ -86,7 +86,6 @@ public:
 template<class T>
 class AVL :public Tree<T> {
 public:
-	int order;
 	string rootFile;
 	int nNodes;
 	Repository<T> repo;

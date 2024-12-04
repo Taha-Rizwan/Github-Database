@@ -1,7 +1,0 @@
-larry singleton
-krystal mendoza
-nil
-laura hernandez
-0
--1
-1450

@@ -1,7 +1,0 @@
-joel mccoy
-john bauer
-nil
-nil
-1
--1
-3893

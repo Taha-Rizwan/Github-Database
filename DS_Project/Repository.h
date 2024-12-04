@@ -110,6 +110,8 @@ public:
         }
         cout << "reading done\n";
         file.close();
+        tree->merkle = new MerkleTree<T>(tree->order, name, currBranch);
+        cout << "Merkle Tree root hash: " << tree->merkle->buildMerkleTree(tree->rootFile()) << endl;
         tree->computeHash();
 	    roots.push_back(tree->getRootFile());
         cout << endl;
@@ -245,6 +247,7 @@ public:
 	}
 
     void visualizeTree() {
+        
         tree->display();
     }
     void switchBranch() {

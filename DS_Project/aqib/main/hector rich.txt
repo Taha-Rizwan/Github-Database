@@ -1,7 +1,0 @@
-hector rich
-hector clay
-nil
-nil
-1
--1
-4541

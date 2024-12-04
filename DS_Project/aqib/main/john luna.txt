@@ -1,7 +1,0 @@
-john luna
-john khan
-nil
-nil
-1
--1
-3453,4581

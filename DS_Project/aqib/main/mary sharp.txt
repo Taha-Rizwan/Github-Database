@@ -1,7 +1,0 @@
-mary sharp
-mary simon
-nil
-nil
-1
--1
-4870

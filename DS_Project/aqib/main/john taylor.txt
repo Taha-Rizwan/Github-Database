@@ -1,7 +1,0 @@
-john taylor
-john powell
-nil
-nil
-1
--1
-554
