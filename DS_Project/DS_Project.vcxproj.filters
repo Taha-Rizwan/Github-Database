@@ -50,5 +50,8 @@
     <ClInclude Include="LRUCache.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Merkle.h">
+      <Filter>Trees</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

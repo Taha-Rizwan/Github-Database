@@ -3,6 +3,7 @@
 #include <string>
 #include <cctype>
 #include <algorithm>
+#include"Merkle.h"
 using namespace std;
 
 template<class T>
@@ -15,7 +16,7 @@ string to_string_generic(const T& data) {
 
 template<class T>
 class Tree {
-
+	MerkleTree<T> merkle;
 public:
 	//Comparison fUNCTIONS
 	//CHAR

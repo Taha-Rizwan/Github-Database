@@ -63,6 +63,7 @@ class RedBlackTree : public Tree<T> {
 
 
 private:
+    int order;
     string rootFile;
     RedBlackNode<T>* nil;
     Repository<T> repo;
@@ -923,7 +924,7 @@ private:
     }
 
 public:
-    RedBlackTree() : repo(this), ht(this, 151) {
+    RedBlackTree() : repo(this), ht(this, 151),order(2) {
         rootFile = "NULL";
         nil = new RedBlackNode<T>();
 

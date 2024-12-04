@@ -86,10 +86,11 @@ public:
 template<class T>
 class AVL :public Tree<T> {
 public:
+	int order;
 	string rootFile;
 	int nNodes;
 	Repository<T> repo;
-	AVL() :rootFile("NULL"),repo(this), nNodes(0),ht(this,151) {
+	AVL() :rootFile("NULL"),repo(this), nNodes(0),ht(this,151),order(2) {
 		//computeHash();
 		repo.create();
 		ht.emptyTable();

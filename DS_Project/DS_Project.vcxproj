@@ -135,6 +135,7 @@
     <ClInclude Include="AVL.h" />
     <ClInclude Include="LRUCache.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Merkle.h" />
     <ClInclude Include="RedBlack.h" />
     <ClInclude Include="Repository.h" />
     <ClInclude Include="Tree.h" />
