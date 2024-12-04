@@ -16,7 +16,7 @@ string to_string_generic(const T& data) {
 
 template<class T>
 class Tree {
-	MerkleTree<T> merkle;
+	//MerkleTree<T> merkle;
 public:
 	//Comparison fUNCTIONS
 	//CHAR
