@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AVL.h" />
+    <ClInclude Include="BTree2.h" />
     <ClInclude Include="LRUCache.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Merkle.h" />
