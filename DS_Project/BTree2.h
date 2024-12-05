@@ -19,11 +19,11 @@ public:
     string parentPath;
     string leftChildPath;
     string rightChildPath;
-    BTreeNode(bool l = true) : leaf(l), parent(nullptr), parentPath("parent exists"), leftChildPath("null"), rightChildPath("null"){}
+    BTreeNode(bool l = true) : leaf(l), parent(nullptr), parentPath("parent exists"), leftChildPath("null"), rightChildPath("null") {}
 };
 
 template <typename T>
-class BTree:public Tree<T> {
+class BTree :public Tree<T> {
 private:
     BTreeNode<T>* root;
     string rootPath;
@@ -82,7 +82,7 @@ public:
     BTreeNode<T>* readNodeFromFile(string path) {
         if (path == "null")
             return nullptr;
-        
+
         path = pathify(path);
         ifstream f((path));
         if (!f.is_open())
@@ -158,29 +158,29 @@ public:
             }
             else
                 cout << pathify(node->keys[i]) << " opened" << endl;
-           
+
             if (node->leaf)
                 file[i] << "yes\n";
             else
                 file[i] << "no\n";
-            
+
             file[i] << to_string_generic(node->keys[i]) << "\n";
-            
+
             if (i == 0)
                 file[i] << "null,";
             else
                 file[i] << to_string_generic(node->keys[i - 1]) << ",";
-            
+
             if (i < node->keys.size() - 1)
                 file[i] << to_string_generic(node->keys[i + 1]) << "\n";
             else
                 file[i] << "null\n";
-            
+
             if (node->parent)
                 file[i] << node->parentPath << "\n";
             else
                 file[i] << "null\n";
-            
+
             if (node->children.size() > 0) {
                 if (node->children[i])
                     file[i] << node->leftChildPath << "\n";
