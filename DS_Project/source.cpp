@@ -11,7 +11,18 @@ int main() {
 	//RedBlackTree current insertion time column 1 (Age) 2.78s (not handling dups currently) bro
 
 	//AVL<string> r1;
-	
+	//r.insert(24, 0);
+	//r.insert(43, 0);
+	//r.insert(46, 0);
+	//r.insert(12, 0);
+	//r.insert(64, 0);
+	//r.insert(91, 0);
+	//r.insert(32, 0);
+	//r.insert(66, 0);
+	//r.insert(84, 0);
+	//r.insert(48, 0);
+	//r.insert(34, 0);
+	//r.print(r.getRoot());
 
 	return 0;
 }

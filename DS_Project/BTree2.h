@@ -16,7 +16,10 @@ public:
     vector<BTreeNode<T>*> children;
     bool leaf;
     BTreeNode<T>* parent;
-    BTreeNode(bool l = true) : leaf(l), parent(nullptr) {}
+    string parentPath;
+    string leftChildPath;
+    string rightChildPath;
+    BTreeNode(bool l = true) : leaf(l), parent(nullptr), parentPath("parent exists"), leftChildPath("null"), rightChildPath("null"){}
 };
 
 template <typename T>
@@ -29,14 +32,21 @@ private:
 
 public:
     BTree(int degree = 0) :repo(this), m(degree) {
+        rootPath = "\0";
         root = nullptr;
         repo.create();
     }
 
     string to_bString(vector<T> data) {
         std::stringstream ss;
-        for (int i=0; i<data.size(); i++)
-            ss << data[i] << ",";
+        ss << data[0];
+        return ss.str();
+    }
+
+    string to_string_generic(const T& data) {
+        std::stringstream ss;
+        ss << data;
+
         return ss.str();
     }
 
@@ -51,6 +61,8 @@ public:
     }
 
     void make() {
+        print(root);
+        cout << endl;
         BTreeNode<T>* temp = nullptr;
         rootPath = createFile(root);
         Tree<T>::rootFile = rootPath;
@@ -63,6 +75,7 @@ public:
                 q.push(temp->children[i]);
             writeNodeToFile(temp);
         }
+        readNodeFromFile(rootPath);
 
     }
 
@@ -70,25 +83,63 @@ public:
         if (path == "null")
             return nullptr;
         
-        ifstream f(pathify(path));
+        path = pathify(path);
+        ifstream f((path));
         if (!f.is_open())
             throw runtime_error("Unable to open file: " + path);
 
-        BTreeNode<T>* r = new BTreeNode<T>;
-        getline(f, r->keys);
-        getline(f, r->parent);
-        getline(f, r->children);
-        f.ignore();
+        BTreeNode<T>* r = new BTreeNode<T>(m);
 
-        string lineNumbers;
-        getline(f, lineNumbers);
-        stringstream ss(lineNumbers);
-        string number;
-        while (getline(ss, number, ',')) {
-            r->lineNumbers.push_back(stoi(number));
+        string line;
+        getline(f, line);
+        if (line == "no")
+            r->leaf = false;
+        else
+            r->leaf = true;
+
+        vector<T> keys;
+        getline(f, line);
+        keys.push_back((line));
+
+        string leftKey, rightKey;
+        getline(f, line);
+        stringstream ss(line);
+        getline(ss, leftKey, ',');
+        getline(ss, rightKey, ',');
+
+        string extra;
+        while (leftKey != "null") {
+            ifstream file(pathify(leftKey));
+            getline(file, extra);
+            getline(file, extra);
+            keys.push_back((extra));
+            getline(file, extra);
+            stringstream yy(extra);
+            getline(yy, extra, ',');
+        }
+        extra = "";
+        while (rightKey != "null") {
+            ifstream file(pathify(rightKey));
+            getline(file, extra);
+            getline(file, extra);
+            keys.push_back((extra));
+            getline(file, extra);
+            stringstream yy(extra);
+            getline(yy, extra, ',');
         }
 
+        getline(f, line);
+        r->parentPath = line;
+        getline(f, line);
+        getline(ss, line, ',');
+        r->leftChildPath = line;
+        getline(ss, line, ',');
+        r->rightChildPath = line;
+
         f.close();
+
+        for (int i = 0; i < keys.size(); i++)
+            r->keys.push_back(keys[i]);
         return r;
     }
 
@@ -99,37 +150,48 @@ public:
     }
 
     void writeNodeToFile(BTreeNode<T>* node) {
-        ofstream file(pathify(to_bString(node->keys)));
-        
-        if (node->leaf)
-            file << "yes\n";
-        else
-            file << "no\n";
-
-        file << (to_bString(node->keys));
-        file << "\n";
-        if (node->parent) {
-            file << pathify(to_bString(node->parent->keys));
+        ofstream* file = new ofstream[node->keys.size()];
+        for (int i = 0; i < node->keys.size(); i++) {
+            file[i].open(pathify(node->keys[i]));
+            if (!file[i].is_open()) {
+                cout << pathify(node->keys[i]) << " not opened" << endl;
+            }
+            else
+                cout << pathify(node->keys[i]) << " opened" << endl;
+           
+            if (node->leaf)
+                file[i] << "yes\n";
+            else
+                file[i] << "no\n";
+            
+            file[i] << to_string_generic(node->keys[i]) << "\n";
+            
+            if (i == 0)
+                file[i] << "null,";
+            else
+                file[i] << to_string_generic(node->keys[i - 1]) << ",";
+            
+            if (i < node->keys.size() - 1)
+                file[i] << to_string_generic(node->keys[i + 1]) << "\n";
+            else
+                file[i] << "null\n";
+            
+            if (node->parent)
+                file[i] << node->parentPath << "\n";
+            else
+                file[i] << "null\n";
+            
+            if (node->children.size() > 0) {
+                if (node->children[i])
+                    file[i] << node->leftChildPath << "\n";
+                if (node->children[i + 1])
+                    file[i] << node->rightChildPath << "\n";
+            }
+            else {
+                file[i] << "null\nnull\n";
+            }
+            file[i].close();
         }
-        else {
-            file << "null";
-        }
-        file << "\n";
-        if (node->children.size() == 0)
-            file << "null";
-        else {
-            for (int i = 0; i < node->children.size(); i++)
-                file << pathify(to_bString(node->children[i]->keys)) << ",";
-        }
-        /*if (node->children.size() > 0) {
-            for (int i = 0; i < node->children.size(); i++)
-                file << pathify(node->children[i])) << ',';
-        }*/
-        /*else {
-            file << "null";
-        }*/
-        file << "\n";
-        file.close();
     }
 
     BTreeNode<T>* search(T key, bool insert, BTreeNode<T>* node = nullptr, int childIndex = 0) { //searches for the key in BTree
@@ -240,6 +302,22 @@ public:
                 node->children.push_back(right);
                 sort(node->children.begin(), node->children.end());
                 left->parent = node; right->parent = node;
+                left->parentPath = pathify(node->keys[node->keys.size() / 2]);
+                right->parentPath = pathify(node->keys[node->keys.size() / 2]);
+                node->leftChildPath = pathify(left->keys[left->keys.size() / 2]);
+                node->rightChildPath = pathify(right->keys[right->keys.size() / 2]);
+                if (exists(pathify(node->keys[node->keys.size() / 2]))) {
+                    remove(pathify(node->keys[node->keys.size() / 2]));
+                    writeNodeToFile(node);
+                }
+                if (exists(pathify(left->keys[left->keys.size() / 2]))) {
+                    remove(pathify(left->keys[left->keys.size() / 2]));
+                    writeNodeToFile(left);
+                }
+                if (exists(pathify(right->keys[right->keys.size() / 2]))) {
+                    remove(pathify(right->keys[right->keys.size() / 2]));
+                    writeNodeToFile(right);
+                }
             }
             else {
                 node->parent->keys.push_back(node->keys[splitFrom]);
@@ -259,12 +337,16 @@ public:
                 node->children.clear();
                 node->children.push_back(left);
                 node->children.push_back(right);
+                left->parentPath = pathify(node->keys[node->keys.size() / 2]);
+                right->parentPath = pathify(node->keys[node->keys.size() / 2]);
             }
             BTreeNode<T>* next = node->parent;
             if (next != nullptr) delete node;
             node = next;
             setLeafNodes();
         }
+        if (node)
+            writeNodeToFile(node);
     }
 
     void setChildren(BTreeNode<T>* node, BTreeNode<T>* left, BTreeNode<T>* right, int mid) {

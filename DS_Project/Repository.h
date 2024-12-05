@@ -59,6 +59,7 @@ public:
 
         string line;
         getline(file, line); // Read the header line and skip it
+        getline(file, line);
         stringstream ss(line);
         string cell;
         int currentColumnIndex = 0;
