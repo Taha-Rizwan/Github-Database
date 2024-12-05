@@ -6,18 +6,14 @@
 #include"Merkle.h"
 using namespace std;
 
-template<class T>
-string to_string_generic(const T& data) {
-	std::stringstream ss;
-	ss << data;
 
-	return ss.str();
-}
 
 template<class T>
 class Tree {
-	MerkleTree<T> merkle;
 public:
+	MerkleTree<T>* merkle;
+	string rootFile;
+	int order;
 	//Comparison fUNCTIONS
 	//CHAR
 	void toLower(string& data) {

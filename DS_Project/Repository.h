@@ -22,7 +22,7 @@ private:
         cout << "\t8: View Data" << endl;
         cout << "\tChoose: ";
     }
-	
+
 public:
     string name;
     string csv_path;
@@ -32,9 +32,9 @@ public:
     vector<string> roots;
     string currBranch;
     Tree<T>* tree;
-	Repository(Tree<T>* tree):tree(tree) {
-      
-	}
+    Repository(Tree<T>* tree) :tree(tree) {
+
+    }
     void create() {
         cout << "Enter Repo Name: ";
         cin >> name;
@@ -45,7 +45,7 @@ public:
         create_directory(name);
         currBranch = "main";
         create_directory(name + "/" + currBranch);
-	    create_directory(name + "/" + currBranch + "/data");
+        create_directory(name + "/" + currBranch + "/data");
         branches.push_back("main");
 
         tree->createNil();
@@ -54,7 +54,7 @@ public:
             cerr << "Error: Could not open file!" << endl;
             return;
         }
-      
+
 
         string line;
         getline(file, line); // Read the header line and skip it
@@ -65,8 +65,8 @@ public:
             stringstream ss(line);
             string cell;
             int currentColumnIndex = 0;
-          //  vector<string> rowData;
-            // Parse the line using ',' as a delimiter
+            //  vector<string> rowData;
+              // Parse the line using ',' as a delimiter
             while (getline(ss, cell, ',')) {
                 // Check if the cell starts with a quotation mark
                 if (!cell.empty() && cell.front() == '"') {
@@ -100,25 +100,27 @@ public:
                 //rowData.push_back(cell);
             }
 
-           // ofstream dataFile;
-           // dataFile.open(name + "/" + currBranch + "/data/" + to_string(ln) + ".txt");
-          //  for (int i = 0; i < rowData.size(); i++) {
-         //       dataFile << rowData[i] << '\n';
-         //   }
-         //   dataFile.close();
-         //   ln++;
+            // ofstream dataFile;
+            // dataFile.open(name + "/" + currBranch + "/data/" + to_string(ln) + ".txt");
+           //  for (int i = 0; i < rowData.size(); i++) {
+          //       dataFile << rowData[i] << '\n';
+          //   }
+          //   dataFile.close();
+          //   ln++;
         }
         cout << "reading done\n";
         file.close();
-        tree->computeHash();
-	    roots.push_back(tree->getRootFile());
+        //tree->computeHash();
+        tree->merkle = new MerkleTree<T>(tree->order, name, currBranch);
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        roots.push_back(tree->getRootFile());
         cout << endl;
-       
+
     }
 
     void main() {
-        
-     
+
+
         bool logic = true;
         while (logic) {
             printCommands();
@@ -155,8 +157,8 @@ public:
                 break;
             }
         }
-       
-        
+
+
 
 
     }
@@ -164,25 +166,26 @@ public:
         T val;
         cout << "Value to add: ";
         cin >> val;
-        tree->insert(val,ln++);
-        tree->computeHash();
+        tree->insert(val, ln++);
+        //tree->computeHash();
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
     }
     void deleteNode() {
         T val;
         cout << "Value to delete: ";
         cin >> val;
-        tree->deleteByVal(val,false);
+        tree->deleteByVal(val, false);
         tree->computeHash();
     }
     void updateNode() {
-        T val,newVal;
+        T val, newVal;
         cout << "Value to update: ";
         cin >> val;
         cout << "Updated Value: ";
         cin >> newVal;
-        int num =  tree->deleteByVal(val,true);
-        tree->insert(newVal,num);
-     
+        int num = tree->deleteByVal(val, true);
+        tree->insert(newVal, num);
+
         tree->computeHash();
         //tree->updateNode(val);
     }
@@ -190,76 +193,77 @@ public:
     void viewNodeData() {
 
         T data;
-	    cout<<"Enter data to view";
-	    cin>>data;
-	    int toBeViewed = tree->searchData(data);
+        cout << "Enter data to view";
+        cin >> data;
+        int toBeViewed = tree->searchData(data);
 
-	    ifstream file(csv_path);
-	    if (!file.is_open()) {
-	        cerr << "Error: Could not open file!" << endl;
-	        return;
-	    }
+        ifstream file(csv_path);
+        if (!file.is_open()) {
+            cerr << "Error: Could not open file!" << endl;
+            return;
+        }
 
-	    string line;
-	    int currentLine = 2;
-	    vector<string> rowData;
+        string line;
+        int currentLine = 2;
+        vector<string> rowData;
 
-	    while (getline(file, line)) {
-	        currentLine++;
-	        if (currentLine == toBeViewed) {
-	            stringstream ss(line);
-	            string cell;
+        while (getline(file, line)) {
+            currentLine++;
+            if (currentLine == toBeViewed) {
+                stringstream ss(line);
+                string cell;
 
-	            while (getline(ss, cell, ',')) {
-	                // Check if the cell starts with a quotation mark
-	                if (!cell.empty() && cell.front() == '"') {
-	                    string quotedCell = cell;
-	                    // Continue accumulating until we find the closing quote
-	                    while (!quotedCell.empty() && quotedCell.back() != '"') {
-	                        string nextPart;
-	                        if (getline(ss, nextPart, ',')) {
-	                            quotedCell += "," + nextPart; // Add delimiter and next part
-	                        } else {
-	                            break; // Exit if no more parts
-	                        }
-	                    }
-	                    // Remove enclosing quotes
-	                    if (!quotedCell.empty() && quotedCell.front() == '"' && quotedCell.back() == '"') {
-	                        quotedCell = quotedCell.substr(1, quotedCell.size() - 2);
-	                    }
-	                    cell = quotedCell; // Update the cell to the accumulated quoted content
-	                }
-	                rowData.push_back(cell);
-	            }
-	            break; // Stop reading after the desired line
-	        }
-	    }
+                while (getline(ss, cell, ',')) {
+                    // Check if the cell starts with a quotation mark
+                    if (!cell.empty() && cell.front() == '"') {
+                        string quotedCell = cell;
+                        // Continue accumulating until we find the closing quote
+                        while (!quotedCell.empty() && quotedCell.back() != '"') {
+                            string nextPart;
+                            if (getline(ss, nextPart, ',')) {
+                                quotedCell += "," + nextPart; // Add delimiter and next part
+                            }
+                            else {
+                                break; // Exit if no more parts
+                            }
+                        }
+                        // Remove enclosing quotes
+                        if (!quotedCell.empty() && quotedCell.front() == '"' && quotedCell.back() == '"') {
+                            quotedCell = quotedCell.substr(1, quotedCell.size() - 2);
+                        }
+                        cell = quotedCell; // Update the cell to the accumulated quoted content
+                    }
+                    rowData.push_back(cell);
+                }
+                break; // Stop reading after the desired line
+            }
+        }
 
-	    file.close();
+        file.close();
 
-	    // Print the rowData
-	    for (const auto& cell : rowData) {
-	        cout << cell << " ";
-	    }
-	    cout << endl;
-	}
+        // Print the rowData
+        for (const auto& cell : rowData) {
+            cout << cell << " ";
+        }
+        cout << endl;
+    }
 
     void visualizeTree() {
         tree->display();
     }
     void switchBranch() {
 
-        
+
 
         cout << "Select which branch you want: ";
         int n;
         for (int i = 0; i < branches.size(); i++) {
-            cout << i + 1 << ": " << branches[i]<<endl;
+            cout << i + 1 << ": " << branches[i] << endl;
         }
         cin >> n;
         if (n - 1 >= 0 && n <= branches.size()) {
             currBranch = branches[n - 1];
-            tree->changeBranch(roots[n-1]);
+            tree->changeBranch(roots[n - 1]);
             cout << "Current Branch is set to: " << currBranch << endl;
         }
         else {
@@ -275,15 +279,15 @@ public:
 
 
         branches.push_back(newBranch);
-	    roots.push_back(tree->getRootFile());
-	    tree->changeBranch(tree->getRootFile());
+        roots.push_back(tree->getRootFile());
+        tree->changeBranch(tree->getRootFile());
         currBranch = newBranch;
         cout << "New branch has been created and cloned by current version of main" << endl;
         cout << "Current Branch is set to: " << currBranch << endl;
 
 
-        path sourceDir = name +  "/"+ "main";
-        path destinationDir = name +"/"+ newBranch;
+        path sourceDir = name + "/" + "main";
+        path destinationDir = name + "/" + newBranch;
 
         create_directory(destinationDir);
 
@@ -291,9 +295,9 @@ public:
             const auto& sourcePath = entry.path();
             auto destinationPath = destinationDir / sourcePath.filename();
 
-                // Copy files
-                copy_file(sourcePath, destinationPath, copy_options::overwrite_existing);
-            
+            // Copy files
+            copy_file(sourcePath, destinationPath, copy_options::overwrite_existing);
+
         }
     }
     void deleteBranch() {
@@ -303,4 +307,3 @@ public:
 
     }
 };
-

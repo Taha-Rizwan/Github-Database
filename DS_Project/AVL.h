@@ -86,12 +86,12 @@ public:
 template<class T>
 class AVL :public Tree<T> {
 public:
-	int order;
-	string rootFile;
 	int nNodes;
 	Repository<T> repo;
-	AVL() :rootFile("NULL"),repo(this), nNodes(0),ht(this,151),order(2) {
+	AVL() :repo(this), nNodes(0),ht(this,151) {
 		//computeHash();
+		Tree<T>::order = 2;
+		Tree<T>::rootFile = "NULL";
 		repo.create();
 		ht.emptyTable();
 		repo.main();
@@ -102,14 +102,15 @@ public:
 
 
 
+
 	void deleteByVal(T val) {
-		deleteNode(rootFile, val);
+		deleteNode(Tree<T>::rootFile, val);
 		string fileName = to_string_generic(val) + ".txt";
 		deleteFile(fileName);
 	}
 
 	void display() {
-		printTree(rootFile);
+		printTree(Tree<T>::rootFile);
 	}
 
 
@@ -495,16 +496,16 @@ public:
 
 	void insert(T data,int ln) {
 		Tree<T>::toLower(data);
-		if (rootFile == "NULL") {
+		if (Tree<T>::rootFile == "NULL") {
 			// Create root node
 			AVLNode<T>* rootNode = new AVLNode<T>(data);
 			rootNode->lineNumbers.push_back(ln);
 			rootNode->dirty();
-			rootFile = createFile(rootNode);
+			Tree<T>::rootFile = createFile(rootNode);
 			return;
 		}
 
-		string currFile = rootFile;
+		string currFile = Tree<T>::rootFile;
 		string parentFile = "NULL";
 
 		// Traverse the tree to find the correct position for the new node
@@ -577,8 +578,8 @@ public:
 
 
 		// Ensure the root file pointer is correct after all rotations
-		if (rootFile != "NULL") {
-			AVLNode<T>* rootNode = readNodeFromFile(rootFile);
+		if (Tree<T>::rootFile != "NULL") {
+			AVLNode<T>* rootNode = readNodeFromFile(Tree<T>::rootFile);
 			rootNode->height = 1 + max(getHeight(rootNode->leftPath), getHeight(rootNode->rightPath));
 			ht.insert(to_string_generic(rootNode->data), rootNode);
 		}
@@ -623,7 +624,7 @@ public:
 		k2->parentPath = k1->parentPath;  // k2's parent becomes k1's parent
 
 		if (k1->parentPath == "NULL") {
-			rootFile = k2->fileName;  // Update root if k1 was the root
+			Tree<T>::rootFile = k2->fileName;  // Update root if k1 was the root
 		}
 		else {
 			AVLNode<T>* parent = readNodeFromFile(k1->parentPath);
@@ -668,7 +669,7 @@ public:
 		k2->parentPath = k1->parentPath;
 		if (k1->parentPath == "NULL") {
 			// k1 is the root, so update the root of the tree
-			rootFile = k2->fileName;
+			Tree<T>::rootFile = k2->fileName;
 		}
 		else {
 			// Update the parent's left or right pointer to point to k2
@@ -801,8 +802,12 @@ public:
 					else {
 						parent->rightPath = "NULL";
 					}
+					//node->dirty();
+					//ht.insert(to_string_generic(node->data), node);
 					updateNodeFile(parent);
 					temp->parentPath = "NULL";
+					//temp->dirty();
+					//ht.insert(to_string_generic(temp->data), temp);
 					updateNodeFile(temp);
 					deleteFile(tempFile);
 				}
@@ -844,8 +849,8 @@ public:
 
 				currNode->fileName = to_string_generic(currNode->data) + ".txt";
 				createFile(currNode);
-				if (currFile == rootFile) {
-					rootFile = currNode->fileName;
+				if (currFile == Tree<T>::rootFile) {
+					Tree<T>::rootFile = currNode->fileName;
 				}
 				if (currNode->leftPath != "NULL") {
 					AVLNode<T>* left = readNodeFromFile(currNode->leftPath);
