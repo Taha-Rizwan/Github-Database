@@ -28,7 +28,7 @@ public:
     }
 
     BTreeNode<T>* search(T key, bool insert, BTreeNode<T>* node = nullptr, int childIndex = 0) { //searches for the key in BTree
-        if (!insert)
+        if (!insert) 
             if (!root)
                 return root;
 
@@ -41,10 +41,10 @@ public:
 
         if (i < node->keys.size() && key == node->keys[i]) //if the key is found
             return node;
-
+        
         else if (node->leaf) //if key not found, depending on if function used for insertion, return node or null
             return (insert) ? node : nullptr;
-
+        
         else //recursive search
             return search(key, insert, node->children[i], i);
     }
@@ -76,7 +76,7 @@ public:
         }
     }
 
-
+    
     void setLeafNodes() { //function to set leaf nodes in the BTree
         queue<BTreeNode<T>*> levelOrderQueue;
         levelOrderQueue.push(root);
@@ -92,7 +92,16 @@ public:
                 levelOrderQueue.push(curr->children[i]);
         }
     }
-
+    void sortForRoot(BTreeNode<T>*& node) {
+        if (node->children.size() == 0)
+            return;
+        for (int j = 0; j < node->children.size(); j++) {
+            for (int i = 0; i < node->children.size() - 1; i++) {
+                if (node->children[i]->keys[0] > node->children[i + 1]->keys[0])
+                    swap(node->children[i], node->children[i + 1]);
+            }
+        }
+    }
     void insert(T k) { //inserting a key in a BTree
         if (root == nullptr) {
             root = new BTreeNode<int>;
@@ -109,19 +118,21 @@ public:
             int splitFrom = node->keys.size() / 2; // the index of the splitting node
             BTreeNode<T>* left = new BTreeNode<int>;
             BTreeNode<T>* right = new BTreeNode<int>;
-            for (int i = 0; i < splitFrom; i++)
+            for (int i = 0; i < splitFrom; i++) 
                 left->keys.push_back(node->keys[i]); // insertion in left childs of the parent which is split
-            for (int i = splitFrom + 1; i < m; i++)
+            for (int i = splitFrom + 1; i < m; i++) 
                 right->keys.push_back(node->keys[i]);
 
             if (node == root) {
                 T splitKey = node->keys[splitFrom]; // the key which is to be moved to parent
+                sortForRoot(node);
                 if (node->keys.size() == m)
                     setChildren(node, left, right, splitFrom);
                 node->keys.clear(); node->keys.push_back(splitKey);
                 node->children.clear();
-                node->children.push_back(left);
+                node->children.push_back(left); 
                 node->children.push_back(right);
+                sort(node->children.begin(), node->children.end());
                 left->parent = node; right->parent = node;
             }
             else {
@@ -129,18 +140,18 @@ public:
                 sort(node->parent->keys.begin(), node->parent->keys.end());
                 int currentChildIndex = 0;
                 for (int i = 0; i < node->parent->children.size(); i++) {
-                    if (node == node->parent->children[i])
+                    if (node == node->parent->children[i]) 
                         break;
                     currentChildIndex++;
-                }
+                }  
                 node->parent->children[currentChildIndex] = left; //updating the children with left and right nodes
                 node->parent->children.push_back(right);
-                left->parent = node->parent;
+                left->parent = node->parent; 
                 right->parent = node->parent;
                 if (node->keys.size() == m)
                     setChildren(node, left, right, splitFrom);
                 node->children.clear();
-                node->children.push_back(left);
+                node->children.push_back(left); 
                 node->children.push_back(right);
             }
             BTreeNode<T>* next = node->parent;
@@ -154,7 +165,7 @@ public:
         for (int i = 0, j = 0; i <= mid; i++, j++) { //moving children to the left child node
             if (i < node->children.size()) {
                 left->children.push_back(node->children[i]);
-                if (j < left->children.size())
+                if (j < left->children.size()) 
                     left->children[j]->parent = left;
                 left->leaf = false;
             }
@@ -162,7 +173,7 @@ public:
         for (int i = mid + 1, j = 0; i <= m; i++, j++) { //moving children to the right child node
             if (i < node->children.size()) {
                 right->children.push_back(node->children[i]);
-                if (j < right->children.size())
+                if (j < right->children.size()) 
                     right->children[j]->parent = right;
                 right->leaf = false;
             }
@@ -236,7 +247,7 @@ public:
                     leftSibling->keys.push_back(node->parent->keys[childIndex - 1]);
                     node->parent->keys.erase(node->parent->keys.begin() + childIndex - 1);
                     for (int i = 0; i < node->keys.size(); i++)
-                        leftSibling->keys.push_back(node->keys[i]);
+                            leftSibling->keys.push_back(node->keys[i]);
                     for (int i = childIndex; i < node->parent->children.size() - 1; i++)
                         node->parent->children[i] = node->parent->children[i + 1];
                     node->parent->children.pop_back();
@@ -377,7 +388,7 @@ public:
             node->keys[index] = temp;
             deleteFromLeaf(prevNode, prevNode->keys.size() - 1, prevIndex);
         }
-
+        
         else if (nextNode->keys.size() > ceil(m / 2.0) - 1) { // check to see if next can be brought up
             T temp = nextNode->keys.front(); // then we can take successor up to the parent node and delete from leaf the original value
             nextNode->keys.erase(nextNode->keys.begin());
@@ -410,7 +421,7 @@ public:
 
     void print(BTreeNode<T>* root, int depth = 0) {  //function to print the BTree
         cout << "Level " << depth << ": ";
-        for (int i = 0; i < root->keys.size(); i++)
+        for (int i = 0; i < root->keys.size(); i++) 
             cout << root->keys[i] << " ";
         cout << endl;
         depth++;

@@ -50,6 +50,22 @@ public:
         return path;
     }
 
+    void make() {
+        BTreeNode<T>* temp = nullptr;
+        rootPath = createFile(root);
+        Tree<T>::rootFile = rootPath;
+        queue<BTreeNode<T>*> q;
+        q.push(root);
+        while (!q.empty()) {
+            temp = q.front();
+            q.pop();
+            for (int i = 0; i < temp->children.size(); i++)
+                q.push(temp->children[i]);
+            writeNodeToFile(temp);
+        }
+
+    }
+
     BTreeNode<T>* readNodeFromFile(string path) {
         if (path == "null")
             return nullptr;
@@ -103,7 +119,7 @@ public:
             file << "null";
         else {
             for (int i = 0; i < node->children.size(); i++)
-                file << pathify(to_bString(node->children[i]->keys));
+                file << pathify(to_bString(node->children[i]->keys)) << ",";
         }
         /*if (node->children.size() > 0) {
             for (int i = 0; i < node->children.size(); i++)
@@ -182,12 +198,20 @@ public:
         }
     }
 
+    void sortForRoot(BTreeNode<T>*& node) {
+        if (node->children.size() == 0)
+            return;
+        for (int j = 0; j < node->children.size(); j++) {
+            for (int i = 0; i < node->children.size() - 1; i++) {
+                if (node->children[i]->keys[0] > node->children[i + 1]->keys[0])
+                    swap(node->children[i], node->children[i + 1]);
+            }
+        }
+    }
     void insert(T k, int ln) { //inserting a key in a BTree
         if (root == nullptr) {
             root = new BTreeNode<T>;
             root->keys.push_back(k);
-            rootPath = createFile(root);
-            writeNodeToFile(root);
             return;
         }
         setLeafNodes();
@@ -207,12 +231,14 @@ public:
 
             if (node == root) {
                 T splitKey = node->keys[splitFrom]; // the key which is to be moved to parent
+                sortForRoot(node);
                 if (node->keys.size() == m)
                     setChildren(node, left, right, splitFrom);
                 node->keys.clear(); node->keys.push_back(splitKey);
                 node->children.clear();
                 node->children.push_back(left);
                 node->children.push_back(right);
+                sort(node->children.begin(), node->children.end());
                 left->parent = node; right->parent = node;
             }
             else {

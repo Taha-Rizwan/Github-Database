@@ -11,6 +11,7 @@ using namespace std;
 template<class T>
 class Tree {
 public:
+	virtual void make() {}
 	MerkleTree<T>* merkle;
 	string rootFile;
 	int order;

@@ -60,7 +60,7 @@ public:
         getline(file, line); // Read the header line and skip it
         cout << "Reading CSV to main branch(default): " << endl;
         ln = 2;
-
+         
         while (getline(file, line)) {
             stringstream ss(line);
             string cell;
@@ -110,6 +110,7 @@ public:
         }
         cout << "reading done\n";
         file.close();
+        tree->make();
         //tree->computeHash();
         tree->merkle = new MerkleTree<T>(tree->order, name, currBranch);
         tree->changeBranch(tree->getRootFile());
