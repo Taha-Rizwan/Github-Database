@@ -30,6 +30,7 @@ public:
     //Create vector class later
     vector<string> branches;
     vector<string> roots;
+    vector<string> header;
     string currBranch;
     Tree<T>* tree;
     Repository(Tree<T>* tree) :tree(tree) {
@@ -45,7 +46,7 @@ public:
         create_directory(name);
         currBranch = "main";
         create_directory(name + "/" + currBranch);
-        //create_directory(name + "/" + currBranch + "/data");
+        create_directory(name + "/" + currBranch + "/data");
         branches.push_back("main");
 
         tree->createNil();
@@ -58,6 +59,39 @@ public:
 
         string line;
         getline(file, line); // Read the header line and skip it
+        stringstream ss(line);
+        string cell;
+        int currentColumnIndex = 0;
+        // Parse the line using ',' as a delimiter
+        while (getline(ss, cell, ',')) {
+            // Check if the cell starts with a quotation mark
+            if (!cell.empty() && cell.front() == '"') {
+                string quotedCell = cell;
+                // Continue accumulating until we find the closing quote
+                while (!quotedCell.empty() && quotedCell.back() != '"') {
+                    string nextPart;
+                    if (getline(ss, nextPart, ',')) {
+                        quotedCell += "," + nextPart; // Add delimiter and next part
+                    }
+                    else {
+                        break; // Exit if no more parts
+                    }
+                }
+                // Remove enclosing quotes
+                if (!quotedCell.empty() && quotedCell.front() == '"' && quotedCell.back() == '"') {
+                    quotedCell = quotedCell.substr(1, quotedCell.size() - 2);
+                }
+                cell = quotedCell; // Update the cell to the accumulated quoted content
+            }
+
+            if (currentColumnIndex == column) {
+                tree->insert(cell, ln);
+
+            }
+
+            currentColumnIndex++;
+            header.push_back(cell);
+        }
         cout << "Reading CSV to main branch(default): " << endl;
         ln = 2;
 
@@ -65,7 +99,7 @@ public:
             stringstream ss(line);
             string cell;
             int currentColumnIndex = 0;
-            //  vector<string> rowData;
+            vector<string> rowData;
               // Parse the line using ',' as a delimiter
             while (getline(ss, cell, ',')) {
                 // Check if the cell starts with a quotation mark
@@ -90,23 +124,20 @@ public:
 
                 if (currentColumnIndex == column) {
                     tree->insert(cell, ln);
-                    ln++;
-                    break;
-
 
                 }
 
                 currentColumnIndex++;
-                //rowData.push_back(cell);
+                rowData.push_back(cell);
             }
 
-            // ofstream dataFile;
-            // dataFile.open(name + "/" + currBranch + "/data/" + to_string(ln) + ".txt");
-           //  for (int i = 0; i < rowData.size(); i++) {
-          //       dataFile << rowData[i] << '\n';
-          //   }
-          //   dataFile.close();
-          //   ln++;
+            ofstream dataFile;
+            dataFile.open(name + "/" + currBranch + "/data/" + to_string(ln) + ".txt");
+            for (int i = 0; i < rowData.size(); i++) {
+                dataFile << rowData[i] << '\n';
+            }
+            dataFile.close();
+            ln++;
         }
         cout << "reading done\n";
         file.close();
@@ -116,7 +147,6 @@ public:
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
         roots.push_back(tree->getRootFile());
         cout << endl;
-
     }
 
     void main() {
