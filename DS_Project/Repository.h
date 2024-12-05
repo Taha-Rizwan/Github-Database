@@ -136,9 +136,12 @@ public:
         cout << "reading done\n";
         file.close();
         //tree->computeHash();
-        tree->merkle = new MerkleTree<T>(tree->order, name, currBranch);
+        tree->merkle = new MerkleTree<T>(tree->order);
         tree->changeBranch(tree->getRootFile());
-        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        //cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        string dataFolder = name + "\\" + currBranch + "\\" + "data";
+        cout << "AFTER READING ...DATA FOLDER: " << dataFolder << endl << endl;
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
         roots.push_back(tree->getRootFile());
         cout << endl;
     }
@@ -229,7 +232,8 @@ public:
         writeFileByLineNumber(ln, rowData);
         tree->insert(rowData[column], ln++);
         //tree->computeHash();
-        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        string dataFolder = name + "\\" + currBranch + "\\" + "data";
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
 
     }
     void deleteNode() {
@@ -241,7 +245,9 @@ public:
             cout << "Deleted from line number: " << l << endl;
             remove((name + "/" + currBranch + "/data/" + to_string(l) + ".txt").c_str());
         }
-        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        string dataFolder = name + "\\" + currBranch + "\\" + "data";
+        cout << "Data folder: " << dataFolder << endl;
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
     }
     void updateNode() {
         T val, newVal;
@@ -281,6 +287,9 @@ public:
         //
         // tree->computeHash();
         // cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        string dataFolder = name + "\\" + currBranch + "\\" + "data";
+        cout << "Datafolder: " << dataFolder << endl;
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
     }
 
     void viewNodeData() {
