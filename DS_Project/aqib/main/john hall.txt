@@ -1,7 +1,0 @@
-john hall
-john khan
-nil
-nil
-1
--1
-3123

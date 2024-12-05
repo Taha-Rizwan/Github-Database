@@ -1,7 +1,0 @@
-tara west
-susan lee
-nil
-nil
-0
--1
-1824

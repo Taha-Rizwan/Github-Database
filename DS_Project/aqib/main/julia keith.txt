@@ -1,7 +1,0 @@
-julia keith
-julia lloyd
-nil
-nil
-0
--1
-1006
