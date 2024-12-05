@@ -7,6 +7,8 @@
 #include <fstream>
 #include <filesystem>
 #include <sstream>
+#include <openssl/evp.h>
+#include <iomanip>
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -17,6 +19,51 @@ string to_string_generic(const T& data) {
     ss << data;
     return ss.str();
 }
+
+string calculateSHA256(const string& data) {
+    // Create a context for SHA256 hashing
+    EVP_MD_CTX* context = EVP_MD_CTX_new();
+    if (context == nullptr) {
+        cerr << "Error creating EVP_MD_CTX" << endl;
+        return "";
+    }
+
+    // Initialize the SHA256 context
+    if (EVP_DigestInit_ex(context, EVP_sha256(), nullptr) != 1) {
+        cerr << "Error initializing SHA256" << endl;
+        EVP_MD_CTX_free(context);
+        return "";
+    }
+
+    // Update the context with the data
+    if (EVP_DigestUpdate(context, data.c_str(), data.size()) != 1) {
+        cerr << "Error updating SHA256" << endl;
+        EVP_MD_CTX_free(context);
+        return "";
+    }
+
+    // Finalize the hash
+    unsigned char hash[EVP_MAX_MD_SIZE];
+    unsigned int lengthOfHash = 0;
+    if (EVP_DigestFinal_ex(context, hash, &lengthOfHash) != 1) {
+        cerr << "Error finalizing SHA256" << endl;
+        EVP_MD_CTX_free(context);
+        return "";
+    }
+
+    // Convert the hash into a hex string
+    stringstream hexStream;
+    for (unsigned int i = 0; i < lengthOfHash; i++) {
+        hexStream << hex << setw(2) << setfill('0') << (int)hash[i];
+    }
+
+    // Free the context
+    EVP_MD_CTX_free(context);
+
+    // Return the hash as a string
+    return hexStream.str();
+}
+
 
 // Instructor's hash function
 string instructorHash(string text) {
@@ -43,12 +90,12 @@ public:
 
     // Constructor for leaf nodes
     MerkleNode(T data, bool leaf) : data(data), hash(" "), left(nullptr), right(nullptr), leaf(leaf) {
-        hash = instructorHash(data);
+        hash = calculateSHA256(data);
     }
 
     // Constructor for internal nodes
     MerkleNode(MerkleNode* left, MerkleNode* right) : left(left), right(right), leaf(false) {
-        hash = instructorHash(left->hash + right->hash);
+        hash = calculateSHA256(left->hash + right->hash);
     }
 };
 
