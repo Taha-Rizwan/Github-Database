@@ -83,12 +83,6 @@ public:
                 }
                 cell = quotedCell; // Update the cell to the accumulated quoted content
             }
-
-            if (currentColumnIndex == column) {
-                tree->insert(cell, ln);
-
-            }
-
             currentColumnIndex++;
             header.push_back(cell);
         }
@@ -188,16 +182,52 @@ public:
                 break;
             }
         }
-
-
-
-
     }
+
+    vector<string> readFileByLineNumber(int lineNumber) {
+        vector<string> rowData;
+        string filePath = name + "/" + currBranch + "/data/" + to_string(lineNumber) + ".txt";
+        ifstream file(filePath);
+
+        if (!file.is_open()) {
+            cerr << "Error: Could not open file " << filePath << endl;
+            return rowData;
+        }
+
+        string line;
+        while (getline(file, line)) {
+            rowData.push_back(line);
+        }
+
+        file.close();
+        return rowData;
+    }
+
+    void writeFileByLineNumber(int ln, vector<string>&rowData) {
+        ofstream dataFile;
+        dataFile.open(name + "/" + currBranch + "/data/" + to_string(ln) + ".txt");
+        for (int i = 0; i < rowData.size(); i++) {
+            dataFile << rowData[i] << '\n';
+        }
+        dataFile.close();
+    }
+
     void addNode() {
-        T val;
-        cout << "Value to add: ";
-        cin >> val;
-        tree->insert(val, ln++);
+        // T val;
+        // cout << "Value to add: ";
+        // cin >> val;
+        vector<string> rowData;
+        string data;
+        cin.ignore();
+        for (int i = 0;i<header.size();i++) {
+            cout << header[i] << ": ";
+
+            getline(cin, data);
+            //getline(data);
+            rowData.push_back(data);
+        }
+        writeFileByLineNumber(ln, rowData);
+        tree->insert(rowData[column], ln++);
         //tree->computeHash();
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
 
@@ -206,20 +236,51 @@ public:
         T val;
         cout << "Value to delete: ";
         cin >> val;
-        tree->deleteByVal(val, false);
+        int l = tree->deleteByVal(val, false);
+        if (l != -1) {
+            cout << "Deleted from line number: " << l << endl;
+            remove((name + "/" + currBranch + "/data/" + to_string(l) + ".txt").c_str());
+        }
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
     }
     void updateNode() {
         T val, newVal;
         cout << "Value to update: ";
         cin >> val;
-        cout << "Updated Value: ";
-        cin >> newVal;
-        int num = tree->deleteByVal(val, true);
-        tree->insert(newVal, num);
 
-        tree->computeHash();
-        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        int ln = tree->searchData(val);
+        if (ln!=-1) {
+            cout<<"What do you want to change: "<<endl;
+            for (int i = 0;i<header.size();i++) {
+                cout<<i<<": "<<header[i]<<endl;
+            }
+            int opt;
+            cin>>opt;
+            if (opt>=0 &&opt<header.size()) {
+                vector<string> rowData =readFileByLineNumber(ln);
+                cout<<"Current "<<header[opt]<<": "<<rowData[opt]<<endl;
+                cout<<"Updated "<<header[opt]<<": ";
+                string data;
+                cin.ignore();
+                getline(cin, data);
+                string old = rowData[opt];
+                rowData[opt] = data;
+                writeFileByLineNumber(ln, rowData);
+                if (opt==column) {
+                    tree->deleteByVal(old,ln);
+                    tree->insert(data,ln);
+                }
+            }
+
+        }
+
+        // cout << "Updated Value: ";
+        // cin >> newVal;
+        //int num = tree->deleteByVal(val, true);
+        // tree->insert(newVal, num);
+        //
+        // tree->computeHash();
+        // cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
     }
 
     void viewNodeData() {
@@ -229,55 +290,17 @@ public:
         cin >> data;
         int toBeViewed = tree->searchData(data);
 
-        ifstream file(csv_path);
-        if (!file.is_open()) {
-            cerr << "Error: Could not open file!" << endl;
+        if (toBeViewed == -1) {
+            cout << "Data not found!" << endl;
             return;
-        }
+        } else {
+            vector<string> rowData = readFileByLineNumber(toBeViewed);
 
-        string line;
-        int currentLine = 2;
-        vector<string> rowData;
-
-        while (getline(file, line)) {
-            currentLine++;
-            if (currentLine == toBeViewed) {
-                stringstream ss(line);
-                string cell;
-
-                while (getline(ss, cell, ',')) {
-                    // Check if the cell starts with a quotation mark
-                    if (!cell.empty() && cell.front() == '"') {
-                        string quotedCell = cell;
-                        // Continue accumulating until we find the closing quote
-                        while (!quotedCell.empty() && quotedCell.back() != '"') {
-                            string nextPart;
-                            if (getline(ss, nextPart, ',')) {
-                                quotedCell += "," + nextPart; // Add delimiter and next part
-                            }
-                            else {
-                                break; // Exit if no more parts
-                            }
-                        }
-                        // Remove enclosing quotes
-                        if (!quotedCell.empty() && quotedCell.front() == '"' && quotedCell.back() == '"') {
-                            quotedCell = quotedCell.substr(1, quotedCell.size() - 2);
-                        }
-                        cell = quotedCell; // Update the cell to the accumulated quoted content
-                    }
-                    rowData.push_back(cell);
-                }
-                break; // Stop reading after the desired line
+            for (int i =0;i<rowData.size();i++) {
+                cout << header[i] << ": " << rowData[i] << endl;
             }
-        }
 
-        file.close();
-
-        // Print the rowData
-        for (const auto& cell : rowData) {
-            cout << cell << " ";
         }
-        cout << endl;
     }
 
     void visualizeTree() {
@@ -325,13 +348,15 @@ public:
 
         create_directory(destinationDir);
 
-        for (const auto& entry : directory_iterator(sourceDir)) {
+        for (const auto& entry : recursive_directory_iterator(sourceDir)) {
             const auto& sourcePath = entry.path();
-            auto destinationPath = destinationDir / sourcePath.filename();
+            auto destinationPath = destinationDir / relative(sourcePath, sourceDir);
 
-            // Copy files
-            copy_file(sourcePath, destinationPath, copy_options::overwrite_existing);
-
+            if (is_directory(sourcePath)) {
+                create_directory(destinationPath);
+            } else {
+                copy_file(sourcePath, destinationPath, copy_options::overwrite_existing);
+            }
         }
 
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
