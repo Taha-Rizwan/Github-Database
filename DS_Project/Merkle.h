@@ -1,201 +1,157 @@
-#pragma once
-#include<iostream>
-#include<vector>
-#include<string>
-#include<fstream>
-#include<filesystem>
-#include"Repository.h"
-//#include <openssl/sha.h> //error couldnt find header
+//Now calculates hash of the entire row of the respective node
+//MerkleTree is completely based on the data of the branch....if there is no change in the data file there wont be any change in the hash
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <filesystem>
+#include <sstream>
 
 using namespace std;
+namespace fs = std::filesystem;
 
 template<class T>
 string to_string_generic(const T& data) {
-	std::stringstream ss;
-	ss << data;
-
-	return ss.str();
+    std::stringstream ss;
+    ss << data;
+    return ss.str();
 }
 
-
-//instructor's hash
+// Instructor's hash function
 string instructorHash(string text) {
-	int hash = 1;
-
-	for (int i = 0; i < text.length();i++) {
-		hash *= text[i]; // Multiply ASCII values of characters
-
-		hash %= 29;     // To avoid integer overflow, take modulo 29 after each step
-	}
-
-	return to_string_generic(hash);
+    int hash = 1;
+    for (int i = 0; i < text.length(); i++) {
+        hash *= text[i];  // Multiply ASCII values of characters
+        hash %= 29499439;       // To avoid integer overflow, take modulo 29 after each step
+    }
+    stringstream ss;
+    //converts the hash value to hex
+    ss << std::hex << std::setw(16) << std::setfill('0') << hash;
+    return ss.str();
 }
-
-
 
 template<class T>
 class MerkleNode {
-	//data field only for leaf nodes
-	T data; 
-	string hash;
-	MerkleNode* left;
-	MerkleNode* right;
-	bool leaf;
+    // Data field only for leaf nodes
 public:
-	MerkleNode(T data, bool leaf) :data(data),left(nullptr),right(nullptr), leaf(leaf),hash(" ") {
-		hash = instructorHash(data);
-	}
-	MerkleNode(MerkleNode* left, MerkleNode* right) : left(left), right(right), leaf(false) {
-		hash = instructorHash(left->hash + right->hash); 
-	}
+    T data;
+    string hash;
+    MerkleNode* left;
+    MerkleNode* right;
+    bool leaf;
+
+    // Constructor for leaf nodes
+    MerkleNode(T data, bool leaf) : data(data), hash(" "), left(nullptr), right(nullptr), leaf(leaf) {
+        hash = instructorHash(data);
+    }
+
+    // Constructor for internal nodes
+    MerkleNode(MerkleNode* left, MerkleNode* right) : left(left), right(right), leaf(false) {
+        hash = instructorHash(left->hash + right->hash);
+    }
 };
-
-//Node for reading from File
-template<class T>
-struct readNode {
-public:
-	T data;
-	int noOfChildren;
-	string parentFile;
-	string* childFiles;
-	readNode(T data, int order) : data(data), noOfChildren(order),parentFile(" ") {
-		childFiles = new string[noOfChildren];
-	}
-
-	readNode(int order):noOfChildren(order), parentFile(" ") {
-		childFiles = new string[noOfChildren];
-	}
-
-};
-
 
 template<class T>
 class MerkleTree {
-	MerkleNode<T>* root;
-	string repoName;
-	string currBranch;
-	int order;
+    MerkleNode<T>* root;
+    string repoName;
+    string currBranch;
+    int order; 
 public:
-	MerkleTree(int order, string repoName,string branch) :order(order), root(nullptr),repoName(repoName),currBranch(branch) {
-	
-	}
-
-	readNode<T>* readNodeFromFile(string filePath) {
-		if (filePath == "NULL" || filePath=="nil")
-			return nullptr;
-		string dataStr = filePath.substr(0, filePath.find(".txt"));
-
-		//if filepath is not in the format data.txt then add .txt 
-		if (filePath.find(".txt") == string::npos) {
-			filePath += ".txt";
-		}
-		fstream file;
-		file.open(repoName+ "/" +currBranch + "/" + filePath);
-		if (!file.is_open()) {
-			cerr << "Cannot open file: " << filePath << endl;
-			throw runtime_error("Unable to open file: " + filePath);
-		}
-		string nodeData;
-		string line;
-
-		readNode<T>* node=new readNode<T>(order);
+    MerkleTree(int order) : order(order), root(nullptr) {}
+   
+    //tried this but it's not working..
+    void deleteTree(MerkleNode<T>* node) {
+        if (node == nullptr) {
+            return;
+        }
+        if (node && node->left) {
+            deleteTree(node->left);
+            node->left = nullptr; 
+        }
+        if (node && node->right) {
+            deleteTree(node->right);
+            node->right = nullptr; 
+        }
+        delete node;
+    }
 
 
-		getline(file, line);
-		node->data = line;
-		getline(file, node->parentFile);
-		for (int i = 0;i < order;i++) {
-			getline(file, node->childFiles[i]);
-		}
 
-		file.close();
+    vector<MerkleNode<T>*> createLeafNodes(const string& dataFolder) {
+        vector<MerkleNode<T>*> leafNodes;
 
-		return node;
-	}
+        vector<string> filePaths;
+        for (const auto& entry : fs::directory_iterator(dataFolder)) {
+            if (entry.is_regular_file() && entry.path().extension() == ".txt") {
+                filePaths.push_back(entry.path().string());
+            }
+        }
 
-	//computes Hash,,,(gpt)
-	//string computeHash(const string& data) {
-	//	unsigned char hash[SHA256_DIGEST_LENGTH];
-	//	SHA256((unsigned char*)data.c_str(), data.size(), hash);
+        //tries sorting the file paths (but not working as expeceted e.g after 89.txt the next file would be 9.txt and after that 90.txt)
+        sort(filePaths.begin(), filePaths.end());
 
-	//	char buffer[2 * SHA256_DIGEST_LENGTH + 1];
-	//	for (int i = 0; i < SHA256_DIGEST_LENGTH; ++i)
-	//		sprintf(buffer + i * 2, "%02x", hash[i]);
-	//	return std::string(buffer);
-	//}
+        for (const string& filePath : filePaths) {
+            ifstream file(filePath);
+            if (file.is_open()) {
 
-	
-	//gathers all the nodes and computes their hashes
-	vector<string> computeLeafFilesFromRoot(string rootFile) {
-		vector<string> leafFiles; 
+                //Reads the entire data related to the node
+                stringstream buffer;
+                buffer << file.rdbuf();  
+                string data = buffer.str();
+                file.close();
 
-		vector<string> trav = { rootFile };
-		while (!trav.empty()) {
-			string currentFile = trav.back();
-			trav.pop_back();
+                data.erase(remove(data.begin(), data.end(), '\n'), data.end());
+                
+                MerkleNode<T>* leafNode = new MerkleNode<T>(data, true);
+                leafNodes.push_back(leafNode);
+            }
+            else {
+                cerr << "Could not open file: " << filePath << endl;
+            }
+        }
 
-			readNode<T>* node = readNodeFromFile(currentFile);
-
-			if (node == nullptr) {
-				continue;
-			}
-
-			leafFiles.push_back(to_string_generic(node->data) + ".txt");
-
-			for (int i = 0; i < node->noOfChildren; i++) {
-				if (node->childFiles[i] != "NULL") {
-					trav.push_back(node->childFiles[i]);
-					leafFiles.push_back(to_string_generic(node->data) + ".txt");
-				}
-			}
-		}
-
-		return leafFiles;
-	}
+        return leafNodes;
+    }
 
 
-	vector<MerkleNode<T>*> createLeafNodes(string rootFile) {
-		vector<string> leafFiles = computeLeafFilesFromRoot(rootFile);
 
-		vector<MerkleNode<T>*> leafNodes;
+    // Build the Merkle Tree after creating the leaf nodes
+    MerkleNode<T>* buildMerkleTree(const string& dataFolder) {
 
-		for (const auto& file : leafFiles) {
-			readNode<T>* node = readNodeFromFile(file);
-			if (node != nullptr) {
-				MerkleNode<T>* leafNode = new MerkleNode<T>(node->data, true);
-				leafNodes.push_back(leafNode);
-			}
-		}
+        //issues wiht deletion...we have to construct merkle tree eveyr time we are looking for any changes so we must delete the old one first
+        if (root!=nullptr) {
+            //deleteTree(root);
+            root = nullptr;
+        }
 
-		return leafNodes;
-	}
+        vector<MerkleNode<T>*> leafNodes = createLeafNodes(dataFolder);
+        if (leafNodes.empty()) return nullptr;
 
-	// Build the Merkle tree after creating the leaf nodes
-	MerkleNode<T>* buildMerkleTree(string rootFile) {
-		vector<MerkleNode<T>*> leafNodes = createLeafNodes(rootFile);
-		if (leafNodes.empty()) return nullptr;
+        vector<MerkleNode<T>*> currentLevel = leafNodes;
 
-		vector<MerkleNode<T>*> currentLevel = leafNodes;
+        //builds the tree level by level...starting from leaf nodes(containing data) and constructs the tree using bottom up approach
+        while (currentLevel.size() > 1) {
+            vector<MerkleNode<T>*> nextLevel;
 
-		while (currentLevel.size() > 1) {
-			vector<MerkleNode<T>*> nextLevel;
+            for (size_t i = 0; i < currentLevel.size(); i += 2) {
+                MerkleNode<T>* left = currentLevel[i];
+                MerkleNode<T>* right = (i + 1 < currentLevel.size()) ? currentLevel[i + 1] : left;
+                MerkleNode<T>* parentNode = new MerkleNode<T>(left, right);
+                nextLevel.push_back(parentNode);
+            }
 
-			for (size_t i = 0; i < currentLevel.size(); i += 2) {
-				MerkleNode<T>* left = currentLevel[i];
-				MerkleNode<T>* right = (i + 1 < currentLevel.size()) ? currentLevel[i + 1] : left;
-				MerkleNode<T>* parentNode = new MerkleNode<T>(left, right);
-				nextLevel.push_back(parentNode);
-			}
+            currentLevel = nextLevel;
+        }
 
-			currentLevel = nextLevel; 
-		}
-		root = currentLevel[0];
-		return root;
-	}
+        root = currentLevel[0];
+        return root;
+    }
 
-	string getRootHash() {
-		return root ? root->hash : "";
-	}
-
-
+    // Get the root hash of the Merkle Tree
+    string getRootHash() const {
+        cout << "left : " << root->left->hash << " ...right: " << root->right->hash << endl;
+        return root ? root->hash : "";
+    }
 };
