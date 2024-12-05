@@ -83,6 +83,8 @@ public:
 	}
 
 };
+
+
 template<class T>
 class AVL :public Tree<T> {
 public:
@@ -919,5 +921,12 @@ public:
 		}
 		return currFile;
 	}
+	void changeBranch(const string &path) {
 
+		ht.emptyTable();
+		Tree<T>::rootFile = path;
+	}
+	string getRootFile() {
+		return Tree<T>::rootFile;
+	}
 };

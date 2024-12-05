@@ -45,7 +45,7 @@ public:
         create_directory(name);
         currBranch = "main";
         create_directory(name + "/" + currBranch);
-        create_directory(name + "/" + currBranch + "/data");
+        //create_directory(name + "/" + currBranch + "/data");
         branches.push_back("main");
 
         tree->createNil();
@@ -112,6 +112,7 @@ public:
         file.close();
         //tree->computeHash();
         tree->merkle = new MerkleTree<T>(tree->order, name, currBranch);
+        tree->changeBranch(tree->getRootFile());
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
         roots.push_back(tree->getRootFile());
         cout << endl;
@@ -144,7 +145,7 @@ public:
                 addBranch();
                 break;
             case 6:
-                deleteBranch();
+                visualizeTree();
                 break;
             case 7:
                 mergeBranch();
@@ -169,13 +170,14 @@ public:
         tree->insert(val, ln++);
         //tree->computeHash();
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+
     }
     void deleteNode() {
         T val;
         cout << "Value to delete: ";
         cin >> val;
         tree->deleteByVal(val, false);
-        tree->computeHash();
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
     }
     void updateNode() {
         T val, newVal;
@@ -187,7 +189,7 @@ public:
         tree->insert(newVal, num);
 
         tree->computeHash();
-        //tree->updateNode(val);
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
     }
 
     void viewNodeData() {
@@ -249,7 +251,8 @@ public:
     }
 
     void visualizeTree() {
-        tree->display();
+        //tree->display();
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
     }
     void switchBranch() {
 
@@ -281,6 +284,7 @@ public:
         branches.push_back(newBranch);
         roots.push_back(tree->getRootFile());
         tree->changeBranch(tree->getRootFile());
+
         currBranch = newBranch;
         cout << "New branch has been created and cloned by current version of main" << endl;
         cout << "Current Branch is set to: " << currBranch << endl;
@@ -299,6 +303,8 @@ public:
             copy_file(sourcePath, destinationPath, copy_options::overwrite_existing);
 
         }
+
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
     }
     void deleteBranch() {
 

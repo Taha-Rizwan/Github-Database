@@ -3,9 +3,9 @@
 #include "BTree2.h"
 
 int main() {
-	//RedBlackTree<string> r;
-	
-
+	RedBlackTree<string> r;
+	// AVL<string> r;
+	//BTree<string> t;
 	//RedBlackTree2 current insertion time column 1 (Age) 35s (not handling dups currently)
 	// 
 	//RedBlackTree current insertion time column 1 (Age) 2.78s (not handling dups currently) bro
