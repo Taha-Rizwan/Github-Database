@@ -99,6 +99,7 @@ public:
 	virtual void display() {}
 	//Return Line Number of where data is deleted from
 	virtual int deleteByVal(T data,bool updation) {return 1;}
+	virtual int deleteByVal(T data,int ln) {return 1;}
 	virtual void update(T oldData, T newData) {}
 	virtual void createNil() {
 

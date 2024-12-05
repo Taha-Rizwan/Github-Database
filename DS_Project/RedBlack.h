@@ -1062,7 +1062,23 @@ public:
             return l;
         }
     }
+    int deleteByVal(T val,int ln) {
+        string x = search(val);
+        RedBlackNode<T>* node = readNodeFromFile(x);
+        if (x == "NULL" || x == "nil")
+            return -1;
+        else if (node->lineNumbers.size() >= 1) {
 
+                remove(node->lineNumbers.begin(), node->lineNumbers.end(), ln);
+
+                node->lineNumbers.pop_back();
+
+                ht.insert(to_string_generic(node->data), node);
+                return ln;
+
+        }
+
+    }
     void computeHash() {
         cout<<computeHashHelper(Tree<T>::rootFile);
     }
