@@ -142,9 +142,11 @@ public:
         cout << "reading done\n";
         file.close();
         //tree->computeHash();
-        tree->merkle = new MerkleTree<T>(tree->order, name, currBranch);
+        tree->merkle = new MerkleTree<T>(tree->order);
         tree->changeBranch(tree->getRootFile());
-        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        string dataFolder = name + "\\" + currBranch + "\\" + "data";
+        cout << "AFTER READING ...DATA FOLDER: " << dataFolder << endl << endl;
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
         roots.push_back(tree->getRootFile());
         cout << endl;
     }
@@ -199,15 +201,17 @@ public:
         cin >> val;
         tree->insert(val, ln++);
         //tree->computeHash();
-        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
-
+        string dataFolder = name + "\\" + currBranch + "\\" + "data";
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
     }
     void deleteNode() {
         T val;
         cout << "Value to delete: ";
         cin >> val;
         tree->deleteByVal(val, false);
-        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        string dataFolder = name + "\\" + currBranch + "\\" + "data";
+        cout << "Datafolder: " << dataFolder << endl;
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
     }
     void updateNode() {
         T val, newVal;
@@ -219,7 +223,8 @@ public:
         tree->insert(newVal, num);
 
         tree->computeHash();
-        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        string dataFolder = name + "\\" + currBranch + "\\" + "data";
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
     }
 
     void viewNodeData() {
@@ -282,7 +287,10 @@ public:
 
     void visualizeTree() {
         //tree->display();
-        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        string dataFolder = name + "\\" + currBranch + "\\" + "data";
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
+        cout << tree->merkle->getRootHash();
+
     }
     void switchBranch() {
 
@@ -334,7 +342,9 @@ public:
 
         }
 
-        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        string dataFolder = name + "\\" + currBranch + "\\" + "data";
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
+        cout << tree->merkle->getRootHash();
     }
     void deleteBranch() {
 
