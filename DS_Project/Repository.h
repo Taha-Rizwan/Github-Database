@@ -13,9 +13,9 @@ struct Addition {
     int lineNumber;
     Addition(vector<string> rowData, int lineNumber) : rowData(rowData), lineNumber(lineNumber) {}
     string metaData() {
-        string data = "Addition: ";
+        string data = "Addition\n";
         for (int i = 0; i < rowData.size(); i++) {
-            data += rowData[i] + " ";
+            data += rowData[i] + "\n";
         }
         return data;
     }
@@ -26,9 +26,9 @@ struct Deletion {
     int lineNumber;
     Deletion(string data, int lineNumber) : data(data), lineNumber(lineNumber) {}
     string metaData() {
-        string data = "Deletion: ";
-        data += this->data;
-        data += " at line number: " + to_string(lineNumber);
+        string data = "Deletion\n";
+        data += this->data + "\n";
+        data += to_string(lineNumber) + "\n";
         return data;
     }
 };
@@ -40,8 +40,8 @@ struct Updation {
     int column;
     Updation(vector<string> rowData, int lineNumber, int column, string old) : rowData(rowData), lineNumber(lineNumber), column(column), old(old) {}
     string metaData() {
-        string data = "Updation: ";
-        data += "Old: " + old + " New: " + rowData[column] + "at column: " + to_string(column) + " at line number: " + to_string(lineNumber);
+        string data = "Updation\n";
+        data += old + "\n" + rowData[column] + "\n" +  to_string(column) + "\n" + to_string(lineNumber) + "\n";
         return data;
     }
 };
@@ -292,7 +292,16 @@ public:
         cin >> val;
         int l = tree->searchData(val);
         if (l != -1) {
-            deletions.emplace_back(Deletion(val, l));
+            bool alreadyGone = false;
+            for (int i = 0; i < deletions.size(); i++) {
+                if (deletions[i].lineNumber == l)
+                {
+                    alreadyGone = true;
+                    break;
+                }
+            }
+            if(!alreadyGone)
+                deletions.emplace_back(Deletion(val, l));
         }
         else {
             for (int i = 0; i < additions.size(); i++) {
@@ -303,11 +312,14 @@ public:
                 }
             }
 
-            cout << "Not Found: " << endl;
+           // cout << "Not Found: " << endl;
         }
     }
 
     void deleteDataFr(Deletion& deletion) {
+
+        cout << deletion.data << " " << deletion.lineNumber << endl;
+
         tree->deleteByVal(deletion.data, deletion.lineNumber);
 
         cout << "Deleted from line number: " << deletion.lineNumber << endl;
@@ -325,7 +337,7 @@ public:
         if (ln != -1) {
             for (int i = 0; i < deletions.size(); i++) {
                 if (deletions[i].lineNumber == ln) {
-                    cout << "Not Found!" << endl;
+                   // cout << "Not Found!" << endl;
                     return;
                 }
             }
@@ -456,7 +468,10 @@ public:
     }
     void switchBranch() {
 
-
+        if (!additions.empty() && !deletions.empty() && !updations.empty()) {
+            cout << "Current Branch has uncommited changes!" << endl;
+            return;
+        }
 
         cout << "Select which branch you want: ";
         int n;
@@ -476,6 +491,10 @@ public:
 
     }
     void addBranch() {
+        if (!additions.empty() && !deletions.empty() && !updations.empty()) {
+            cout << "Current Branch has uncommited changes!" << endl;
+            return;
+        }
         string newBranch;
         cout << "Enter the name for your new branch: ";
         cin >> newBranch;
@@ -584,6 +603,9 @@ public:
         tree->merkle = new MerkleTree<T>(tree->order);
         string dataFolder = name + "\\" + currBranch + "\\" + "data";
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
+
+       
+
     }
 
     void mergeBranch() {

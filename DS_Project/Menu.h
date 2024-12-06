@@ -41,6 +41,8 @@ struct Menu {
 		ifstream file(path);
 		file >> data;
 		file.close();
+
+		
 		if (data == "RedBlack") {
 			RedBlackTree<string> r(path);
 		} 

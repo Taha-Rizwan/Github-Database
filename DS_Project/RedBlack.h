@@ -729,24 +729,28 @@ private:
     void transplant(string path1, string path2) {
         RedBlackNode<T>* x = readNodeFromFile(path1);
         RedBlackNode<T>* y = readNodeFromFile(path2);
-        RedBlackNode<T>* parent = readNodeFromFile(x->parentPath);
         if (x->parentPath == "NULL") {
             //x is root
             Tree<T>::rootFile = path2;
         }
-
-        else if (path1 == parent->leftPath) {
-            //x is on left of parent
-            parent->leftPath = path2;
-        }
         else {
-            //x is ojn right of parent
-            parent->rightPath = path2;
+            RedBlackNode<T>* parent = readNodeFromFile(x->parentPath);
+             if (path1 == parent->leftPath) {
+                //x is on left of parent
+                parent->leftPath = path2;
+            }
+            else {
+                //x is ojn right of parent
+                parent->rightPath = path2;
+            }
+         ht.insert(x->parentPath, parent);
         }
-        y->parentPath = x->parentPath;
 
+  
+
+        y->parentPath = x->parentPath;
         ht.insert(path2, y);
-        ht.insert(x->parentPath, parent);
+      
 
     }
     RedBlackNode<T>* findMin(string path) {
@@ -1065,20 +1069,26 @@ public:
             return l;
         }
     }
-    int deleteByVal(T val,int ln) {
-        string x = search(val);
+     int deleteByVal(T data, int ln) {
+        string x = to_string_generic(data);
         RedBlackNode<T>* node = readNodeFromFile(x);
-        if (x == "NULL" || x == "nil")
-            return -1;
-        else if (node->lineNumbers.size() >= 1) {
-
+        cout << node->lineNumbers.size()<<endl;
+        if (node->lineNumbers.size() > 1) {
+                cout << "hello" << endl;
                 remove(node->lineNumbers.begin(), node->lineNumbers.end(), ln);
 
                 node->lineNumbers.pop_back();
-
+                node->dirty();
                 ht.insert(to_string_generic(node->data), node);
+                ht.emptyTable();
                 return ln;
 
+        }
+        else {
+            deleteNode(x);
+            deleteFile(x);
+            return ln;
+           
         }
 
     }
