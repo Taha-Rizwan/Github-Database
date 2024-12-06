@@ -3,8 +3,19 @@
 #include "BTree2.h"
 
 int main() {
-	RedBlackTree<string> r;
-	//AVL<string> r;
+	BTree<string> r(3);
+	//r.insert(1);
+	//r.insert(2);
+	//r.insert(3);
+	//r.insert(4);
+	//r.insert(5);
+	//r.insert(6);
+	//r.insert(7);
+	//r.insert(8);
+	//r.insert(9);
+	//r.insert(10);
+	//r.print(r.getRoot());
+	////AVL<string> r;
 	//BTree<string> t;
 	//RedBlackTree2 current insertion time column 1 (Age) 35s (not handling dups currently)
 	// 

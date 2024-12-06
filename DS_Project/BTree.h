@@ -28,7 +28,7 @@ public:
     }
 
     BTreeNode<T>* search(T key, bool insert, BTreeNode<T>* node = nullptr, int childIndex = 0) { //searches for the key in BTree
-        if (!insert) 
+        if (!insert)
             if (!root)
                 return root;
 
@@ -41,10 +41,10 @@ public:
 
         if (i < node->keys.size() && key == node->keys[i]) //if the key is found
             return node;
-        
+
         else if (node->leaf) //if key not found, depending on if function used for insertion, return node or null
             return (insert) ? node : nullptr;
-        
+
         else //recursive search
             return search(key, insert, node->children[i], i);
     }
