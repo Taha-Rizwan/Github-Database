@@ -89,11 +89,14 @@ class AVL :public Tree<T> {
 public:
 	int nNodes;
 	Repository<T> repo;
-	AVL() :repo(this), nNodes(0),ht(this,151) {
+	AVL(string path = "") :repo(this, "AVL"), nNodes(0), ht(this, 151) {
 		//computeHash();
 		Tree<T>::order = 2;
 		Tree<T>::rootFile = "NULL";
-		repo.create();
+		if (path == "")
+			repo.create();
+		else
+			repo.readFromFile(path);
 		ht.emptyTable();
 		repo.main();
 	}

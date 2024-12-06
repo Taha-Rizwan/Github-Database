@@ -281,7 +281,7 @@ private:
 
         // Search Method
         RedBlackNode<T>* search(string& key) {
-            if (head->key == key)
+            if (head && head->key == key)
                 return head->value;
 
             int slot = findSlot(key);
@@ -920,13 +920,16 @@ private:
     }
 
 public:
-    RedBlackTree() : repo(this), ht(this, 151) {
+    RedBlackTree(string path = "") : repo(this, "RedBlack"), ht(this, 151) {
         Tree<T>::order = 2;
         Tree<T>::rootFile = "NULL";
         nil = new RedBlackNode<T>();
 
         createNil();
-        repo.create();
+        if (path == "")
+            repo.create();
+        else
+            repo.readFromFile(path);
         ht.emptyTable();
 
 
