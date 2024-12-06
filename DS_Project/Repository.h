@@ -59,6 +59,7 @@ private:
         cout << "\t6: Hash" << endl;
         cout << "\t7: Commit" << endl;
         cout << "\t8: View Data" << endl;
+        cout << "\t9: Merge Branch " << endl;
         cout << "\tChoose: ";
     }
 
@@ -224,6 +225,8 @@ public:
             case 8:
                 viewNodeData();
                 break;
+            case 9:
+                mergeBranch();
             default:
                 logic = false;
                 break;
@@ -314,11 +317,11 @@ public:
         T val, newVal;
         cout << "Value to update: ";
         cin >> val;
-
+        cout << "searchind for dta\n";
         int ln = tree->searchData(val);
 
 
-
+        cout << "On line number: " << ln << endl;
         if (ln != -1) {
             for (int i = 0; i < deletions.size(); i++) {
                 if (deletions[i].lineNumber == ln) {
@@ -382,6 +385,7 @@ public:
     void updateDataFr(Updation& update) {
         writeFileByLineNumber(update.lineNumber, update.rowData);
         if (update.column == column) {
+            cout << "Updating\n";
             tree->deleteByVal(update.old, update.lineNumber);
             tree->insert(update.rowData[column], ln);
         }
@@ -393,8 +397,11 @@ public:
             return;
         }
         ofstream file;
+        std::ostringstream versionStream;
+        versionStream << fixed << setprecision(1) << currVersion;
+        string versionStr = versionStream.str();
         string path = name + "/" + currBranch + "/commit" + currBranch
-            + to_string(currVersion) + ".txt";
+            + (versionStr) + ".txt";
         file.open(path, ios::app);
         file << "Version: " << currVersion << endl;
         for (int i = 0; i < additions.size(); i++) {
@@ -573,12 +580,33 @@ public:
 
 
         tree->changeBranch(roots[0]);
-        currBranch=branches[0];
-
+        currBranch = branches[0];
+        tree->merkle = new MerkleTree<T>(tree->order);
+        string dataFolder = name + "\\" + currBranch + "\\" + "data";
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
     }
 
     void mergeBranch() {
+        cout << "Enter the name of the branch to merge with: ";
+        string targetBranch;
+        cin >> targetBranch;
+        //now merge current branch adn target branch
+        string currFolder = name + "\\" + currBranch + "\\" + "data";
+        string targetFolder = name + "\\" + targetBranch + "\\" + "data";
+        cout << currFolder << " and " << targetFolder << endl;
+        
+        MerkleTree<T>* targetMerkle = new MerkleTree<T>(tree->order);
+        string targetHash = targetMerkle->buildMerkleTree(targetFolder)->hash;
+        string currHash=tree->merkle->buildMerkleTree(currFolder)->hash;
+        cout << "Currhash: " << currHash << endl;
+        if (targetHash == currHash) {
+            cout << "No change in data\n";
+            cout << currBranch << " and " << targetBranch << " merged successfully\n";
+        }
+        else {
+            cout << "Data has been changed in the currBranch...We need to merge\n";
 
+        }
     }
 
     ~Repository() {

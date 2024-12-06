@@ -131,14 +131,25 @@ public:
 
     vector<MerkleNode<T>*> createLeafNodes(const string& dataFolder) {
         vector<MerkleNode<T>*> leafNodes;
-
+        
         vector<string> filePaths;
+        if (!fs::exists(dataFolder)) {
+            cerr << "Directory does not exist: " << dataFolder << endl;
+            return {};
+        }
+
+        if (!fs::is_directory(dataFolder)) {
+            cerr << "Path is not a directory: " << dataFolder << endl;
+            return {};
+        }
+
         for (const auto& entry : fs::directory_iterator(dataFolder)) {
+            cout << "here\n";
             if (entry.is_regular_file() && entry.path().extension() == ".txt") {
                 filePaths.push_back(entry.path().string());
             }
         }
-
+        cout << "got fielpaths\n";
         //tries sorting the file paths (but not working as expeceted e.g after 89.txt the next file would be 9.txt and after that 90.txt)
         sort(filePaths.begin(), filePaths.end());
 
@@ -169,16 +180,16 @@ public:
 
     // Build the Merkle Tree after creating the leaf nodes
     MerkleNode<T>* buildMerkleTree(const string& dataFolder) {
-
+        cout << "Data folder: " << dataFolder << endl;
         //issues wiht deletion...we have to construct merkle tree eveyr time we are looking for any changes so we must delete the old one first
         if (root!=nullptr) {
             //deleteTree(root);
             root = nullptr;
         }
-
+        cout << "Creting leafs\n";
         vector<MerkleNode<T>*> leafNodes = createLeafNodes(dataFolder);
         if (leafNodes.empty()) return nullptr;
-
+        cout << "created leafs\n";
         vector<MerkleNode<T>*> currentLevel = leafNodes;
 
         //builds the tree level by level...starting from leaf nodes(containing data) and constructs the tree using bottom up approach

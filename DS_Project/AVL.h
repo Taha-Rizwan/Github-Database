@@ -414,14 +414,18 @@ public:
 	AVLNode<T>* readNodeFromFile(string filePath) {
 		if (filePath == "NULL")
 			return nullptr;
+		cout << "filepath not null";
 		string dataStr = filePath.substr(0, filePath.find(".txt"));
 		// Check hash table first
+		cout << "datastr: " << dataStr << endl;
 		AVLNode<T>* cachedNode = ht.search(dataStr);
 		if (cachedNode!=nullptr) {
+			cout << cachedNode->data << endl;
 			return cachedNode;
 		}
 
 		fstream file;
+		cout << repo.name + "/" + repo.currBranch + "/" + filePath << endl;
 		file.open(repo.name + "/" + repo.currBranch + "/" + filePath);
 		if (!file.is_open()) {
 			cerr << "Cannot open file: " << filePath << endl;
@@ -753,8 +757,9 @@ public:
 	string searchHelper(string path, T val) {
 		if (path == "NULL")
 			return "NULL";
-
+		cout << "Path: " << path << endl;
 		AVLNode<T>* node = readNodeFromFile(path);
+		cout << "READ IT\n";
 		if (Tree<T>::isEqual(val, node->data) == 1)
 			return searchHelper(node->rightPath, val);
 		else if (Tree<T>::isEqual(val, node->data) == -1) {
@@ -766,15 +771,22 @@ public:
 	}
 
 	string search(T val) {
+		cout << "Search helper called\n";
 		return searchHelper(Tree<T>::rootFile, val);
 	}
 
 	int searchData(T data) {
 		string path = search(data);
+		cout << "Searching\n";
 		if (path == "NULL")
 			return -1;
-		AVLNode<T>* node = readNodeFromFile(path);
 
+		cout << "path: " << path << endl;
+		if (path.find(".txt") != path.size() - 4) {
+			path += ".txt"; 
+		}
+		AVLNode<T>* node = readNodeFromFile(path);
+		cout << "read node from fiel done\n";
 		if (node->lineNumbers.size() == 1)
 			return node->lineNumbers[0];
 		else {

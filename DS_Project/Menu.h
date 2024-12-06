@@ -5,8 +5,8 @@
 struct Menu {
 
 	void main() {
-		cout << "1: Create a repository: ";
-		cout << "2: Load a repository: ";
+		cout << "1: Create a repository\n";
+		cout << "2: Load a repository\n";
 		int op;
 		cin >> op;
 		if (op == 1)
@@ -43,8 +43,11 @@ struct Menu {
 		file.close();
 		if (data == "RedBlack") {
 			RedBlackTree<string> r(path);
-		} else
+		} 
+		else
 			AVL<string> r(path);
+
+
 	}
 	
 
