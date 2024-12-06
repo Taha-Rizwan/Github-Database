@@ -101,11 +101,12 @@ public:
 
 template<class T>
 class MerkleTree {
+  
+public:
     MerkleNode<T>* root;
     string repoName;
     string currBranch;
-    int order; 
-public:
+    int order;
     MerkleTree(int order) : order(order), root(nullptr) {}
    
     //tried this but it's not working..

@@ -12,7 +12,7 @@ using namespace std::filesystem;
 struct Addition {
     vector<string> rowData;
     int lineNumber;
-    Addition(vector<string> rowData,int lineNumber) : rowData(rowData),lineNumber(lineNumber) {}
+    Addition(vector<string> rowData, int lineNumber) : rowData(rowData), lineNumber(lineNumber) {}
     string metaData() {
         string data = "Addition: ";
         for (int i = 0; i < rowData.size(); i++) {
@@ -29,7 +29,7 @@ struct Deletion {
     string metaData() {
         string data = "Deletion: ";
         data += this->data;
-        data+= " at line number: " + to_string(lineNumber);
+        data += " at line number: " + to_string(lineNumber);
         return data;
     }
 };
@@ -39,7 +39,7 @@ struct Updation {
     string old;
     int lineNumber;
     int column;
-    Updation(vector<string> rowData, int lineNumber, int column,string old) : rowData(rowData), lineNumber(lineNumber), column(column),old(old) {}
+    Updation(vector<string> rowData, int lineNumber, int column, string old) : rowData(rowData), lineNumber(lineNumber), column(column), old(old) {}
     string metaData() {
         string data = "Updation: ";
         data += "Old: " + old + " New: " + rowData[column] + "at column: " + to_string(column) + " at line number: " + to_string(lineNumber);
@@ -76,9 +76,8 @@ public:
     vector<Updation> updations;
     string currBranch;
     Tree<T>* tree;
-    float version;
-    Repository(Tree<T>* tree) :tree(tree),version(0.1) {
-
+    float currVersion;
+    Repository(Tree<T>* tree) :tree(tree), currVersion(0.1) {
     }
     void create() {
         cout << "Enter Repo Name: ";
@@ -102,7 +101,6 @@ public:
 
 
         string line;
-        getline(file, line); // Read the header line and skip it
         getline(file, line);
         stringstream ss(line);
         string cell;
@@ -133,13 +131,13 @@ public:
         }
         cout << "Reading CSV to main branch(default): " << endl;
         ln = 2;
-         
+
         while (getline(file, line)) {
             stringstream ss(line);
             string cell;
             int currentColumnIndex = 0;
             vector<string> rowData;
-              // Parse the line using ',' as a delimiter
+            // Parse the line using ',' as a delimiter
             while (getline(ss, cell, ',')) {
                 // Check if the cell starts with a quotation mark
                 if (!cell.empty() && cell.front() == '"') {
@@ -252,7 +250,7 @@ public:
         return rowData;
     }
 
-    void writeFileByLineNumber(int ln, vector<string>&rowData) {
+    void writeFileByLineNumber(int ln, vector<string>& rowData) {
         ofstream dataFile;
         dataFile.open(name + "/" + currBranch + "/data/" + to_string(ln) + ".txt");
         for (int i = 0; i < rowData.size(); i++) {
@@ -268,14 +266,14 @@ public:
         vector<string> rowData;
         string data;
         cin.ignore();
-        for (int i = 0;i<header.size();i++) {
+        for (int i = 0; i < header.size(); i++) {
             cout << header[i] << ": ";
 
             getline(cin, data);
             //getline(data);
             rowData.push_back(data);
         }
-        additions.emplace_back(Addition(rowData,ln));
+        additions.emplace_back(Addition(rowData, ln));
     }
 
     void addDataFr(Addition& addition) {
@@ -292,16 +290,17 @@ public:
         int l = tree->searchData(val);
         if (l != -1) {
             deletions.emplace_back(Deletion(val, l));
-        } else {
-            for (int i = 0;i<additions.size();i++) {
-                if (additions[i].rowData[column]==val) {
+        }
+        else {
+            for (int i = 0; i < additions.size(); i++) {
+                if (additions[i].rowData[column] == val) {
                     additions.erase(additions.begin() + i);
                     //cout << "Deleted from line number: " << val << endl;
                     return;
                 }
             }
 
-            cout<<"Not Found: "<<endl;
+            cout << "Not Found: " << endl;
         }
     }
 
@@ -320,30 +319,30 @@ public:
 
 
 
-        if (ln!=-1) {
-            for (int i = 0;i<deletions.size();i++) {
-                if (deletions[i].lineNumber ==ln) {
-                    cout<<"Not Found!"<<endl;
+        if (ln != -1) {
+            for (int i = 0; i < deletions.size(); i++) {
+                if (deletions[i].lineNumber == ln) {
+                    cout << "Not Found!" << endl;
                     return;
                 }
             }
 
-            cout<<"What do you want to change: "<<endl;
-            for (int i = 0;i<header.size();i++) {
-                cout<<i<<": "<<header[i]<<endl;
+            cout << "What do you want to change: " << endl;
+            for (int i = 0; i < header.size(); i++) {
+                cout << i << ": " << header[i] << endl;
             }
             int opt;
-            cin>>opt;
-            if (opt>=0 &&opt<header.size()) {
-                vector<string> rowData =readFileByLineNumber(ln);
-                cout<<"Current "<<header[opt]<<": "<<rowData[opt]<<endl;
-                cout<<"Updated "<<header[opt]<<": ";
+            cin >> opt;
+            if (opt >= 0 && opt < header.size()) {
+                vector<string> rowData = readFileByLineNumber(ln);
+                cout << "Current " << header[opt] << ": " << rowData[opt] << endl;
+                cout << "Updated " << header[opt] << ": ";
                 string data;
                 cin.ignore();
                 getline(cin, data);
                 string old = rowData[opt];
                 rowData[opt] = data;
-                updations.emplace_back(Updation(rowData, ln, opt,old));
+                updations.emplace_back(Updation(rowData, ln, opt, old));
 
                 //writeFileByLineNumber(ln, rowData);
                 // if (opt==column) {
@@ -352,64 +351,73 @@ public:
                 // }
             }
 
-        } else {
-            for (int i = 0;i<additions.size();i++) {
-                if (additions[i].rowData[column]==val) {
-                    cout<<"What do you want to change: "<<endl;
-                    for (int i = 0;i<header.size();i++) {
-                        cout<<i<<": "<<header[i]<<endl;
+        }
+        else {
+            for (int i = 0; i < additions.size(); i++) {
+                if (additions[i].rowData[column] == val) {
+                    cout << "What do you want to change: " << endl;
+                    for (int i = 0; i < header.size(); i++) {
+                        cout << i << ": " << header[i] << endl;
                     }
                     int opt;
-                    cin>>opt;
-                    if (opt>=0 &&opt<header.size()) {
-                        cout<<"Current "<<header[opt]<<": "<<additions[i].rowData[opt]<<endl;
-                        cout<<"Updated "<<header[opt]<<": ";
+                    cin >> opt;
+                    if (opt >= 0 && opt < header.size()) {
+                        cout << "Current " << header[opt] << ": " << additions[i].rowData[opt] << endl;
+                        cout << "Updated " << header[opt] << ": ";
                         string data;
                         cin.ignore();
                         getline(cin, data);
                         string old = additions[i].rowData[opt];
                         additions[i].rowData[opt] = data;
                         return;
-                    } else
+                    }
+                    else
                         break;
 
                 }
             }
         }
-        cout<<"Not Found: "<<endl;
+        cout << "Not Found: " << endl;
     }
     void updateDataFr(Updation& update) {
         writeFileByLineNumber(update.lineNumber, update.rowData);
-        if (update.column==column) {
+        if (update.column == column) {
             tree->deleteByVal(update.old, update.lineNumber);
-            tree->insert(update.rowData[column],ln);
+            tree->insert(update.rowData[column], ln);
         }
 
     }
     void commit() {
-        if (!additions.size() && !deletions.size() && !updations.size()) {
-            cout<<"Nothing to update"<<endl;
+        if (additions.empty() && deletions.empty() && updations.empty()) {
+            cout << "Nothing to update" << endl;
             return;
         }
         ofstream file;
-        file.open(name+"/"+currBranch+"/commit"+to_string(version)+".txt",ios::app);
-        file << "Version: " << version << endl;
-        for (int i = 0;i<additions.size();i++) {
+        string path = name + "/" + currBranch + "/commit" + currBranch
+            + to_string(currVersion) + ".txt";
+        file.open(path, ios::app);
+        file << "Version: " << currVersion << endl;
+        for (int i = 0; i < additions.size(); i++) {
             addDataFr(additions[i]);
-            file<<additions[i].metaData()<<endl;
+            file << additions[i].metaData() << endl;
         }
-        for (int i = 0;i<deletions.size();i++) {
+        for (int i = 0; i < deletions.size(); i++) {
             deleteDataFr(deletions[i]);
             //cout<<"Deleting: "<<deletions[i].data<<endl;
-            file<<deletions[i].metaData()<<endl;
+            file << deletions[i].metaData() << endl;
         }
-        for (int i = 0;i<updations.size();i++) {
+        for (int i = 0; i < updations.size(); i++) {
             updateDataFr(updations[i]);
 
-            file<<updations[i].metaData()<<endl;
+            file << updations[i].metaData() << endl;
         }
         file.close();
-        version += 0.1;
+        currVersion += 0.1;
+        ofstream log(name + "/" + currBranch + "/log.txt", ios::app);
+        log << path << endl;
+        log.close();
+
+
         string dataFolder = name + "\\" + currBranch + "\\" + "data";
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
     }
@@ -424,10 +432,11 @@ public:
         if (toBeViewed == -1) {
             cout << "Data not found!" << endl;
             return;
-        } else {
+        }
+        else {
             vector<string> rowData = readFileByLineNumber(toBeViewed);
 
-            for (int i =0;i<rowData.size();i++) {
+            for (int i = 0; i < rowData.size(); i++) {
                 cout << header[i] << ": " << rowData[i] << endl;
             }
 
@@ -472,7 +481,7 @@ public:
         currBranch = newBranch;
         cout << "New branch has been created and cloned by current version of main" << endl;
         cout << "Current Branch is set to: " << currBranch << endl;
-
+        tree->merkle->currBranch = newBranch;
 
         path sourceDir = name + "/" + "main";
         path destinationDir = name + "/" + newBranch;
@@ -485,12 +494,13 @@ public:
 
             if (is_directory(sourcePath)) {
                 create_directory(destinationPath);
-            } else {
+            }
+            else {
                 copy_file(sourcePath, destinationPath, copy_options::overwrite_existing);
             }
         }
-
-        cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
+        string dataFolder = name + "\\" + currBranch + "\\" + "data";
+        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
     }
     void deleteBranch() {
 
