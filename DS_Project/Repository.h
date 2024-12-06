@@ -307,8 +307,8 @@ public:
     void deleteDataFr(Deletion& deletion) {
         tree->deleteByVal(deletion.data, deletion.lineNumber);
 
-        cout << "Deleted from line number: " << deletion.data << endl;
-        remove((name + "/" + currBranch + "/data/" + deletion.data + ".txt").c_str());
+        cout << "Deleted from line number: " << deletion.lineNumber << endl;
+        remove((name + "/" + currBranch + "/data/" + to_string_generic(deletion.lineNumber) + ".txt").c_str());
     }
     void updateNode() {
         T val, newVal;

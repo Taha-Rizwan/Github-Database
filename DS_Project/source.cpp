@@ -4,7 +4,7 @@
 
 int main() {
 	RedBlackTree<string> r;
-	// AVL<string> r;
+	//AVL<string> r;
 	//BTree<string> t;
 	//RedBlackTree2 current insertion time column 1 (Age) 35s (not handling dups currently)
 	// 
