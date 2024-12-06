@@ -3,7 +3,6 @@
 #include <fstream>
 #include <sstream>
 #include "Tree.h"
-
 #include <vector>
 using namespace std;
 using namespace std::filesystem;
@@ -64,6 +63,7 @@ private:
     }
 
 public:
+    string treeType;
     string name;
     string csv_path;
     int column, ln;
@@ -77,7 +77,7 @@ public:
     string currBranch;
     Tree<T>* tree;
     float currVersion;
-    Repository(Tree<T>* tree) :tree(tree), currVersion(0.1) {
+    Repository(Tree<T>* tree,string treeType) :tree(tree), currVersion(0.1),treeType(treeType) {
     }
     void create() {
         cout << "Enter Repo Name: ";
@@ -502,10 +502,88 @@ public:
         string dataFolder = name + "\\" + currBranch + "\\" + "data";
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
     }
-    void deleteBranch() {
+
+    void saveRepoToFile() {
+        ofstream repoFile(name + ".txt");
+        repoFile << treeType << endl;
+        repoFile << name << endl;
+        repoFile << column << endl;
+        repoFile << ln << endl;
+        repoFile << branches.size() << endl;
+        for (int i = 0; i < branches.size(); i++) {
+            repoFile << branches[i] << endl;
+        }
+        for (int i = 0; i < roots.size(); i++) {
+            repoFile << roots[i] << endl;
+        }
+        repoFile << header.size() << endl;
+        for (int i = 0; i < header.size(); i++) {
+            repoFile << header[i] << endl;
+        }
+        repoFile << currBranch << endl;
+        repoFile << currVersion << endl;
+        repoFile.close();
+    }
+
+    void readFromFile(const string& path) {
+        ifstream repoFile(path);
+        if (!repoFile.is_open()) {
+            cerr << "Error: Could not open file " << path << endl;
+            return;
+        }
+
+        getline(repoFile, treeType);
+        getline(repoFile, name);
+        repoFile >> column;
+        repoFile >> ln;
+        cout << treeType<<endl;
+        cout << name << endl;
+        cout << column << endl;
+        int branchesSize;
+        repoFile >> branchesSize;
+        branches.clear();
+        repoFile.ignore(); // Ignore the newline character after branchesSize
+        for (int i = 0; i < branchesSize; i++) {
+            string branch;
+            getline(repoFile, branch);
+            cout << branch << endl;
+            branches.push_back(branch);
+        }
+        roots.clear(); 
+        for (int i = 0; i < branchesSize; i++) {
+            string branch;
+            getline(repoFile, branch);
+            cout << branch << endl;
+            roots.push_back(branch);
+        }
+        int headerSize;
+        repoFile >> headerSize;
+        header.clear();
+        repoFile.ignore(); // Ignore the newline character after headerSize
+        for (int i = 0; i < headerSize; i++) {
+            string headerItem;
+            getline(repoFile, headerItem);
+            header.push_back(headerItem);
+        }
+
+        getline(repoFile, currBranch);
+        repoFile >> currVersion;
+
+        repoFile.close();
+
+
+        tree->changeBranch(roots[0]);
+        currBranch=branches[0];
 
     }
+
     void mergeBranch() {
 
     }
+
+    ~Repository() {
+        saveRepoToFile();
+    }
+
+
 };

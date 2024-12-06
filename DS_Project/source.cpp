@@ -1,9 +1,9 @@
-#include "RedBlack.h"
-#include"AVL.h"
-#include "BTree2.h"
+#include "Menu.h"
 
 int main() {
-	RedBlackTree<string> r;
+	Menu m;
+
+	m.main();
 	//AVL<string> r;
 	//BTree<string> t;
 	//RedBlackTree2 current insertion time column 1 (Age) 35s (not handling dups currently)
