@@ -90,12 +90,14 @@ public:
 
     // Constructor for leaf nodes
     MerkleNode(T data, bool leaf) : data(data), hash(" "), left(nullptr), right(nullptr), leaf(leaf) {
-        hash = calculateSHA256(data);
+        hash = instructorHash(data);
+        //hash = calculateSHA256(data);
     }
 
     // Constructor for internal nodes
     MerkleNode(MerkleNode* left, MerkleNode* right) : left(left), right(right), leaf(false) {
-        hash = calculateSHA256(left->hash + right->hash);
+        hash = instructorHash(left->hash + right->hash);
+        //hash = calculateSHA256(left->hash + right->hash);
     }
 };
 

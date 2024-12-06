@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include<iostream>
 #include<filesystem>
 #include<fstream>
@@ -488,7 +487,6 @@ public:
 		remove(filePath.c_str());
 	}
 
-
 	int Height(AVLNode<T>* k1) {
 		if (k1 == nullptr) {
 			return -1;
@@ -749,22 +747,50 @@ public:
 		printTree(node->leftPath, space);
 	}
 
+	string searchHelper(string path, T val) {
+		if (path == "NULL")
+			return "NULL";
 
-	//AVLNode<T>* search(AVLNode<T>* tRoot, T k) {
-	//	if (tRoot == nullptr) {
-	//		return nullptr;
-	//	}
-	//	if (Tree<T>::isEqual(tRoot->data, k) == 0) {
-	//		return root;
-	//	}
-	//	else if (Tree<T>::isEqual(tRoot->data, k) == 1) {
-	//		search(tRoot->left, k);
-	//	}
-	//	else if (Tree<T>::isEqual(tRoot->data, k) == -1) {
-	//		search(tRoot->right, k);
-	//	}
+		AVLNode<T>* node = readNodeFromFile(path);
+		if (Tree<T>::isEqual(val, node->data) == 1)
+			return searchHelper(node->rightPath, val);
+		else if (Tree<T>::isEqual(val, node->data) == -1) {
+			return searchHelper(node->leftPath, val);
+		}
+		else {
+			return path;
+		}
+	}
 
-	//}
+	string search(T val) {
+		return searchHelper(Tree<T>::rootFile, val);
+	}
+
+	int searchData(T data) {
+		string path = search(data);
+		if (path == "NULL")
+			return -1;
+		AVLNode<T>* node = readNodeFromFile(path);
+
+		if (node->lineNumbers.size() == 1)
+			return node->lineNumbers[0];
+		else {
+			cout << "From which line number do you want to see data: ";
+			for (int i = 0; i < node->lineNumbers.size(); i++) {
+				cout << "Line Number: " << node->lineNumbers[i] << endl;
+			}
+			int opt;
+			cin >> opt;
+			for (int i = 0; i < node->lineNumbers.size(); i++) {
+				if (node->lineNumbers[i] == opt) {
+					return opt;
+				}
+			}
+			return -1;
+
+		}
+
+	}
 
 	//T minimum() {
 	//	AVLNode<T>* curr = root;
@@ -782,13 +808,76 @@ public:
 	//	return curr->data;
 	//}
 
-	void deleteNode(string currFile, T key) {
+
+	int deleteByVal(T val, bool updation = false) {
+		string x = search(val);
+		AVLNode<T>* node = readNodeFromFile(x);
+		if (x == "NULL")
+			return -1;
+		else if (node->lineNumbers.size() > 1) {
+			cout << "From which line number do you want to delete this from: ";
+			for (int i = 0; i < node->lineNumbers.size(); i++) {
+				cout << "Line Number: " << node->lineNumbers[i] << endl;
+			}
+			if (!updation)
+				cout << "Delete for Line Number: ";
+			else
+				cout << "Update Line Number: ";
+			int opt;
+			cin >> opt;
+			bool exists = false;
+			for (int i = 0; i < node->lineNumbers.size(); i++) {
+				if (node->lineNumbers[i] == opt) {
+					exists = true;
+					break;
+				}
+			}
+			if (!exists) {
+				cout << "Invalid Option!" << endl;
+				return -1;
+			}
+			else {
+				remove(node->lineNumbers.begin(), node->lineNumbers.end(), opt);
+
+				node->lineNumbers.pop_back();
+
+				ht.insert(to_string_generic(node->data), node);
+				return opt;
+			}
+
+		}
+		else {
+			cout << "Deleting";
+			int l = node->lineNumbers[0];
+			deleteNode(x);
+			deleteFile(x);
+			return l;
+		}
+	}
+	int deleteByVal(T val, int ln) {
+		string x = search(val);
+		AVLNode<T>* node = readNodeFromFile(x);
+		if (x == "NULL")
+			return -1;
+		else if (node->lineNumbers.size() >= 1) {
+
+			remove(node->lineNumbers.begin(), node->lineNumbers.end(), ln);
+
+			node->lineNumbers.pop_back();
+
+			ht.insert(to_string_generic(node->data), node);
+			return ln;
+
+		}
+
+	}
+
+
+	void deleteNode(string currFile) {
 		if (currFile == "NULL") return;
 
 		AVLNode<T>* currNode = readNodeFromFile(currFile);
 
-		// Case 1: Node with key found
-		if (Tree<T>::isEqual(key, currNode->data) == 0) {
 			// Case where node has one or no child
 			if (currNode->leftPath == "NULL" || currNode->rightPath == "NULL") {
 				string tempFile = (currNode->leftPath != "NULL") ? currNode->leftPath : currNode->rightPath;
@@ -846,7 +935,7 @@ public:
 				updateNodeFile(currNode);
 
 				// Delete the successor node
-				deleteNode(minValueFile, tempNode->data);
+				deleteNode(minValueFile);
 				deleteFile(currFile);
 
 				currNode->fileName = to_string_generic(currNode->data) + ".txt";
@@ -864,23 +953,7 @@ public:
 					right->parentPath = currNode->fileName;
 					updateNodeFile(right);
 				}
-
 			}
-		}
-		else if (Tree<T>::isEqual(key, currNode->data) == -1) {
-			deleteNode(currNode->leftPath, key);
-			string fileName = to_string_generic(key) + ".txt";
-			if (fileName == currNode->leftPath) {
-				currNode->leftPath = "NULL";
-			}
-		}
-		else {
-			deleteNode(currNode->rightPath, key);
-			string fileName = to_string_generic(key) + ".txt";
-			if (fileName == currNode->rightPath) {
-				currNode->rightPath = "NULL";
-			}
-		}
 
 		if (currFile == "NULL") {
 			return;

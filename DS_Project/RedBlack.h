@@ -1107,6 +1107,7 @@ public:
         }
 
     }
+
     void changeBranch(const string &path) {
 
         ht.emptyTable();
