@@ -27,7 +27,7 @@ int main() {
 	return 0;
 }
 
-/*	
+/*
 	Things to do
 
 	Changing of file format
@@ -40,7 +40,7 @@ int main() {
 	Aqib Rotation ke function abhi ke liye redblack2 se utha le, mazeed behter ho skte hain lekin bas hoi hoi hai
 	RedBlack2 mein abhi sirf insertion hoi hai deletion baad mein krdonga
 	again, probably bether ho skti hai lekin im ded  ---->me too
-	
+
 
 
 
@@ -73,13 +73,13 @@ int main() {
 		When merging branches or commiting, how to recursively go down both trees and fix things
 	B-Tree and SHA-256:
 		Self Explanatory
-	
+
 	SERVERS
 
 	The repository folder will have a branches folder and a server folder (could be a servers folder because the project overview talks about multiple servers??)
 
 	Each commit will commit that branch over to the server folder using the root hash to determine the necessary changes
-	
+
 	Each commit will have a seperate txt file with data such as the message, timestamp and a unique identifier which I guess is the version number
 
 	VERSIONING

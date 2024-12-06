@@ -60,4 +60,7 @@
       <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="newdata.csv" />
+  </ItemGroup>
 </Project>
