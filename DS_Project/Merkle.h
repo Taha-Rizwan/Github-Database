@@ -144,7 +144,7 @@ public:
         }
 
         for (const auto& entry : fs::directory_iterator(dataFolder)) {
-            cout << "here\n";
+            //cout << "here\n";
             if (entry.is_regular_file() && entry.path().extension() == ".txt") {
                 filePaths.push_back(entry.path().string());
             }

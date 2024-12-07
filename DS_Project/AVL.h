@@ -361,7 +361,9 @@ public:
 		void deleteFile(string x) {
 			toBeDeleted.push_back(x);
 		}
+	
 		void emptyTable() {
+		
 			cout << "Destructor" << endl;
 			Node* current = head;
 			while (current) {
@@ -371,7 +373,10 @@ public:
 			}
 			cout << "Hits: " << hits << endl;
 			cout << "Misses: " << misses << endl;
-
+			head = nullptr;
+			for (int i = 0; i < capacity; i++) {
+				arr[i] = { "", nullptr };
+			}
 			for (int i = 0; i < toBeDeleted.size(); i++) {
 				std::filesystem::remove(toBeDeleted[i]);
 			}
@@ -1000,5 +1005,8 @@ public:
 	}
 	string getRootFile() {
 		return Tree<T>::rootFile;
+	}
+	void emptyTable() {
+		ht.emptyTable();
 	}
 };
