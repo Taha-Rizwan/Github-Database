@@ -28,11 +28,14 @@ struct Addition {
 struct Deletion {
     string data;
     int lineNumber;
-    Deletion(string data, int lineNumber) : data(data), lineNumber(lineNumber) {}
+    vector<string>rowData;
+    Deletion(string data, int lineNumber,vector<string>& rowData) : data(data), lineNumber(lineNumber),rowData(rowData) {}
     string metaData() {
         string data = "Deletion\n";
         data += this->data + "\n";
         data += to_string(lineNumber) + "\n";
+        for (int i = 0; i < rowData.size(); i++)
+            data += rowData[i] + '\n';
         return data;
     }
 };
@@ -69,6 +72,7 @@ private:
         cout << "\t7: Commit" << endl;
         cout << "\t8: View Data" << endl;
         cout << "\t9: Merge Branch " << endl;
+        cout << "\t10: Roll Back to Version " << endl;
         cout << "\tChoose: ";
     }
 
@@ -248,6 +252,9 @@ public:
             case 9:
                 mergeBranch();
                 break;
+            case 10:
+                rollBackToVersion();
+                break;
             default:
                 logic = false;
                 break;
@@ -347,8 +354,8 @@ public:
                     }
                 }
                 if (find) {
-
-                    deletions.push_back(Deletion(val, opt));
+                    vector<string> rowData = readFileByLineNumber(opt);
+                    deletions.push_back(Deletion(val, opt,rowData));
                 }
         }
         else {
@@ -562,7 +569,7 @@ public:
         }
         else {
             for (int i = 0; i < toBeViewed.size(); i++) {
-                vector<string> rowData = readFileByLineNumber(toBeViewed);
+                vector<string> rowData = readFileByLineNumber(toBeViewed[i]);
 
                 for (int j = 0; j < rowData.size(); j++) {
                     cout << header[j] << ": " << rowData[j] << endl;
@@ -831,7 +838,12 @@ public:
                 tree->insert(rowData[column], lineNumber);
 
                 writeFileByLineNumber(lineNumber, rowData);
-
+                for (int i = 0; i < branches.size(); i++) {
+                    if (branches[i] == currBranch) {
+                        roots[i] = tree->getRootFile();
+                        return;
+                    }
+                }
 
             }
             else if (line == "Deletion") {
@@ -845,6 +857,14 @@ public:
                 //cout << data << " " << lineNumber << endl;
                 tree->deleteByVal(data, lineNumber);
                 remove(name + "\\" + currBranch + "\\data\\" + to_string(lineNumber) + ".txt");
+                for (int i = 0; i < header.size(); i++)
+                    getline(ss, line);
+                for (int i = 0; i < branches.size(); i++) {
+                    if (branches[i] == currBranch) {
+                        roots[i] = tree->getRootFile();
+                        return;
+                    }
+                }
             }
             else if (line == "Updation") {
                 //cout << "wow Updation" << endl;
@@ -867,7 +887,12 @@ public:
                     tree->deleteByVal(old, lineNumber);
                     tree->insert(newD, lineNumber);
                 }
-
+                for (int i = 0; i < branches.size(); i++) {
+                    if (branches[i] == currBranch) {
+                        roots[i] = tree->getRootFile();
+                        return;
+                    }
+                }
 
 
                 /*
@@ -910,6 +935,141 @@ public:
 
         return result;
     }
+
+
+    void rollBackToVersion() {
+        ifstream file(name + "\\" + currBranch + "\\" + "log.txt");
+        vector<string> targetLines;
+        string line;
+        
+        // Read lines from the current branch log file
+        while (getline(file, line)) {
+            targetLines.push_back(line);
+        }
+        file.close();
+        cout << "Select which version you want to rollback to(0 to go back to default): " << endl;
+        for (int i = 0; i < targetLines.size(); i++) {
+            cout << i+1<<": " << targetLines[i] << endl;
+        }
+        //Select which version to roll back to
+        int opt;
+        cin >> opt;
+
+        for (int i = targetLines.size() - 1; i >= opt; i--) {
+            
+                string str = readCommit(targetLines[i]);
+                cout << str << endl;
+                performReverse(str);   
+                tree->emptyTable();
+                currVersion-=0.1;
+        }
+
+        ofstream file2(name + "\\" + currBranch + "\\" + "log.txt",ios::trunc);
+        for (int i = 0; i < opt && i < targetLines.size(); i++) {
+            file2 << targetLines[i]<<endl;
+        }
+        file2.close();
+    }
+    void performReverse( string& commit) {
+        stringstream ss(commit);
+        string line;
+        while (getline(ss, line)) {
+            if (line == "Addition") {
+                //cout << "Wow addition" << endl;
+                vector<string> rowData;
+                for (int i = 0; i < header.size(); i++) {
+                    getline(ss, line);
+                    rowData.push_back(line);
+                }
+
+                getline(ss, line);
+                int lineNumber = stoi(line);
+                cout << rowData[column] << " " << lineNumber << endl;
+                tree->deleteByVal(rowData[column], lineNumber);
+
+                remove(name + "\\" + currBranch + "\\data\\" + to_string(lineNumber) + ".txt");
+                for (int i = 0; i < branches.size(); i++) {
+                    if (branches[i] == currBranch) {
+                        roots[i] = tree->getRootFile();
+                        return;
+                    }
+                }
+
+            }
+            else if (line == "Deletion") {
+                //cout << "Wow Deletion" << endl;
+
+                getline(ss, line);
+                string data = line;
+                getline(ss, line);
+                int lineNumber = stoi(line);
+
+                //cout << data << " " << lineNumber << endl;
+                vector<string> rowData;
+                for (int i = 0; i < header.size(); i++) {
+
+                    getline(ss, line);
+                    rowData.push_back(line);
+                }
+                tree->insert(rowData[column], lineNumber);
+                writeFileByLineNumber(lineNumber, rowData);
+                for (int i = 0; i < branches.size(); i++) {
+                    if (branches[i] == currBranch) {
+                        roots[i] = tree->getRootFile();
+                        return;
+                    }
+                }
+            }
+            else if (line == "Updation") {
+                //cout << "wow Updation" << endl;
+
+                getline(ss, line);
+                string old = line;
+                getline(ss, line);
+                string newD = line;
+                getline(ss, line);
+                int cn = stoi(line);
+                getline(ss, line);
+                int lineNumber = stoi(line);
+                vector<string> rowData;
+                for (int i = 0; i < header.size(); i++) {
+
+                    getline(ss, line);
+                    if (i != column)
+                        rowData.push_back(line);
+                    else
+                        rowData.push_back(old);
+                
+                }
+                writeFileByLineNumber(lineNumber, rowData);
+                if (cn == column) {
+                    tree->deleteByVal(newD, lineNumber);
+                    tree->insert(old, lineNumber);
+                }
+
+                for (int i = 0; i < branches.size(); i++) {
+                    if (branches[i] == currBranch) {
+                        roots[i] = tree->getRootFile();
+                        return;
+                    }
+                }
+
+                /*
+                  string metaData() {
+                string data = "Updation\n";
+                data += old + "\n" + rowData[column] + "\n" +  to_string(column) + "\n" + to_string(lineNumber) + "\n";
+                return data;
+                 }
+     */
+            }
+            else {
+                cout << line << endl;
+                return;
+            }
+        }
+
+    }
+
 
     ~Repository() {
         saveRepoToFile();

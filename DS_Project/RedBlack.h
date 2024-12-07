@@ -306,15 +306,15 @@ private:
             toBeDeleted.push_back(x);
         }
         void emptyTable() {
-            cout << "Destructor" << endl;
+            //cout << "Destructor" << endl;
             Node* current = head;
             while (current) {
                 parentTree->writeNodeToFile(current->value);
                 //  current->value->print();
                 current = current->next;
-            }
+            }/*
             cout << "Hits: " << hits << endl;
-            cout << "Misses: " << misses << endl;
+            cout << "Misses: " << misses << endl;*/
             head = nullptr;
             for (int i = 0; i < capacity; i++) {
                 arr[i] = { "", nullptr };
@@ -325,7 +325,7 @@ private:
 
         }
         ~HashTable() {
-            cout << "Destructor" << endl;
+            //cout << "Destructor" << endl;
             Node* current = head;
             while (current) {
                 parentTree->writeNodeToFile(current->value);
@@ -333,8 +333,8 @@ private:
                 current = current->next;
             }
             delete[] arr;
-            cout << "Hits: " << hits << endl;
-            cout << "Misses: " << misses << endl;
+          /*  cout << "Hits: " << hits << endl;
+            cout << "Misses: " << misses << endl;*/
 
             for (int i = 0; i < toBeDeleted.size(); i++) {
                 std::filesystem::remove(toBeDeleted[i]);
