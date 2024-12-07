@@ -79,6 +79,7 @@ public:
     vector<Updation> updations;
     string currBranch;
     Tree<T>* tree;
+    bool useSha;
     float currVersion;
     Repository(Tree<T>* tree,string treeType) :tree(tree), currVersion(0.1),treeType(treeType) {
     }
@@ -89,6 +90,8 @@ public:
         cin >> csv_path;
         cout << "Enter column Number(0-indexed): ";
         cin >> column;
+        cout << "Select Hashing Algorithm: \n0.Instructor's Hash \n1.SHA256\nSelect: ";
+        cin >> useSha;
         create_directory(name);
         currBranch = "main";
         create_directory(name + "/" + currBranch);
@@ -183,7 +186,7 @@ public:
         file.close();
         tree->make();
         //tree->computeHash();
-        tree->merkle = new MerkleTree<T>(tree->order);
+        tree->merkle = new MerkleTree<T>(tree->order,useSha);
         tree->changeBranch(tree->getRootFile());
         //cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
         string dataFolder = name + "\\" + currBranch + "\\" + "data";
@@ -682,7 +685,7 @@ public:
 
         tree->changeBranch(roots[0]);
         currBranch = branches[0];
-        tree->merkle = new MerkleTree<T>(tree->order);
+        tree->merkle = new MerkleTree<T>(tree->order,useSha);
         string dataFolder = name + "\\" + currBranch + "\\" + "data";
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
 
@@ -704,7 +707,7 @@ public:
         string targetFolder = name + "\\" + targetBranch + "\\" + "data";
         cout << currFolder << " and " << targetFolder << endl;
         
-        MerkleTree<T>* targetMerkle = new MerkleTree<T>(tree->order);
+        MerkleTree<T>* targetMerkle = new MerkleTree<T>(tree->order,useSha);
         string targetHash = targetMerkle->buildMerkleTree(targetFolder)->hash;
         string currHash=tree->merkle->buildMerkleTree(currFolder)->hash;
         cout << "Currhash: " << currHash << endl;

@@ -21,10 +21,10 @@ int stringToInt(const std::string& str) {
 	// Check for empty string
 	if (str.empty()) {
 		std::cerr << "Error: Empty string" << std::endl;
-		return 0; // Or throw an exception or return an error code
+		return 0; 
 	}
 
-	// Handle optional '+' or '-' signs
+	// Handles optional '+' or '-' signs
 	if (str[i] == '-') {
 		sign = -1;
 		i++;
@@ -39,17 +39,16 @@ int stringToInt(const std::string& str) {
 
 		// Check if the character is a valid digit
 		if (c < '0' || c > '9') {
-			std::cerr << "Error: Invalid character '" << c << "' in input string" << std::endl;
-			return 0; // Or handle invalid input (throw an exception, return error code, etc.)
+			cerr << "Error: Invalid character '" << c << "' in input string" << std::endl;
+			return 0; 
 		}
 
-		// Convert char to integer and add to result
 		result = result * 10 + (c - '0');
 
-		// Handle overflow
+		//in case there is an overflow
 		if (result < 0) {
-			std::cerr << "Error: Integer overflow occurred" << std::endl;
-			return 0; // Or handle overflow as needed
+			cerr << "Error: Integer overflow occurred" << std::endl;
+			return 0; 
 		}
 	}
 
@@ -65,16 +64,17 @@ public:
 	string rightPath;
 	string parentPath;
 	string fileName;
+	//for cache(indicates if the node has been changed or not)
 	bool dirtyNode;
+	//for duplicates
 	vector<int> lineNumbers;
 	T data;
 	int height;
-	string hash;
-	bool dups;
-	AVLNode(T c) :data(c), leftPath("NULL"), rightPath("NULL"), parentPath("NULL"), height(0), hash(""), dups(false),dirtyNode(0){
+
+	AVLNode(T c) :data(c), leftPath("NULL"), rightPath("NULL"), parentPath("NULL"), height(0),dirtyNode(0){
 		fileName = to_string_generic(data) + ".txt";
 	}
-	AVLNode() :leftPath("NULL"), rightPath("NULL"), parentPath("NULL"), height(0), hash(""), dups(false),dirtyNode(0){
+	AVLNode() :leftPath("NULL"), rightPath("NULL"), parentPath("NULL"), height(0),dirtyNode(0){
 	}
 
 	void dirty() {
@@ -90,23 +90,18 @@ public:
 	int nNodes;
 	Repository<T> repo;
 	AVL(string path = "") :repo(this, "AVL"), nNodes(0), ht(this, 151) {
-		//computeHash();
 		Tree<T>::order = 2;
 		Tree<T>::rootFile = "NULL";
 		if (path == "")
-			repo.create();
+			repo.create();//obvious from the name
 		else
 			repo.readFromFile(path);
 		ht.emptyTable();
+		//interface for user
 		repo.main();
 	}
 
 	//Hashing stuff
-
-
-
-
-
 	void deleteByVal(T val) {
 		deleteNode(Tree<T>::rootFile, val);
 		string fileName = to_string_generic(val) + ".txt";
@@ -114,12 +109,11 @@ public:
 	}
 
 	void display() {
+		
 		printTree(Tree<T>::rootFile);
 	}
 
-
-	//KFKDJ
-	 //for cache
+	//for cache
 	struct Node {
 	public:
 		string key;
@@ -135,22 +129,9 @@ public:
 		}
 	};
 
-	string computeHashHelper(string path) {
-		if (path == "NULL" || path == "nil")
-			return "";
-
-		AVLNode<T>* node = readNodeFromFile(path);
-
-		//Currently a placeholder for computing actual has, implement later
-		node->hash = Tree<T>::instructorHash(node->data) + computeHashHelper(node->leftPath) + computeHashHelper(node->rightPath);
-		node->dirty();
-
-		ht.insert(path, node);
-		return node->hash;
-	}
 
 
-
+	//for efficient handling of large data (stores already accessed nodes and makes their retrieval faster)
 	struct HashTable {
 	private:
 		int capacity;
@@ -341,6 +322,7 @@ public:
 			}
 			return arr[slot].second->value;
 		}
+		//search the index of a given key in the hashtable
 		int searchPos(string& key) {
 			if (head->key == key)
 				return head->index;
@@ -358,10 +340,12 @@ public:
 			}
 		}
 
+		//deletes a file from the hashtable
 		void deleteFile(string x) {
 			toBeDeleted.push_back(x);
 		}
-	
+		
+		//empties the table when half is full (hahahaha)
 		void emptyTable() {
 		
 			cout << "Destructor" << endl;
@@ -378,10 +362,11 @@ public:
 				arr[i] = { "", nullptr };
 			}
 			for (int i = 0; i < toBeDeleted.size(); i++) {
-				std::filesystem::remove(toBeDeleted[i]);
+				filesystem::remove(toBeDeleted[i]);
 			}
 
 		}
+
 		~HashTable() {
 			cout << "Destructor" << endl;
 			Node* current = head;
@@ -395,7 +380,7 @@ public:
 			cout << "Misses: " << misses << endl;
 
 			for (int i = 0; i < toBeDeleted.size(); i++) {
-				std::filesystem::remove(toBeDeleted[i]);
+				filesystem::remove(toBeDeleted[i]);
 			}
 
 		}
@@ -406,10 +391,7 @@ public:
 
 
 	//Creates a file in that directory(basically an AVLNode
-
-
 	string createFile(AVLNode<T>* node) {
-
 		// Open the file for the node
 		ht.insert(to_string_generic(node->data), node);
 		return node->fileName;
@@ -992,9 +974,6 @@ public:
 		updateNodeFile(currNode);
 	}
 
-
-
-
 	string getMinValueFile(string currFile) {
 		AVLNode<T>* node = readNodeFromFile(currFile);
 		while (node->leftPath != "NULL") {
@@ -1003,14 +982,17 @@ public:
 		}
 		return currFile;
 	}
+
 	void changeBranch(const string &path) {
 
 		ht.emptyTable();
 		Tree<T>::rootFile = path;
 	}
+
 	string getRootFile() {
 		return Tree<T>::rootFile;
 	}
+
 	void emptyTable() {
 		ht.emptyTable();
 	}
