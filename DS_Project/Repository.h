@@ -691,6 +691,8 @@ public:
         }
         else {
             cout << "Data has been changed in the currBranch...We need to merge\n";
+            string path = "root";
+            tree->merkle->lookForChange(targetMerkle->root, tree->merkle->root, path);
         }
     }
 

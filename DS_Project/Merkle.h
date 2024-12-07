@@ -83,6 +83,7 @@ class MerkleNode {
     // Data field only for leaf nodes
 public:
     T data;
+    string lineNumber;
     string hash;
     MerkleNode* left;
     MerkleNode* right;
@@ -144,28 +145,39 @@ public:
         }
 
         for (const auto& entry : fs::directory_iterator(dataFolder)) {
-            cout << "here\n";
             if (entry.is_regular_file() && entry.path().extension() == ".txt") {
                 filePaths.push_back(entry.path().string());
             }
         }
-        cout << "got fielpaths\n";
-        //tries sorting the file paths (but not working as expeceted e.g after 89.txt the next file would be 9.txt and after that 90.txt)
-        sort(filePaths.begin(), filePaths.end());
+        //tries sorting the file paths (address the issue of sorting lexicographcially e.g after 89.txt the next file would be 9.txt and after that 90.txt)
+        sort(filePaths.begin(), filePaths.end(), [](const string& a, const string& b) {
+            auto extractLineNumber = [](const string& path) -> int {
+                std::string filename = fs::path(path).stem().string(); 
+                try {
+                    return std::stoi(filename); 
+                }
+                catch (const std::invalid_argument&) {
+                    return 0; 
+                }
+                };
+
+            return extractLineNumber(a) < extractLineNumber(b);
+        });
 
         for (const string& filePath : filePaths) {
+            string lineNumber = filePath.substr(0, filePath.find(".txt"));
             ifstream file(filePath);
             if (file.is_open()) {
-
+                cout << "File " << filePath << " is open\n";
                 //Reads the entire data related to the node
                 stringstream buffer;
                 buffer << file.rdbuf();  
                 string data = buffer.str();
                 file.close();
 
-                data.erase(remove(data.begin(), data.end(), '\n'), data.end());
                 
                 MerkleNode<T>* leafNode = new MerkleNode<T>(data, true);
+                leafNode->lineNumber = lineNumber;
                 leafNodes.push_back(leafNode);
             }
             else {
@@ -180,16 +192,13 @@ public:
 
     // Build the Merkle Tree after creating the leaf nodes
     MerkleNode<T>* buildMerkleTree(const string& dataFolder) {
-        cout << "Data folder: " << dataFolder << endl;
         //issues wiht deletion...we have to construct merkle tree eveyr time we are looking for any changes so we must delete the old one first
         if (root!=nullptr) {
             //deleteTree(root);
             root = nullptr;
         }
-        cout << "Creting leafs\n";
         vector<MerkleNode<T>*> leafNodes = createLeafNodes(dataFolder);
         if (leafNodes.empty()) return nullptr;
-        cout << "created leafs\n";
         vector<MerkleNode<T>*> currentLevel = leafNodes;
 
         //builds the tree level by level...starting from leaf nodes(containing data) and constructs the tree using bottom up approach
@@ -209,6 +218,60 @@ public:
         root = currentLevel[0];
         return root;
     }
+
+
+    //Looks where data has been changed and only modifies that data when merging
+    void lookForChange(MerkleNode<T>* mRoot, MerkleNode<T>* tRoot, string path) {
+        if (mRoot == nullptr && tRoot == nullptr) {
+            cout << "Both are null\n";
+            return;
+        }
+
+
+        if (!mRoot || !tRoot) {
+           
+            return;
+        }
+
+
+        if (mRoot->hash != tRoot->hash) {
+            if (mRoot->leaf && tRoot->leaf) {
+                //Updation Case
+                if (mRoot->data != tRoot->data) {
+                    cout << path << " - Data not matching: Tree1= " << mRoot->data
+                        << "   Tree2= " << tRoot->data << endl;
+                    string fileName = mRoot->lineNumber + ".txt";
+
+                    ofstream file(fileName);
+                    if (file.is_open()) {
+                        file << tRoot->data;
+                        file.close();
+                        cout << "Updated file " << fileName << " with data " << tRoot->data << endl;
+                    }
+                    else {
+                        cerr << "Error opening file: " << fileName << endl;
+                    }
+                    mRoot->data = tRoot->data;
+
+                    mRoot->hash = instructorHash(mRoot->data);
+                }
+            }
+            else {
+                cout << path << "Hash not matching Tree1 -> " << mRoot->hash
+                    << "   Tree2 -> " << tRoot->hash << endl;
+                if (mRoot->left && tRoot->left) {
+                    lookForChange(mRoot->left, tRoot->left, path + "/left");
+                }
+                if (mRoot->right && tRoot->right) {
+                    lookForChange(mRoot->right, tRoot->right, path + "/right");
+                }
+                mRoot->hash = instructorHash(mRoot->left->hash + mRoot->right->hash);
+            }
+        }
+
+    }
+
+
 
     // Get the root hash of the Merkle Tree
     string getRootHash() const {
