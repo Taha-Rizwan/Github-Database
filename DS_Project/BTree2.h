@@ -17,13 +17,20 @@ public:
     vector<string> childrenPaths;
     bool leaf;
     string parentPath;
+    string path;
+    static int i;
     
-    BTreeNode(bool l = true) {}
+    BTreeNode(bool l = true) {
+        path = pathify(to_string(i));
+    }
 };
+template <typename T>
+int BTreeNode<T>::i = 0;
 
 template <typename T>
 class BTree :public Tree<T> {
 private:
+    BTreeNode<T>* root;
     string rootPath;
     int m;
     Repository<T> repo;
@@ -50,9 +57,9 @@ public:
     }
 
     string pathify(string data) {
-        //cout << "Pathifying" << endl;
         Tree<T>::toLower(data);
         string path = repo.name + "/" + repo.currBranch + "/" + to_string_generic(data) + ".txt";
+        //cout << "Pathifying" << endl;
         //if (path.find(".txt") == std::string::npos) {  // If ".txt" is not found
         //    path += ".txt";  // Append ".txt" to the string
         //}
@@ -60,9 +67,9 @@ public:
     }
 
     void make() {
-        root = readNodeFromFile(rootPath);
+       /* root = readNodeFromFile(rootPath);
         print(root);
-        cout << endl;
+        cout << endl;*/
         //BTreeNode<T>* temp = nullptr;
         //rootPath = createFile(root);
         //Tree<T>::rootFile = rootPath;
@@ -85,6 +92,8 @@ public:
         ifstream f(pathify(path));
         string line;
         BTreeNode<T>* node = new BTreeNode<T>();
+        getline(f, line);
+        string path = line;
         getline(f, line);
         int keys = stoi(line);
 
@@ -122,6 +131,7 @@ public:
 
         return node;
     }
+    
     string writeNodeToFile(BTreeNode<T>* node, int path = -1) {
         ofstream file;
         if (path == -1) {
@@ -133,10 +143,11 @@ public:
         else {
             file.open(pathify(to_string(path)));
         }
-       
-            
+        
+        file << path << endl;
+
         file << node->keys.size() << endl;
-        for (int i = 0; i < keys.size(); i++) {
+        for (int i = 0; i < node->keys.size(); i++) {
             file << node->keys[i];
             file << node->lineNumbers[i].size();
             for (int j = 0; j < node->lineNumbers[i].size(); j++) {
@@ -222,7 +233,7 @@ public:
             for (size_t i = 0; i < curr->children.size(); ++i)
                 levelOrderQueue.push(curr->children[i]);
 
-            writeNodeToFile()
+            writeNodeToFile();
         }
     }
 
@@ -258,15 +269,17 @@ public:
             return;
         }
         setLeafNodes();
-        BTreeNode<T>* leafNodeForInsert = search(k, true);
-        BTreeNode<T>* node = leafNodeForInsert;
+        BTreeNode<T>* temp = readNodeFromFile(rootPath);
+        //BTreeNode<T>* leafNodeForInsert = search(k, true);
+        //BTreeNode<T>* node = leafNodeForInsert;
+        BTreeNode<T>* node = temp;
         node->keys.push_back(k);
         sort(node->keys.begin(), node->keys.end());
 
         while (node && node->keys.size() == m) {
             int splitFrom = node->keys.size() / 2; // the index of the splitting node
-            BTreeNode<T>* left = new BTreeNode<int>;
-            BTreeNode<T>* right = new BTreeNode<int>;
+            BTreeNode<T>* left = new BTreeNode<T>;
+            BTreeNode<T>* right = new BTreeNode<T>;
             for (int i = 0; i < splitFrom; i++)
                 left->keys.push_back(node->keys[i]); // insertion in left childs of the parent which is split
             for (int i = splitFrom + 1; i < m; i++)
@@ -277,12 +290,14 @@ public:
                 sortForRoot(node);
                 if (node->keys.size() == m)
                     setChildren(node, left, right, splitFrom);
-                node->keys.clear(); node->keys.push_back(splitKey);
-                node->children.clear();
-                node->children.push_back(left);
-                node->children.push_back(right);
-                sort(node->children.begin(), node->children.end());
-                left->parent = node; right->parent = node;
+                node->keys.clear(); 
+                node->keys.push_back(splitKey);
+                node->childrenPaths.clear();
+                node->childrenPaths.push_back(left->path);
+                node->childrenPaths.push_back(right->path);
+                //sort(node->children.begin(), node->children.end());
+                left->parentPath = node->path; 
+                right->parent->path = node->path;
             }
             else {
                 node->parent->keys.push_back(node->keys[splitFrom]);
@@ -312,10 +327,10 @@ public:
 
     void setChildren(BTreeNode<T>* node, BTreeNode<T>* left, BTreeNode<T>* right, int mid) {
         for (int i = 0, j = 0; i <= mid; i++, j++) { //moving children to the left child node
-            if (i < node->children.size()) {
-                left->children.push_back(node->children[i]);
-                if (j < left->children.size())
-                    left->children[j]->parent = left;
+            if (i < node->childrenPaths.size()) {
+                left->childrenPaths.push_back(node->childrenPaths[i]);
+                if (j < left->childrenPaths.size())
+                    left->childrenPaths[j]->parentPath = pathify(left->path);
                 left->leaf = false;
             }
         }

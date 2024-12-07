@@ -1,6 +1,7 @@
 #pragma once
 #include "RedBlack.h"
 #include "AVL.h"
+#include "BTree2.h"
 
 struct Menu {
 
@@ -18,6 +19,7 @@ struct Menu {
 	void createRepo() {
 		cout << "1: RedBlack Tree" << endl;
 		cout << "2: AVL Tree" << endl;
+		cout << "3: B Tree" << endl;
 		cout << "Enter Option: " << endl;
 		int opt;
 		cin >> opt;
@@ -26,6 +28,9 @@ struct Menu {
 		}
 		else if (opt == 2) {
 			AVL<string> r;
+		}
+		else if (opt == 3) {
+			BTree<string> r;
 		}
 		
 	}
