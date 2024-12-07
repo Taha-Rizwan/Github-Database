@@ -954,6 +954,7 @@ public:
     }
 
     string search(T val) {
+        cout << "Roofile: " << Tree<T>::rootFile << endl;
         return searchHelper(Tree<T>::rootFile, val);
     }
 
@@ -1029,6 +1030,7 @@ public:
         }
     }
     void deleteFile(string x) {
+        cout << "file ot be deleted: " << x << endl;
         ht.deleteFile(pathify(x));
     }
     int deleteByVal(T val,bool updation =false) {

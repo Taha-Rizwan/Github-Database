@@ -332,7 +332,7 @@ public:
 
 		// Search Method
 		AVLNode<T>* search(string& key) {
-			if (head->key == key)
+			if (head && head->key == key)
 				return head->value;
 
 			int slot = findSlot(key);
@@ -493,10 +493,8 @@ public:
 
 
 	void deleteFile(string fileName) {
-		cout << "deleting " << fileName << "\n";
-		string dirName = "Nodes";
-		string filePath = dirName + "/" + fileName;
-		remove(filePath.c_str());
+		string path = repo.name + "/" + repo.currBranch + "/" + fileName + ".txt";
+		ht.deleteFile(path);
 	}
 
 	int Height(AVLNode<T>* k1) {
@@ -777,6 +775,9 @@ public:
 
 	string search(T val) {
 		cout << "Search helper called\n";
+		size_t dotPos = Tree<T>::rootFile.find_last_of('.');
+		string lineNumberStr = Tree<T>::rootFile.substr(0, dotPos);
+		cout << "New root file: " << lineNumberStr << endl;
 		return searchHelper(Tree<T>::rootFile, val);
 	}
 
@@ -851,6 +852,7 @@ public:
 
 		}
 		else {
+
 			cout << "Deleting";
 			int l = node->lineNumbers[0];
 			deleteNode(x);
@@ -858,18 +860,33 @@ public:
 			return l;
 		}
 	}
-	int deleteByVal(T val, int ln) {
-		string x = search(val);
-		AVLNode<T>* node = readNodeFromFile(x);
-		if (x == "NULL")
-			return -1;
-		else if (node->lineNumbers.size() >= 1) {
 
+	int deleteByVal(T data, int ln) {
+		string x = search(data);
+		AVLNode<T>* node = readNodeFromFile(x);
+		cout << node->lineNumbers.size() << endl;
+		cout << node->data << endl;
+		if (x == "NULL") {
+			return -1;
+		}
+		else if (node->lineNumbers.size() > 1) {
+			cout << "hello" << endl;
 			remove(node->lineNumbers.begin(), node->lineNumbers.end(), ln);
 
 			node->lineNumbers.pop_back();
-
+			node->dirty();
 			ht.insert(to_string_generic(node->data), node);
+			ht.emptyTable();
+			return ln;
+
+		}
+		else {
+			cout << "Hello" << endl;
+			deleteNode(x);
+			cout<<"DELETIN BY VAL "<<data<<"from linenumber "<<ln<<endl;
+			string lineNumber = x.substr(0, x.find(".txt"));
+			cout << "LINENUMER: " << lineNumber << endl;
+			deleteFile(lineNumber);
 			return ln;
 
 		}
@@ -882,111 +899,99 @@ public:
 
 		AVLNode<T>* currNode = readNodeFromFile(currFile);
 
-			// Case where node has one or no child
-			if (currNode->leftPath == "NULL" || currNode->rightPath == "NULL") {
-				string tempFile = (currNode->leftPath != "NULL") ? currNode->leftPath : currNode->rightPath;
+		// Case where node has one or no child
+		if (currNode->leftPath == "NULL" || currNode->rightPath == "NULL") {
+			string tempFile = (currNode->leftPath != "NULL") ? currNode->leftPath : currNode->rightPath;
 
-				if (tempFile == "NULL") {
-					tempFile = currFile;
-					currFile = "NULL";
-					AVLNode<T>* temp = readNodeFromFile(tempFile);
-					AVLNode<T>* parent = readNodeFromFile(temp->parentPath);
-					if (parent->leftPath == tempFile) {
+			if (tempFile == "NULL") {
+				// No children
+				string parentFile = currNode->parentPath;
+				if (parentFile != "NULL") {
+					AVLNode<T>* parent = readNodeFromFile(parentFile);
+					if (parent->leftPath == currFile) {
 						parent->leftPath = "NULL";
 					}
 					else {
 						parent->rightPath = "NULL";
 					}
-					//node->dirty();
-					//ht.insert(to_string_generic(node->data), node);
+					parent->dirty();
+					ht.insert(to_string_generic(parent->data), parent);
 					updateNodeFile(parent);
-					temp->parentPath = "NULL";
-					//temp->dirty();
-					//ht.insert(to_string_generic(temp->data), temp);
-					updateNodeFile(temp);
-					deleteFile(tempFile);
 				}
-				else {
-					// Update the parent of the child node
-					AVLNode<T>* tempNode = readNodeFromFile(tempFile);
-					string parentFile = currNode->parentPath;
-
-					if (parentFile != "NULL") {
-						AVLNode<T>* parentNode = readNodeFromFile(parentFile);
-						if (currFile == parentNode->leftPath) {
-							parentNode->leftPath = tempFile;
-						}
-						else {
-							parentNode->rightPath = tempFile;
-						}
-						updateNodeFile(parentNode); // Update the parent's file
-					}
-					tempNode->parentPath = parentFile;
-					updateNodeFile(tempNode);
-
-					*currNode = *tempNode;
-					updateNodeFile(currNode);
-
-					deleteFile(currFile);
-				}
+				ht.remove(to_string_generic(currNode->data));
+				deleteFile(currFile);
 			}
 			else {
-				// Node with two children
-				string minValueFile = getMinValueFile(currNode->rightPath);
-				AVLNode<T>* tempNode = readNodeFromFile(minValueFile);
-				T oldData = currNode->data;
-				currNode->data = tempNode->data;
-				updateNodeFile(currNode);
+				// Single child
+				AVLNode<T>* tempNode = readNodeFromFile(tempFile);
+				string parentFile = currNode->parentPath;
 
-				// Delete the successor node
-				deleteNode(minValueFile);
+				if (parentFile != "NULL") {
+					AVLNode<T>* parentNode = readNodeFromFile(parentFile);
+					if (currFile == parentNode->leftPath) {
+						parentNode->leftPath = tempFile;
+					}
+					else {
+						parentNode->rightPath = tempFile;
+					}
+					parentNode->dirty();
+					ht.insert(to_string_generic(parentNode->data), parentNode);
+					updateNodeFile(parentNode);
+				}
+
+				tempNode->parentPath = parentFile;
+				tempNode->dirty();
+				ht.insert(to_string_generic(tempNode->data), tempNode);
+				updateNodeFile(tempNode);
+
+				ht.remove(to_string_generic(currNode->data));
 				deleteFile(currFile);
-
-				currNode->fileName = to_string_generic(currNode->data) + ".txt";
-				createFile(currNode);
-				if (currFile == Tree<T>::rootFile) {
-					Tree<T>::rootFile = currNode->fileName;
-				}
-				if (currNode->leftPath != "NULL") {
-					AVLNode<T>* left = readNodeFromFile(currNode->leftPath);
-					left->parentPath = currNode->fileName;
-					updateNodeFile(left);
-				}
-				if (currNode->rightPath != "NULL") {
-					AVLNode<T>* right = readNodeFromFile(currNode->rightPath);
-					right->parentPath = currNode->fileName;
-					updateNodeFile(right);
-				}
 			}
+		}
+		else {
+			// Node with two children
+			string minValueFile = getMinValueFile(currNode->rightPath);
+			AVLNode<T>* tempNode = readNodeFromFile(minValueFile);
+
+			// Swap the data and lineNumbers with the in-order successor
+			currNode->data = tempNode->data;
+			currNode->lineNumbers = tempNode->lineNumbers;
+			currNode->dirty();
+			ht.insert(to_string_generic(currNode->data), currNode);
+			updateNodeFile(currNode);
+
+			// Delete the in-order successor
+			deleteNode(minValueFile);
+		}
 
 		if (currFile == "NULL") {
 			return;
 		}
 
+		// Update height and balance the tree
 		updateNodeHeight(*currNode);
 		int balance = getBalance(*currNode);
 
-		// Rebalance the tree
 		if (balance > 1 && getBalance(*readNodeFromFile(currNode->leftPath)) >= 0) {
 			rotateRight(currNode, currFile);
 		}
-		if (balance > 1 && getBalance(*readNodeFromFile(currNode->leftPath)) < 0) {
+		else if (balance > 1 && getBalance(*readNodeFromFile(currNode->leftPath)) < 0) {
 			AVLNode<T>* left = readNodeFromFile(currNode->leftPath);
 			rotateLeft(left, currNode->leftPath);
 			rotateRight(currNode, currFile);
 		}
-		if (balance < -1 && getBalance(*readNodeFromFile(currNode->rightPath)) <= 0) {
+		else if (balance < -1 && getBalance(*readNodeFromFile(currNode->rightPath)) <= 0) {
 			rotateLeft(currNode, currFile);
 		}
-		if (balance < -1 && getBalance(*readNodeFromFile(currNode->rightPath)) > 0) {
+		else if (balance < -1 && getBalance(*readNodeFromFile(currNode->rightPath)) > 0) {
 			AVLNode<T>* right = readNodeFromFile(currNode->rightPath);
 			rotateRight(right, currNode->rightPath);
 			rotateLeft(currNode, currFile);
 		}
 
-		// Update the current node's file after all changes
 		updateNodeFile(currNode);
 	}
+
 
 
 
