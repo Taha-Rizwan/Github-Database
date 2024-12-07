@@ -7,7 +7,7 @@
 using namespace std;
 using namespace std::filesystem;
 
-
+//Addtiion in current data
 struct Addition {
     vector<string> rowData;
     int lineNumber;
@@ -23,6 +23,8 @@ struct Addition {
     }
 };
 
+
+//Deletion in current data
 struct Deletion {
     string data;
     int lineNumber;
@@ -35,6 +37,8 @@ struct Deletion {
     }
 };
 
+
+//Updation in current data
 struct Updation {
     vector<string> rowData;
     string old;
@@ -84,8 +88,11 @@ public:
     Tree<T>* tree;
     bool useSha;
     float currVersion;
+
     Repository(Tree<T>* tree,string treeType) :tree(tree), currVersion(0.1),treeType(treeType) {
     }
+
+
     void create() {
         cout << "Enter Repo Name: ";
         cin >> name;
@@ -247,7 +254,7 @@ public:
             }
         }
     }
-
+    //Read Data from a line Number
     vector<string> readFileByLineNumber(int lineNumber) {
         vector<string> rowData;
         string filePath = name + "/" + currBranch + "/data/" + to_string(lineNumber) + ".txt";
@@ -266,7 +273,7 @@ public:
         file.close();
         return rowData;
     }
-
+    //Write Data to a Line Number
     void writeFileByLineNumber(int ln, vector<string>& rowData) {
         ofstream dataFile;
         dataFile.open(name + "/" + currBranch + "/data/" + to_string(ln) + ".txt");
@@ -276,6 +283,8 @@ public:
         dataFile.close();
     }
 
+
+    //Add node to staging(Won't actually work unless commited)
     void addNode() {
         // T val;
         // cout << "Value to add: ";
@@ -293,6 +302,7 @@ public:
         additions.emplace_back(Addition(rowData, ln));
     }
 
+    //Permanently commit data
     void addDataFr(Addition& addition) {
 
         writeFileByLineNumber(ln, addition.rowData);
@@ -306,6 +316,7 @@ public:
         //tree->computeHash();
     }
 
+    //Delete node from staging(Won't actually work unless commited)
     void deleteNode() {
         T val;
         cout << "Value to delete: ";
@@ -353,6 +364,7 @@ public:
         }
     }
 
+    //Permanently delete data
     void deleteDataFr(Deletion& deletion) {
 
         cout << deletion.data << " " << deletion.lineNumber << endl;
@@ -368,6 +380,8 @@ public:
             }
         }
     }
+
+    //Update data to staging
     void updateNode() {
         T val, newVal;
         cout << "Value to update: ";
@@ -462,6 +476,7 @@ public:
         }
         cout << "Not Found: " << endl;
     }
+    //Update data permanently
     void updateDataFr(Updation& update) {
         writeFileByLineNumber(update.lineNumber, update.rowData);
         if (update.column == column) {
@@ -480,11 +495,18 @@ public:
         }
 
     }
+
+
     void commit() {
         if (additions.empty() && deletions.empty() && updations.empty()) {
             cout << "Nothing to update" << endl;
             return;
         }
+    
+        //Write commit to commit file whilst also commiting everything
+        cout << "Commit Message: ";
+        string message;
+        getline(cin, message);
         ofstream file;
         std::ostringstream versionStream;
         versionStream << fixed << setprecision(1) << currVersion;
@@ -507,6 +529,7 @@ public:
 
             file << updations[i].metaData();
         }
+        file << message << endl;
         file.close();
         currVersion += 0.1;
         ofstream log(name + "/" + currBranch + "/log.txt", ios::app);
@@ -517,7 +540,7 @@ public:
         string dataFolder = name + "\\" + currBranch + "\\" + "data";
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
     
-
+        //Clearing up everything for future
         updations.clear();
         deletions.clear();
         additions.clear();
@@ -528,29 +551,33 @@ public:
 
     void viewNodeData() {
 
-     /*   T data;
+        T data;
         cout << "Enter data to view";
         cin >> data;
-        int toBeViewed = tree->searchData(data);
+        vector<int> toBeViewed = tree->searchData(data);
 
-        if (toBeViewed == -1) {
+        if (toBeViewed.empty()) {
             cout << "Data not found!" << endl;
             return;
         }
         else {
-            vector<string> rowData = readFileByLineNumber(toBeViewed);
+            for (int i = 0; i < toBeViewed.size(); i++) {
+                vector<string> rowData = readFileByLineNumber(toBeViewed);
 
-            for (int i = 0; i < rowData.size(); i++) {
-                cout << header[i] << ": " << rowData[i] << endl;
+                for (int j = 0; j < rowData.size(); j++) {
+                    cout << header[j] << ": " << rowData[j] << endl;
+                }
             }
+           
 
-        }*/
+        }
     }
 
     void visualizeTree() {
         string dataFolder = name + "\\" + currBranch + "\\" + "data";
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
     }
+    //Switching branches
     void switchBranch() {
 
         if (!additions.empty() && !deletions.empty() && !updations.empty()) {
@@ -577,6 +604,9 @@ public:
 
 
     }
+
+
+    // Adding branch by copying current branch
     void addBranch() {
         if (!additions.empty() && !deletions.empty() && !updations.empty()) {
             cout << "Current Branch has uncommited changes!" << endl;
@@ -617,6 +647,8 @@ public:
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
     }
 
+
+    //Saving current state of repository to the file
     void saveRepoToFile() {
         ofstream repoFile(name + ".txt");
         repoFile << treeType << endl;
@@ -638,7 +670,7 @@ public:
         repoFile << currVersion << endl;
         repoFile.close();
     }
-
+    //Reading repository state from file
     void readFromFile(const string& path) {
         ifstream repoFile(path);
         if (!repoFile.is_open()) {
@@ -696,6 +728,7 @@ public:
 
     }
 
+    //merging of branches 
     void mergeBranch() {
         if (!additions.empty() && !deletions.empty() && !updations.empty()) {
             cout << "Current Branch has uncommited changes!" << endl;
@@ -760,7 +793,7 @@ public:
             similar++;
         }
 
-
+        std::filesystem::copy(name + "\\" + targetBranch + "\\" + "log.txt", name + "\\" + currBranch + "\\" + "log.txt", std::filesystem::copy_options::overwrite_existing);
         makeChanges(targetBranch,currLines, similar);
     }
 
@@ -773,6 +806,7 @@ public:
                 break;
             }
         }
+        //Making changes after reading logs
         for (int i = similar; i < currLines.size(); i++) {
             string str = readCommit(currLines[i]);
             performCommit(targetBranch, str);
