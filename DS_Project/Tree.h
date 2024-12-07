@@ -93,8 +93,8 @@ public:
 	
 		return to_string_generic(hash);
 	}
-	virtual string computeHashHelper(Tree<T>* node) { return " "; }
-	virtual void computeHash() {}
+	/*virtual string computeHashHelper(Tree<T>* node) { return " "; }
+	virtual void computeHash() {}*/
 	virtual void insert(T data,int ln) {}
 	virtual void display() {}
 	//Return Line Number of where data is deleted from
