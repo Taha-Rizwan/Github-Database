@@ -44,6 +44,9 @@ struct Updation {
     string metaData() {
         string data = "Updation\n";
         data += old + "\n" + rowData[column] + "\n" +  to_string(column) + "\n" + to_string(lineNumber) + "\n";
+        for (int i = 0; i < rowData.size(); i++) {
+            data += rowData[i] + "\n";
+        }
         return data;
     }
 };
@@ -781,7 +784,7 @@ public:
         string line;
         while (getline(ss, line)) {
             if (line == "Addition") {
-                cout << "Wow addition" << endl;
+                //cout << "Wow addition" << endl;
                 vector<string> rowData;
                 for (int i = 0; i < header.size(); i++) {
                     getline(ss, line);
@@ -790,23 +793,27 @@ public:
 
                 getline(ss, line);
                 int lineNumber = stoi(line);
-                cout << rowData[column] << " " << lineNumber << endl;
+                //cout << rowData[column] << " " << lineNumber << endl;
                 tree->insert(rowData[column], lineNumber);
+
+                writeFileByLineNumber(lineNumber, rowData);
+
 
             }
             else if (line == "Deletion") {
-                cout << "Wow Deletion" << endl;
+                //cout << "Wow Deletion" << endl;
 
                 getline(ss, line);
                 string data = line;
                 getline(ss, line);
                 int lineNumber = stoi(line);
 
-                cout << data << " " << lineNumber << endl;
+                //cout << data << " " << lineNumber << endl;
                 tree->deleteByVal(data, lineNumber);
+                remove(name + "\\" + currBranch + "\\data\\" + to_string(lineNumber) + ".txt");
             }
             else if (line == "Updation") {
-                cout << "wow Updation" << endl;
+                //cout << "wow Updation" << endl;
 
                 getline(ss, line);
                 string old = line;
@@ -816,7 +823,12 @@ public:
                 int cn = stoi(line);
                 getline(ss, line);
                 int lineNumber = stoi(line);
-
+                vector<string> rowData;
+                for (int i = 0; i < header.size(); i++) {
+                    getline(ss, line);
+                    rowData.push_back(line);
+                }
+                writeFileByLineNumber(lineNumber, rowData);
                 if (cn == column) {
                     tree->deleteByVal(old, lineNumber);
                     tree->insert(newD, lineNumber);
@@ -872,22 +884,3 @@ public:
 
 };
 
-/*
-    if (node->lineNumbers.size() == 1)
-            return node->lineNumbers[0];
-        else {
-            cout << "From which line number do you want to see data: ";
-            for (int i = 0; i < node->lineNumbers.size(); i++) {
-                cout << "Line Number: " << node->lineNumbers[i] << endl;
-            }
-            int opt;
-            cin >> opt;
-            for (int i = 0; i < node->lineNumbers.size(); i++) {
-                if (node->lineNumbers[i] == opt) {
-                    return opt;
-                }
-            }
-            return -1;
-
-        }
-*/
