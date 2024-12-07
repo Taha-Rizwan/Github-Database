@@ -48,8 +48,6 @@ struct Menu {
 		} 
 		else
 			AVL<string> r(path);
-
-
 	}
 	
 
