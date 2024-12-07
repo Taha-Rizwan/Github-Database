@@ -17,6 +17,8 @@ struct Addition {
         for (int i = 0; i < rowData.size(); i++) {
             data += rowData[i] + "\n";
         }
+
+        data += to_string(lineNumber) + "\n";
         return data;
     }
 };
@@ -42,6 +44,9 @@ struct Updation {
     string metaData() {
         string data = "Updation\n";
         data += old + "\n" + rowData[column] + "\n" +  to_string(column) + "\n" + to_string(lineNumber) + "\n";
+        for (int i = 0; i < rowData.size(); i++) {
+            data += rowData[i] + "\n";
+        }
         return data;
     }
 };
@@ -77,6 +82,7 @@ public:
     vector<Updation> updations;
     string currBranch;
     Tree<T>* tree;
+    bool useSha;
     float currVersion;
     Repository(Tree<T>* tree,string treeType) :tree(tree), currVersion(0.1),treeType(treeType) {
     }
@@ -87,6 +93,8 @@ public:
         cin >> csv_path;
         cout << "Enter column Number(0-indexed): ";
         cin >> column;
+        cout << "Select Hashing Algorithm: \n0.Instructor's Hash \n1.SHA256\nSelect: ";
+        cin >> useSha;
         create_directory(name);
         currBranch = "main";
         create_directory(name + "/" + currBranch);
@@ -181,7 +189,7 @@ public:
         file.close();
         tree->make();
         //tree->computeHash();
-        tree->merkle = new MerkleTree<T>(tree->order);
+        tree->merkle = new MerkleTree<T>(tree->order,useSha);
         tree->changeBranch(tree->getRootFile());
         //cout << "Root Hash: " << tree->merkle->buildMerkleTree(tree->rootFile) << endl;
         string dataFolder = name + "\\" + currBranch + "\\" + "data";
@@ -189,6 +197,11 @@ public:
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
         roots.push_back(tree->getRootFile());
         cout << endl;
+
+        ofstream log(name + "/" + currBranch + "/log.txt");
+        log.close();
+
+
     }
 
     void main() {
@@ -227,6 +240,7 @@ public:
                 break;
             case 9:
                 mergeBranch();
+                break;
             default:
                 logic = false;
                 break;
@@ -283,6 +297,12 @@ public:
 
         writeFileByLineNumber(ln, addition.rowData);
         tree->insert(addition.rowData[column], ln++);
+        for (int i = 0; i < branches.size(); i++) {
+            if (branches[i] == currBranch) {
+                roots[i] = tree->getRootFile();
+                return;
+            }
+        }
         //tree->computeHash();
     }
 
@@ -290,18 +310,35 @@ public:
         T val;
         cout << "Value to delete: ";
         cin >> val;
-        int l = tree->searchData(val);
-        if (l != -1) {
-            bool alreadyGone = false;
-            for (int i = 0; i < deletions.size(); i++) {
-                if (deletions[i].lineNumber == l)
-                {
-                    alreadyGone = true;
-                    break;
+        vector<int> l = tree->searchData(val);
+        if (!l.empty()) {
+
+                int opt;
+                cout << "From which line number do you want to see data: ";
+                for (int i = 0; i < l.size(); i++) {
+                    bool alreadyGone = false;
+                    for (int j = 0; j < deletions.size(); j++) {
+                        cout << deletions[j].lineNumber << " " << l[i] << endl;
+                        if (deletions[j].lineNumber == l[i]) {
+                            alreadyGone = true;
+                            break;
+                        }
+                    }
+                    if(!alreadyGone)
+                        cout << "Line Number: " << l[i] << endl;
                 }
-            }
-            if(!alreadyGone)
-                deletions.emplace_back(Deletion(val, l));
+                cin >> opt;
+                bool find = false;
+                for (int i = 0; i < l.size(); i++) {
+                    if (l[i] == opt) {
+                        find = true;
+                        break;
+                    }
+                }
+                if (find) {
+
+                    deletions.push_back(Deletion(val, opt));
+                }
         }
         else {
             for (int i = 0; i < additions.size(); i++) {
@@ -324,48 +361,79 @@ public:
 
         cout << "Deleted from line number: " << deletion.lineNumber << endl;
         remove((name + "/" + currBranch + "/data/" + to_string_generic(deletion.lineNumber) + ".txt").c_str());
+        for (int i = 0; i < branches.size(); i++) {
+            if (branches[i] == currBranch) {
+                roots[i] = tree->getRootFile();
+                return;
+            }
+        }
     }
     void updateNode() {
         T val, newVal;
         cout << "Value to update: ";
         cin >> val;
         cout << "searchind for dta\n";
-        int ln = tree->searchData(val);
+        vector<int> l = tree->searchData(val);
 
 
-        cout << "On line number: " << ln << endl;
-        if (ln != -1) {
-            for (int i = 0; i < deletions.size(); i++) {
-                if (deletions[i].lineNumber == ln) {
-                   // cout << "Not Found!" << endl;
-                    return;
+        if (!l.empty()) {
+            //for (int i = 0; i < deletions.size(); i++) {
+            //    if (deletions[i].lineNumber == ln) {
+            //       // cout << "Not Found!" << endl;
+            //        return;
+            //    }
+            //}
+
+            int ln;
+            cout << "From which line number do you want to see data: ";
+            for (int i = 0; i < l.size(); i++) {
+                bool alreadyGone = false;
+                for (int j = 0; j < deletions.size(); j++) {
+                    if (deletions[j].lineNumber == l[i]) {
+                        alreadyGone = true;
+                        if (l.size() == 1)
+                            return;
+                        break;
+                    }
+                }
+                if (!alreadyGone)
+                    cout << "Line Number: " << l[i] << endl;
+            }
+            cin >> ln;
+            bool find = false;
+            for (int i = 0; i < l.size(); i++) {
+                if (l[i] == ln) {
+                    find = true;
+                    break;
                 }
             }
 
-            cout << "What do you want to change: " << endl;
-            for (int i = 0; i < header.size(); i++) {
-                cout << i << ": " << header[i] << endl;
-            }
-            int opt;
-            cin >> opt;
-            if (opt >= 0 && opt < header.size()) {
-                vector<string> rowData = readFileByLineNumber(ln);
-                cout << "Current " << header[opt] << ": " << rowData[opt] << endl;
-                cout << "Updated " << header[opt] << ": ";
-                string data;
-                cin.ignore();
-                getline(cin, data);
-                string old = rowData[opt];
-                rowData[opt] = data;
-                updations.emplace_back(Updation(rowData, ln, opt, old));
 
-                //writeFileByLineNumber(ln, rowData);
-                // if (opt==column) {
-                //     tree->deleteByVal(old,ln);
-                //     tree->insert(data,ln);
-                // }
-            }
+            if (find) {
+                cout << "What do you want to change: " << endl;
+                for (int i = 0; i < header.size(); i++) {
+                    cout << i << ": " << header[i] << endl;
+                }
+                int opt;
+                cin >> opt;
+                if (opt >= 0 && opt < header.size()) {
+                    vector<string> rowData = readFileByLineNumber(ln);
+                    cout << "Current " << header[opt] << ": " << rowData[opt] << endl;
+                    cout << "Updated " << header[opt] << ": ";
+                    string data;
+                    cin.ignore();
+                    getline(cin, data);
+                    string old = rowData[opt];
+                    rowData[opt] = data;
+                    updations.emplace_back(Updation(rowData, ln, opt, old));
 
+                    //writeFileByLineNumber(ln, rowData);
+                    // if (opt==column) {
+                    //     tree->deleteByVal(old,ln);
+                    //     tree->insert(data,ln);
+                    // }
+                }
+            }
         }
         else {
             for (int i = 0; i < additions.size(); i++) {
@@ -399,7 +467,16 @@ public:
         if (update.column == column) {
             cout << "Updating\n";
             tree->deleteByVal(update.old, update.lineNumber);
-            tree->insert(update.rowData[column], ln);
+            tree->insert(update.rowData[column], update.lineNumber);
+
+            for (int i = 0; i < branches.size(); i++) {
+                if (branches[i] == currBranch) {
+                    roots[i] = tree->getRootFile();
+                    return;
+                }
+            }
+
+
         }
 
     }
@@ -418,32 +495,40 @@ public:
         file << "Version: " << currVersion << endl;
         for (int i = 0; i < additions.size(); i++) {
             addDataFr(additions[i]);
-            file << additions[i].metaData() << endl;
+            file << additions[i].metaData();
         }
         for (int i = 0; i < deletions.size(); i++) {
             deleteDataFr(deletions[i]);
             //cout<<"Deleting: "<<deletions[i].data<<endl;
-            file << deletions[i].metaData() << endl;
+            file << deletions[i].metaData();
         }
         for (int i = 0; i < updations.size(); i++) {
             updateDataFr(updations[i]);
 
-            file << updations[i].metaData() << endl;
+            file << updations[i].metaData();
         }
         file.close();
         currVersion += 0.1;
         ofstream log(name + "/" + currBranch + "/log.txt", ios::app);
         log << path << endl;
         log.close();
-
+        tree->emptyTable();
 
         string dataFolder = name + "\\" + currBranch + "\\" + "data";
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
+    
+
+        updations.clear();
+        deletions.clear();
+        additions.clear();
+        cout << updations.size()<<endl;
+        cout << deletions.size()<<endl;
+        cout << additions.size()<<endl;
     }
 
     void viewNodeData() {
 
-        T data;
+     /*   T data;
         cout << "Enter data to view";
         cin >> data;
         int toBeViewed = tree->searchData(data);
@@ -459,7 +544,7 @@ public:
                 cout << header[i] << ": " << rowData[i] << endl;
             }
 
-        }
+        }*/
     }
 
     void visualizeTree() {
@@ -480,8 +565,10 @@ public:
         }
         cin >> n;
         if (n - 1 >= 0 && n <= branches.size()) {
-            currBranch = branches[n - 1];
+            tree->emptyTable();
+
             tree->changeBranch(roots[n - 1]);
+            currBranch = branches[n - 1];
             cout << "Current Branch is set to: " << currBranch << endl;
         }
         else {
@@ -499,12 +586,13 @@ public:
         cout << "Enter the name for your new branch: ";
         cin >> newBranch;
 
-
+        tree->emptyTable();
         branches.push_back(newBranch);
-        roots.push_back(tree->getRootFile());
-        tree->changeBranch(tree->getRootFile());
 
+        tree->changeBranch(tree->getRootFile());
         currBranch = newBranch;
+        roots.push_back(tree->getRootFile());
+
         cout << "New branch has been created and cloned by current version of main" << endl;
         cout << "Current Branch is set to: " << currBranch << endl;
         tree->merkle->currBranch = newBranch;
@@ -600,7 +688,7 @@ public:
 
         tree->changeBranch(roots[0]);
         currBranch = branches[0];
-        tree->merkle = new MerkleTree<T>(tree->order);
+        tree->merkle = new MerkleTree<T>(tree->order,useSha);
         string dataFolder = name + "\\" + currBranch + "\\" + "data";
         cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
 
@@ -609,6 +697,11 @@ public:
     }
 
     void mergeBranch() {
+        if (!additions.empty() && !deletions.empty() && !updations.empty()) {
+            cout << "Current Branch has uncommited changes!" << endl;
+            return;
+        }
+        tree->emptyTable();
         cout << "Enter the name of the branch to merge with: ";
         string targetBranch;
         cin >> targetBranch;
@@ -617,7 +710,7 @@ public:
         string targetFolder = name + "\\" + targetBranch + "\\" + "data";
         cout << currFolder << " and " << targetFolder << endl;
         
-        MerkleTree<T>* targetMerkle = new MerkleTree<T>(tree->order);
+        MerkleTree<T>* targetMerkle = new MerkleTree<T>(tree->order,useSha);
         string targetHash = targetMerkle->buildMerkleTree(targetFolder)->hash;
         string currHash=tree->merkle->buildMerkleTree(currFolder)->hash;
         cout << "Currhash: " << currHash << endl;
@@ -627,8 +720,161 @@ public:
         }
         else {
             cout << "Data has been changed in the currBranch...We need to merge\n";
-
+            string path = "root";
+            tree->merkle->lookForChange(targetMerkle->root, tree->merkle->root, path);
+            compareLogs(currBranch, targetBranch);
         }
+    }
+
+    void compareLogs(string currBranch, string targetBranch) {
+        ifstream curr(name + "\\" + currBranch + "\\" + "log.txt");
+        ifstream target(name + "\\" + targetBranch + "\\" + "log.txt");
+
+        if (!curr.is_open() || !target.is_open()) {
+            cerr << "Error: Could not open log files for comparison." << endl;
+            return;
+        }
+
+        vector<string> currLines;
+        vector<string> targetLines;
+        string line;
+
+        // Read lines from the current branch log file
+        while (getline(curr, line)) {
+            currLines.push_back(line);
+        }
+
+        // Read lines from the target branch log file
+        while (getline(target, line)) {
+            targetLines.push_back(line);
+        }
+
+        curr.close();
+        target.close();
+        // Output the lines for verification
+        int similar = 0;
+
+        for (int i = 0; i < targetLines.size() && i < currLines.size(); i++) {
+            if (currLines[i] != targetLines[i])
+                break;
+            similar++;
+        }
+
+
+        makeChanges(targetBranch,currLines, similar);
+    }
+
+    void makeChanges(string& targetBranch, vector<string>& currLines, int& similar) {
+   
+        for (int i = 0; i < branches.size(); i++) {
+            if (targetBranch == branches[i]) {
+                tree->changeBranch(roots[i]);
+                currBranch = targetBranch;
+                break;
+            }
+        }
+        for (int i = similar; i < currLines.size(); i++) {
+            string str = readCommit(currLines[i]);
+            performCommit(targetBranch, str);
+        }
+    }
+
+    void performCommit(string& targetBranch, string & commit) {
+        stringstream ss(commit);
+        string line;
+        while (getline(ss, line)) {
+            if (line == "Addition") {
+                //cout << "Wow addition" << endl;
+                vector<string> rowData;
+                for (int i = 0; i < header.size(); i++) {
+                    getline(ss, line);
+                    rowData.push_back(line);
+                }
+
+                getline(ss, line);
+                int lineNumber = stoi(line);
+                //cout << rowData[column] << " " << lineNumber << endl;
+                tree->insert(rowData[column], lineNumber);
+
+                writeFileByLineNumber(lineNumber, rowData);
+
+
+            }
+            else if (line == "Deletion") {
+                //cout << "Wow Deletion" << endl;
+
+                getline(ss, line);
+                string data = line;
+                getline(ss, line);
+                int lineNumber = stoi(line);
+
+                //cout << data << " " << lineNumber << endl;
+                tree->deleteByVal(data, lineNumber);
+                remove(name + "\\" + currBranch + "\\data\\" + to_string(lineNumber) + ".txt");
+            }
+            else if (line == "Updation") {
+                //cout << "wow Updation" << endl;
+
+                getline(ss, line);
+                string old = line;
+                getline(ss, line);
+                string newD = line;
+                getline(ss, line);
+                int cn = stoi(line);
+                getline(ss, line);
+                int lineNumber = stoi(line);
+                vector<string> rowData;
+                for (int i = 0; i < header.size(); i++) {
+                    getline(ss, line);
+                    rowData.push_back(line);
+                }
+                writeFileByLineNumber(lineNumber, rowData);
+                if (cn == column) {
+                    tree->deleteByVal(old, lineNumber);
+                    tree->insert(newD, lineNumber);
+                }
+
+
+
+                /*
+                  string metaData() {
+                string data = "Updation\n";
+                data += old + "\n" + rowData[column] + "\n" +  to_string(column) + "\n" + to_string(lineNumber) + "\n";
+                return data;
+                 }
+     */
+            }
+            else {
+                return;
+            }
+        }
+     
+    }
+
+    string readCommit(string& path) {
+        ifstream file(path);
+        string result;
+
+        if (!file.is_open()) {
+            throw runtime_error("Could not open file: " + path);
+        }
+
+        string line;
+        bool firstLineSkipped = false;
+
+        while (getline(file, line)) {
+            if (!firstLineSkipped) {
+                firstLineSkipped = true; // Skip the first line
+                continue;
+            }
+            result += line + "\n"; // Append the line with its newline character
+        }
+
+        if (!result.empty() && result.back() == '\n') {
+            result.pop_back(); // Remove the trailing newline character (if needed)
+        }
+
+        return result;
     }
 
     ~Repository() {
@@ -637,3 +883,4 @@ public:
 
 
 };
+

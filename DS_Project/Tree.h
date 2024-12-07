@@ -104,13 +104,15 @@ public:
 	virtual void createNil() {
 
 	}
+	virtual void emptyTable() {
 
+	}
 	virtual void changeBranch(const string& path){}
 	virtual string getRootFile() {
 		return "nil";
 	}
-	virtual int searchData(T data) {
-		return -1;
+	virtual vector<int> searchData(T data) {
+		return {};
 	}
 
 };

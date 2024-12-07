@@ -288,6 +288,9 @@ private:
             if (slot == -1 || arr[slot].first != key) {
                 return nullptr;
             }
+
+            //cout << "Found" << endl;
+
             return arr[slot].second->value;
         }
         int searchPos(string& key) {
@@ -320,7 +323,10 @@ private:
             }
             cout << "Hits: " << hits << endl;
             cout << "Misses: " << misses << endl;
-
+            head = nullptr;
+            for (int i = 0; i < capacity; i++) {
+                arr[i] = { "", nullptr };
+            }
             for (int i = 0; i < toBeDeleted.size(); i++) {
                 std::filesystem::remove(toBeDeleted[i]);
             }
@@ -352,6 +358,7 @@ private:
         //cout << "Pathifying" << endl;
         Tree<T>::toLower(data);
         string path = repo.name + "/" + repo.currBranch + "/" + to_string_generic(data) + ".txt";
+        cout << path << endl;
         //if (path.find(".txt") == std::string::npos) {  // If ".txt" is not found
         //    path += ".txt";  // Append ".txt" to the string
         //}
@@ -947,6 +954,7 @@ public:
     }
 
     string search(T val) {
+        cout << "Roofile: " << Tree<T>::rootFile << endl;
         return searchHelper(Tree<T>::rootFile, val);
     }
 
@@ -1022,6 +1030,7 @@ public:
         }
     }
     void deleteFile(string x) {
+        cout << "file ot be deleted: " << x << endl;
         ht.deleteFile(pathify(x));
     }
     int deleteByVal(T val,bool updation =false) {
@@ -1073,6 +1082,7 @@ public:
         string x = to_string_generic(data);
         RedBlackNode<T>* node = readNodeFromFile(x);
         cout << node->lineNumbers.size()<<endl;
+        cout << node->data << endl;
         if (node->lineNumbers.size() > 1) {
                 cout << "hello" << endl;
                 remove(node->lineNumbers.begin(), node->lineNumbers.end(), ln);
@@ -1085,6 +1095,7 @@ public:
 
         }
         else {
+            cout << "Hello" << endl;
             deleteNode(x);
             deleteFile(x);
             return ln;
@@ -1095,29 +1106,13 @@ public:
     void computeHash() {
         cout<<computeHashHelper(Tree<T>::rootFile);
     }
-    int searchData(T data) {
+    vector<int> searchData(T data) {
         string path = search(data);
         if (path == "NULL"||path=="nil")
-            return -1;
+            return {};
         RedBlackNode<T> * node = readNodeFromFile(path);
-
-        if (node->lineNumbers.size()==1)
-            return node->lineNumbers[0];
-        else {
-            cout << "From which line number do you want to see data: ";
-            for (int i = 0; i < node->lineNumbers.size(); i++) {
-                cout << "Line Number: " << node->lineNumbers[i] << endl;
-            }
-            int opt;
-            cin >> opt;
-            for (int i = 0; i < node->lineNumbers.size(); i++) {
-                if (node->lineNumbers[i] == opt) {
-                    return opt;
-                }
-            }
-                return -1;
-
-        }
+        
+        return node->lineNumbers;
 
     }
 
@@ -1128,5 +1123,8 @@ public:
     }
     string getRootFile() {
         return Tree<T>::rootFile;
+    }
+    void emptyTable() {
+        ht.emptyTable();
     }
 };
