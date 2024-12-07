@@ -237,9 +237,6 @@ public:
 				head = newNode;
 			}
 			currSize++;
-			// Increment only when inserting a new key
-					//cout << currSize<<" ";
-
 		}
 
 		// Remove Method
@@ -790,9 +787,6 @@ public:
 
 	//search function 
 	string search(T val) {
-		/*size_t dotPos = Tree<T>::rootFile.find_last_of('.');
-		string lineNumberStr = Tree<T>::rootFile.substr(0, dotPos);
-		cout << "New root file: " << lineNumberStr << endl;*/
 		return searchHelper(Tree<T>::rootFile, val);
 	}
 
