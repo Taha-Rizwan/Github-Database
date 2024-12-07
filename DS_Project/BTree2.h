@@ -12,30 +12,28 @@ using namespace std;
 template <typename T>
 class BTreeNode {
 public:
-    vector<T> keys;
-    vector<BTreeNode<T>*> children;
+    vector<string> keys;
+    vector<vector<int>> lineNumbers;
+    vector<string> childrenPaths;
     bool leaf;
-    BTreeNode<T>* parent;
     string parentPath;
-    string leftChildPath;
-    string rightChildPath;
-    vector<string> childPath;
-    BTreeNode(bool l = true) : leaf(l), parent(nullptr), parentPath("null"), leftChildPath("null"), rightChildPath("null") {}
+    
+    BTreeNode(bool l = true) {}
 };
 
 template <typename T>
 class BTree :public Tree<T> {
 private:
-    BTreeNode<T>* root;
     string rootPath;
     int m;
     Repository<T> repo;
+    int counter;
 
 public:
-    BTree(int degree = 0) :repo(this, "BTree"), m(degree), rootPath("null") {
-        rootPath = "\0";
-        root = nullptr;
+    BTree(int degree = 0) :repo(this, "BTree"), m(degree) {
+        rootPath = "NULL";
         repo.create();
+         counter = 0;
     }
 
     string to_bString(vector<T> data) {
@@ -81,153 +79,77 @@ public:
     }
 
     BTreeNode<T>* readNodeFromFile(string path, bool check = true, bool check1 = true) {
-        if (path == "null" || path == "")
+        if (path == "NULL" || path == "")
             return nullptr;
 
-        //path = pathify(path);
-        ifstream f((path));
-        if (!f.is_open())
-            throw runtime_error("Unable to open file: " + path);
-
-        BTreeNode<T>* r = new BTreeNode<T>(m);
-
+        ifstream f(pathify(path));
         string line;
+        BTreeNode<T>* node = new BTreeNode<T>();
         getline(f, line);
-        if (line == "no")
-            r->leaf = false;
-        else
-            r->leaf = true;
+        int keys = stoi(line);
 
-        vector<T> keys;
-        getline(f, line);
-        keys.push_back((line));
-
-        string leftKey, rightKey;
-        getline(f, line);
-        stringstream ss(line);
-        getline(ss, leftKey, ',');
-        getline(ss, rightKey, ',');
-
-        string extra;
-        while (leftKey != "null") {
-            ifstream file(pathify(leftKey));
-            getline(file, extra);
-            getline(file, extra);
-            bool found = false;
-            for (int i = 0; i < keys.size(); i++)
-                if (keys[i] == extra) {
-                    found = true;
-                    break;
-                }
-            if (found)
-                break;
-            keys.push_back((extra));
-            getline(file, extra);
-            stringstream yy(extra);
-            getline(yy, extra, ',');
+        for (int i = 0; i < keys; i++) {
+            getline(f, line);
+            node->keys.push_back(line);
+            getline(f, line);
+            int freq = stoi(line);
+            vector<int> lines;
+            for (int j = 0; j < freq; j++) {
+                getline(f, line);
+                lines.push_back(stoi(line));
+            }
+            node->lineNumbers.push_back(lines);
         }
-        extra = "";
-        while (rightKey != "null") {
-            ifstream file(pathify(rightKey));
-            getline(file, extra);
-            getline(file, extra);
-            bool found = false;
-            for (int i = 0; i < keys.size(); i++)
-                if (keys[i] == extra) {
-                    found = true;
-                    break;
-                }
-            if (found)
-                break;
-            keys.push_back((extra));
-            getline(file, extra);
-            stringstream yy(extra);
-            getline(yy, extra, ',');
-        }
-        for (int i = 0; i < keys.size(); i++)
-            r->keys.push_back(keys[i]);
-
-        mySort(r->keys);
 
         getline(f, line);
-        r->parentPath = line;
-        if (r->parentPath != "null" && check1) {
-            r->parent = readNodeFromFile(r->parentPath, false);
-            if (r->parent) {
-                for (int i = 0; i < r->parent->childPath.size(); i++)
-                    r->parent->children.push_back(readNodeFromFile(r->parent->childPath[i], false, false));
-                /*if (r->parent->leftChildPath != "null")
-                    r->parent->children.push_back(readNodeFromFile(r->parent->leftChildPath, false, false));
-                if (r->parent->rightChildPath != "null")
-                    r->parent->children.push_back(readNodeFromFile(r->parent->rightChildPath, false, false));*/
+        node->parentPath = line;
+        getline(f, line);
+        int kiddies = stoi(line);
+        if (kiddies != 0) {
+            node->leaf = false;
+            for(int i = 0;i<kiddies;i++)
+            {
+                getline(f, line);
+                node->childrenPaths.push_back(line);
             }
         }
-        while (getline(f, line))
-            r->childPath.push_back(line);
-       /* getline(f, line);
-        r->leftChildPath = line;
-        getline(f, line);
-        r->rightChildPath = line;*/
-        if (!check)
-            return r;
-        for (int i = 0; i < r->childPath.size(); i++)
-            if (r->childPath[i]!="null")
-            r->children.push_back(readNodeFromFile(r->childPath[i]));
-        /*if (r->leftChildPath != "null")
-            r->children.push_back(readNodeFromFile(r->leftChildPath));
-        if (r->rightChildPath != "null")
-            r->children.push_back(readNodeFromFile(r->rightChildPath));*/
+        else {
+            node->leaf = true;
+        }
+
 
         f.close();
 
-        return r;
+        return node;
     }
+    string writeNodeToFile(BTreeNode<T>* node, int path = -1) {
+        ofstream file;
+        if (path == -1) {
+            file.open(pathify(to_string(counter)));
+            path = counter;
+            counter++;
 
-    string createFile(BTreeNode<T>* node) {
-        static int counter = 0;
-        string file = to_bString(node->keys);
-        return file;
-    }
-
-    void writeNodeToFile(BTreeNode<T>* node) {
-        ofstream* file = new ofstream[node->keys.size()];
-        for (int i = 0; i < node->keys.size(); i++) {
-            file[i].open(pathify(node->keys[i]));
-            if (!file[i].is_open()) {
-                throw runtime_error(pathify(node->keys[i]) + " not opened");
-            }
-
-            if (node->leaf)
-                file[i] << "yes\n";
-            else
-                file[i] << "no\n";
-
-            file[i] << to_string_generic(node->keys[i]) << "\n";
-
-            if (i == 0)
-                file[i] << "null,";
-            else
-                file[i] << to_string_generic(node->keys[i - 1]) << ",";
-
-            if (i < node->keys.size() - 1)
-                file[i] << to_string_generic(node->keys[i + 1]) << "\n";
-            else
-                file[i] << "null\n";
-
-            if (node->parent)
-                file[i] << node->parentPath << "\n";
-            else
-                file[i] << "null\n";
-
-            if (node->childPath.size() > 0) {
-                for (int j = 0; j < node->childPath.size(); j++)
-                    file[i] << node->childPath[j] << '\n';
-            }
-            else {
-                file[i] << "null\nnull\n";
-            }
-            file[i].close();
         }
+        else {
+            file.open(pathify(to_string(path)));
+        }
+       
+            
+        file << node->keys.size() << endl;
+        for (int i = 0; i < keys.size(); i++) {
+            file << node->keys[i];
+            file << node->lineNumbers[i].size();
+            for (int j = 0; j < node->lineNumbers[i].size(); j++) {
+                file << node->lineNumbers[i][j] << endl;
+            }
+        }
+        file << node->parentPath;
+        file << node->childrenPaths.size();
+        for (int i = 0; i < node->childrenPaths.size(); i++)
+            file << node->childrenPaths[i] << endl;
+
+        file.close();
+        
     }
 
     BTreeNode<T>* search(T key, bool insert, BTreeNode<T>* node = nullptr, int childIndex = 0) { //searches for the key in BTree
@@ -287,8 +209,9 @@ public:
 
     void setLeafNodes() { //function to set leaf nodes in the BTree
         queue<BTreeNode<T>*> levelOrderQueue;
+        BTreeNode<T>* root = readNodeFromFile(rootPath);
         levelOrderQueue.push(root);
-        root->parent = nullptr;
+        root->parentPath = "NULL";
         while (!levelOrderQueue.empty()) { //performing BFS to set all leafs with needing recursion
             BTreeNode<T>* curr = levelOrderQueue.front();
             levelOrderQueue.pop();
@@ -298,6 +221,8 @@ public:
                 curr->leaf = false;
             for (size_t i = 0; i < curr->children.size(); ++i)
                 levelOrderQueue.push(curr->children[i]);
+
+            writeNodeToFile()
         }
     }
 
@@ -325,175 +250,23 @@ public:
         return false;
     }
 
-    BTreeNode<T>* readSurfaceNodeFromFile(string path, bool check1 = true) {
-        if (path == "null" || path == "")
-            return nullptr;
-
-        //path = pathify(path);
-        ifstream f((path));
-        if (!f.is_open())
-            throw runtime_error("Unable to open file: " + path);
-
-        BTreeNode<T>* r = new BTreeNode<T>(m);
-
-        string line;
-        getline(f, line);
-        if (line == "no")
-            r->leaf = false;
-        else
-            r->leaf = true;
-
-        vector<T> keys;
-        getline(f, line);
-        keys.push_back((line));
-
-        string leftKey, rightKey;
-        getline(f, line);
-        stringstream ss(line);
-        getline(ss, leftKey, ',');
-        getline(ss, rightKey, ',');
-
-        string extra;
-        while (leftKey != "null") {
-            ifstream file(pathify(leftKey));
-            getline(file, extra);
-            getline(file, extra);
-            bool found = false;
-            for (int i = 0; i < keys.size(); i++)
-                if (keys[i] == extra) {
-                    found = true;
-                    break;
-                }
-            if (found)
-                break;
-            keys.push_back((extra));
-            getline(file, extra);
-            stringstream yy(extra);
-            getline(yy, extra, ',');
-        }
-        extra = "";
-        while (rightKey != "null") {
-            ifstream file(pathify(rightKey));
-            getline(file, extra);
-            getline(file, extra);
-            bool found = false;
-            for (int i = 0; i < keys.size(); i++)
-                if (keys[i] == extra) {
-                    found = true;
-                    break;
-                }
-            if (found)
-                break;
-            keys.push_back((extra));
-            getline(file, extra);
-            stringstream yy(extra);
-            getline(yy, extra, ',');
-        }
-        for (int i = 0; i < keys.size(); i++)
-            r->keys.push_back(keys[i]);
-
-        mySort(r->keys);
-
-        getline(f, line);
-        r->parentPath = line;
-        if (r->parentPath != "null" && check1) {
-            r->parent = readNodeFromFile(r->parentPath, false);
-            //if (r->parent) {
-            //    for (int i = 0; i < r->parent->childPath.size(); i++)
-            //        r->parent->children.push_back(readNodeFromFile(r->parent->childPath[i], false, false));
-            //    /*if (r->parent->leftChildPath != "null")
-            //        r->parent->children.push_back(readNodeFromFile(r->parent->leftChildPath, false, false));
-            //    if (r->parent->rightChildPath != "null")
-            //        r->parent->children.push_back(readNodeFromFile(r->parent->rightChildPath, false, false));*/
-            //}
-        }
-        while (getline(f, line))
-            r->childPath.push_back(line);
-         getline(f, line);
-         r->leftChildPath = line;
-         getline(f, line);
-         r->rightChildPath = line;
-        /*if (!check)
-            return r;
-        for (int i = 0; i < r->childPath.size(); i++)
-            if (r->childPath[i] != "null")
-                r->children.push_back(readNodeFromFile(r->childPath[i]));*/
-        /*if (r->leftChildPath != "null")
-            r->children.push_back(readNodeFromFile(r->leftChildPath));
-        if (r->rightChildPath != "null")
-            r->children.push_back(readNodeFromFile(r->rightChildPath));*/
-
-        f.close();
-
-        return r;
-    }
-    BTreeNode<T>* readNodeFromFileForInsertion(string root, string path) {
-        if (root == "null" || root=="")
-            return nullptr;
-        BTreeNode<T>* x = readSurfaceNodeFromFile(root);
-        string setPath = pathify(to_bString(x->keys));
-        while (!x->leaf) {
-            for (int i = 0; i < x->childPath.size() - 1; i++) {
-                int f = Tree<T>::isEqual(setPath, path);
-                if (f == 1) {
-                    setPath = x->childPath[i];
-                    break;
-                }
-                else
-                    setPath = x->childPath[i + 1];
-
-            }
-            //path = setPath;
-            x = readSurfaceNodeFromFile(setPath);
-            ifstream f(setPath);
-            string line;
-            getline(f, line);
-            getline(f, line);
-            getline(f, line);
-            vector<T> keys;
-            getline(f, line);
-            x->parentPath = line;
-            for (int i = 0; i < keys.size(); i++)
-                x->keys.push_back(keys[i]);
-
-            auto it = unique(x->keys.begin(), x->keys.end());
-
-            // Remove all duplicates
-            x->keys.erase(it, x->keys.end());
-
-            if (x->parentPath != "null") {
-                x->parent = readSurfaceNodeFromFile(x->parentPath);
-                for (int i = 0; i < x->parent->childPath.size(); i++)
-                    x->parent->children.push_back(readSurfaceNodeFromFile(x->parent->childPath[i]));
-            }
-        }
-        return x;
-        
-    }
-    void insert(T k, int ln) { //inserting a key in a BTree
-        BTreeNode<T>* temp = readNodeFromFileForInsertion(rootPath, pathify(to_string_generic(k)));
-        BTreeNode<T>* forRoot = nullptr;
-        if (temp == nullptr) {
-            temp = new BTreeNode<T>;
-            temp->keys.push_back(k);
-            writeNodeToFile(temp);
-            rootPath = pathify(to_bString(temp->keys));
+    void insert(T k,int ln) { //inserting a key in a BTree
+        if (rootPath == "NULL") {
+            BTreeNode<T>* node = new BTreeNode<T>;
+            node->keys.push_back(k);
+            rootPath = writeNodeToFile(node);
             return;
         }
-        //print(temp);
-        //cout << endl;
-        root = readSurfaceNodeFromFile(rootPath);
-        //setLeafNodes();
-        //BTreeNode<T>* leafNodeForInsert = search(k, true);
-        BTreeNode<T>* node = temp;
+        setLeafNodes();
+        BTreeNode<T>* leafNodeForInsert = search(k, true);
+        BTreeNode<T>* node = leafNodeForInsert;
         node->keys.push_back(k);
-        mySort(node->keys);
-        //forRoot = node;
+        sort(node->keys.begin(), node->keys.end());
 
         while (node && node->keys.size() == m) {
             int splitFrom = node->keys.size() / 2; // the index of the splitting node
-            BTreeNode<T>* left = new BTreeNode<T>;
-            BTreeNode<T>* right = new BTreeNode<T>;
+            BTreeNode<T>* left = new BTreeNode<int>;
+            BTreeNode<T>* right = new BTreeNode<int>;
             for (int i = 0; i < splitFrom; i++)
                 left->keys.push_back(node->keys[i]); // insertion in left childs of the parent which is split
             for (int i = splitFrom + 1; i < m; i++)
@@ -508,153 +281,15 @@ public:
                 node->children.clear();
                 node->children.push_back(left);
                 node->children.push_back(right);
-                node->leaf = false;
-                sortForRoot(node);
+                sort(node->children.begin(), node->children.end());
                 left->parent = node; right->parent = node;
-                left->parentPath = pathify(node->keys[node->keys.size() / 2]);
-                right->parentPath = pathify(node->keys[node->keys.size() / 2]);
-
-                for (int i = 0; i < node->children.size(); i++) {
-                    node->children[i]->parent = node;
-                    node->children[i]->parentPath = pathify(to_bString(node->keys));
-                }
-
-                int j = 0;
-                for (j; j < node->childPath.size(); j++)
-                    if (node->childPath[j] == "null")
-                        break;
-                if (j == node->childPath.size())
-                    node->childPath.push_back(pathify(left->keys[left->keys.size() / 2]));
-                else
-                    node->childPath[j] = pathify(left->keys[left->keys.size() / 2]);
-
-                j = 0;
-                for (j; j < node->childPath.size(); j++)
-                    if (node->childPath[j] == "null")
-                        break;
-                if (j == node->childPath.size())
-                    node->childPath.push_back(pathify(right->keys[right->keys.size() / 2]));
-                else
-                    node->childPath[j] = (pathify(right->keys[right->keys.size() / 2]));
-
-                node->leaf = false;
-                node->parent = nullptr;
-                node->parentPath = "null";
-
-                node->childPath.clear();
-                for (int i = 0; i < node->children.size(); i++)
-                    node->childPath.push_back(pathify(to_bString(node->children[i]->keys)));
-
-                if (exists(pathify(node->keys[node->keys.size() / 2]))) {
-                    remove(pathify(node->keys[node->keys.size() / 2]));
-                }
-                writeNodeToFile(node);
-
-                if (exists(pathify(left->keys[left->keys.size() / 2]))) {
-                    remove(pathify(left->keys[left->keys.size() / 2]));
-                }
-                writeNodeToFile(left);
-
-                if (exists(pathify(right->keys[right->keys.size() / 2]))) {
-                    remove(pathify(right->keys[right->keys.size() / 2]));
-                }
-                writeNodeToFile(right);
-                rootPath = pathify(to_bString(node->keys));
-            }
-            else if (!node->parent) {
-                T splitKey = node->keys[splitFrom]; // the key which is to be moved to parent
-                sortForRoot(node);
-                if (node->keys.size() == m)
-                    setChildren(node, left, right, splitFrom);
-                node->keys.clear(); node->keys.push_back(splitKey);
-                node->children.clear();
-                node->children.push_back(left);
-                node->children.push_back(right);
-                node->leaf = false;
-                sortForRoot(node);
-                left->parent = node; right->parent = node;
-                left->parentPath = pathify(node->keys[node->keys.size() / 2]);
-                right->parentPath = pathify(node->keys[node->keys.size() / 2]);
-
-                for (int i = 0; i < left->children.size(); i++) {
-                    left->children[i]->parentPath = pathify(to_bString(left->keys));
-                }
-                for (int i = 0; i < right->children.size(); i++) {
-                    right->children[i]->parentPath = pathify(to_bString(right->keys));
-                }
-
-                for (int i = 0; i < left->children.size(); i++)
-                    left->childPath.push_back(pathify(to_bString(left->children[i]->keys)));
-                for (int i = 0; i < right->children.size(); i++)
-                    right->childPath.push_back(pathify(to_bString(right->children[i]->keys)));
-
-
-                for (int i = 0; i < node->children.size(); i++) {
-                    node->children[i]->parent = node;
-                    node->children[i]->parentPath = pathify(to_bString(node->keys));
-                    /* if (exists(pathify(node->children[i]->keys[node->children[i]->keys.size() / 2]))) {
-                         remove(pathify(node->children[i]->keys[node->children[i]->keys.size() / 2])));
-                     }*/
-                }
-                for (int i = 0; i < node->children.size(); i++) {
-                    for (int j = 0; j < node->children[i]->children.size(); j++)
-                        writeNodeToFile(node->children[i]->children[j]);
-                }
-
-                int j = 0;
-                for (j; j < node->childPath.size(); j++)
-                    if (node->childPath[j] == "null")
-                        break;
-                if (j == node->childPath.size())
-                    node->childPath.push_back(pathify(left->keys[left->keys.size() / 2]));
-                else
-                    node->childPath[j] = pathify(left->keys[left->keys.size() / 2]);
-
-                j = 0;
-                for (j; j < node->childPath.size(); j++)
-                    if (node->childPath[j] == "null")
-                        break;
-                if (j == node->childPath.size())
-                    node->childPath.push_back(pathify(right->keys[right->keys.size() / 2]));
-                else
-                    node->childPath[j] = (pathify(right->keys[right->keys.size() / 2]));
-
-                node->leaf = false;
-                node->parent = nullptr;
-                node->parentPath = "null";
-
-                node->childPath.clear();
-                for (int i = 0; i < node->children.size(); i++)
-                    node->childPath.push_back(pathify(to_bString(node->children[i]->keys)));
-
-                if (exists(pathify(node->keys[node->keys.size() / 2]))) {
-                    remove(pathify(node->keys[node->keys.size() / 2]));
-                }
-                writeNodeToFile(node);
-
-                if (exists(pathify(left->keys[left->keys.size() / 2]))) {
-                    remove(pathify(left->keys[left->keys.size() / 2]));
-                }
-                writeNodeToFile(left);
-
-                if (exists(pathify(right->keys[right->keys.size() / 2]))) {
-                    remove(pathify(right->keys[right->keys.size() / 2]));
-                }
-                writeNodeToFile(right);
-                rootPath = pathify(to_bString(node->keys));
             }
             else {
                 node->parent->keys.push_back(node->keys[splitFrom]);
-                node->parent = readSurfaceNodeFromFile(node->parentPath);
-                for (int i = 0; i < node->parent->childPath.size(); i++)
-                    node->parent->children.push_back(readSurfaceNodeFromFile(node->parent->childPath[i]));
                 sort(node->parent->keys.begin(), node->parent->keys.end());
-                string nodePath = pathify((node->keys[splitFrom]));
                 int currentChildIndex = 0;
                 for (int i = 0; i < node->parent->children.size(); i++) {
-                    string childPath = pathify(to_bString(node->parent->children[i]->keys));
-                    //if (node == node->parent->children[i])
-                    if (checkExists(node, node->parent->children[i]))
+                    if (node == node->parent->children[i])
                         break;
                     currentChildIndex++;
                 }
@@ -667,89 +302,12 @@ public:
                 node->children.clear();
                 node->children.push_back(left);
                 node->children.push_back(right);
-
-                node->keys.clear();
-                for (int i = 0; i < node->parent->keys.size(); i++)
-                    node->keys.push_back(node->parent->keys[i]);
-
-                for (int i = 0; i < node->children.size(); i++) {
-                    node->children[i]->parent = node;
-                    node->children[i]->parentPath = pathify(to_bString(node->keys));
-                }
-
-                int j = 0;
-                for (j; j < node->childPath.size(); j++)
-                    if (node->childPath[j] == "null")
-                        break;
-                if (j == node->childPath.size())
-                    node->childPath.push_back(pathify(left->keys[left->keys.size() / 2]));
-                else
-                    node->childPath[j] = pathify(left->keys[left->keys.size() / 2]);
-
-                j = 0;
-                for (j; j < node->childPath.size(); j++)
-                    if (node->childPath[j] == "null")
-                        break;
-                if (j == node->childPath.size())
-                    node->childPath.push_back(pathify(right->keys[right->keys.size() / 2]));
-                else
-                    node->childPath[j] = (pathify(right->keys[right->keys.size() / 2]));
-
-                j = 0;
-                
-                for (int i = node->parent->childPath.size() / 2; i < node->parent->childPath.size(); i++) {
-                    bool found = false;
-                    for (int j = 0; j < node->childPath.size(); j++)
-                        if (node->parent->childPath[i] == node->childPath[j]) {
-                            found = true;
-                            break;
-                        }
-                    if (!found)
-                        node->childPath.push_back(node->parent->childPath[i]);
-                }
-                   
-
-
-                node->leaf = false;
-                if (node->keys.size() != m)
-                    node->parent = node->parent->parent;
-                if (node->parent)
-                    node->parentPath = pathify(to_bString(node->parent->keys));
-                else
-                    node->parentPath = "null";
-
-                if (exists(pathify(node->keys[node->keys.size() / 2]))) {
-                    remove(pathify(node->keys[node->keys.size() / 2]));
-                }
-                writeNodeToFile(node);
-
-                if (exists(pathify(left->keys[left->keys.size() / 2]))) {
-                    remove(pathify(left->keys[left->keys.size() / 2]));
-                }
-                writeNodeToFile(left);
-
-                if (exists(pathify(right->keys[right->keys.size() / 2]))) {
-                    remove(pathify(right->keys[right->keys.size() / 2]));
-                }
-                writeNodeToFile(right);
-                rootPath = pathify(to_bString(node->keys));
             }
-
-            forRoot = node;
             BTreeNode<T>* next = node->parent;
-            if (next != nullptr) {
-                forRoot = next;
-                delete node;
-            }
+            if (next != nullptr) delete node;
             node = next;
             setLeafNodes();
         }
-        if (node)
-            writeNodeToFile(node);
-       /* while (forRoot->parent)
-            forRoot = forRoot->parent;*/
-        
-        root = nullptr;
     }
 
     void setChildren(BTreeNode<T>* node, BTreeNode<T>* left, BTreeNode<T>* right, int mid) {

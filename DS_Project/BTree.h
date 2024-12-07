@@ -9,11 +9,26 @@ using namespace std;
 template <typename T>
 class BTreeNode {
 public:
-    vector<T> keys;
-    vector<BTreeNode<T>*> children;
-    bool leaf;
-    BTreeNode<T>* parent;
+    vector<T> keys;//vector<string> keys
+                    //vector<int> freq
+                    //vector<vector<string>> row nums
+    vector<BTreeNode<T>*> children;//vector<string> childrenPath
+    bool leaf;//0/1
+    BTreeNode<T>* parent;//string parentPath
     BTreeNode(bool l = true) : leaf(l), parent(nullptr) {}
+    /*
+        Number of keys
+        key1
+        frequency
+        row indexes
+        key2
+        frequency
+        row indexes
+        ....
+        parent path
+        number of childrens
+        children paths
+    */
 };
 
 template <typename T>
