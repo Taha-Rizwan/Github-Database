@@ -288,6 +288,9 @@ private:
             if (slot == -1 || arr[slot].first != key) {
                 return nullptr;
             }
+
+            //cout << "Found" << endl;
+
             return arr[slot].second->value;
         }
         int searchPos(string& key) {
@@ -320,7 +323,10 @@ private:
             }
             cout << "Hits: " << hits << endl;
             cout << "Misses: " << misses << endl;
-
+            head = nullptr;
+            for (int i = 0; i < capacity; i++) {
+                arr[i] = { "", nullptr };
+            }
             for (int i = 0; i < toBeDeleted.size(); i++) {
                 std::filesystem::remove(toBeDeleted[i]);
             }
@@ -352,6 +358,7 @@ private:
         //cout << "Pathifying" << endl;
         Tree<T>::toLower(data);
         string path = repo.name + "/" + repo.currBranch + "/" + to_string_generic(data) + ".txt";
+        cout << path << endl;
         //if (path.find(".txt") == std::string::npos) {  // If ".txt" is not found
         //    path += ".txt";  // Append ".txt" to the string
         //}
@@ -1073,6 +1080,7 @@ public:
         string x = to_string_generic(data);
         RedBlackNode<T>* node = readNodeFromFile(x);
         cout << node->lineNumbers.size()<<endl;
+        cout << node->data << endl;
         if (node->lineNumbers.size() > 1) {
                 cout << "hello" << endl;
                 remove(node->lineNumbers.begin(), node->lineNumbers.end(), ln);
@@ -1085,6 +1093,7 @@ public:
 
         }
         else {
+            cout << "Hello" << endl;
             deleteNode(x);
             deleteFile(x);
             return ln;
@@ -1112,5 +1121,8 @@ public:
     }
     string getRootFile() {
         return Tree<T>::rootFile;
+    }
+    void emptyTable() {
+        ht.emptyTable();
     }
 };
