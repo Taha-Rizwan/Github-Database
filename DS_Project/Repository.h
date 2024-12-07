@@ -73,6 +73,8 @@ private:
         cout << "\t8: View Data" << endl;
         cout << "\t9: Merge Branch " << endl;
         cout << "\t10: Roll Back to Version " << endl;
+        cout << "\t11: Update All " << endl;
+        cout << "\t12: Delete All " << endl;
         cout << "\tChoose: ";
     }
 
@@ -255,6 +257,12 @@ public:
             case 10:
                 rollBackToVersion();
                 break;
+            case 11:
+                updateAll();
+                break;
+            case 12:
+                deleteAll();
+                break;
             default:
                 logic = false;
                 break;
@@ -370,7 +378,41 @@ public:
            // cout << "Not Found: " << endl;
         }
     }
+    void deleteAll() {
+        T val;
+        cout << "Value to delete: ";
+        cin >> val;
+        vector<int> l = tree->searchData(val);
+        if (!l.empty()) {
 
+            for (int i = 0; i < l.size(); i++) {
+                bool alrGone = false;
+                for (int j = 0; j < deletions.size(); j++) {
+                    if (l[i] == deletions[j].lineNumber) {
+                        alrGone = true;
+                        break;
+                    }
+                   }
+                if (!alrGone) {
+
+                    vector<string> rowData = readFileByLineNumber(l[i]);
+                    deletions.push_back(Deletion(val, l[i], rowData));
+                }
+              }
+            
+        }
+        else {
+            for (int i = 0; i < additions.size(); i++) {
+                if (additions[i].rowData[column] == val) {
+                    additions.erase(additions.begin() + i);
+                    //cout << "Deleted from line number: " << val << endl;
+                    return;
+                }
+            }
+
+            // cout << "Not Found: " << endl;
+        }
+    }
     //Permanently delete data
     void deleteDataFr(Deletion& deletion) {
 
@@ -483,6 +525,46 @@ public:
         }
         cout << "Not Found: " << endl;
     }
+
+    void updateAll() {
+        T val, newVal;
+        cout << "Value to update: ";
+        cin >> val;
+        cout << "searchind for dta\n";
+        vector<int> l = tree->searchData(val);
+
+
+        if (!l.empty()) {
+  
+                cout << "What do you want to change: " << endl;
+                for (int i = 0; i < header.size(); i++) {
+                    cout << i << ": " << header[i] << endl;
+                }
+                int opt;
+                cin >> opt;
+                cout << "New " << header[opt] << ": ";
+                string data;
+                cin.ignore();
+                getline(cin, data);
+                for (int i = 0; i < l.size(); i++) {
+                    int ln = l[i];
+                    if (opt >= 0 && opt < header.size()) {
+                        vector<string> rowData = readFileByLineNumber(ln);
+                        string old = rowData[opt];
+                        rowData[opt] = data;
+                        updations.emplace_back(Updation(rowData, ln, opt, old));
+
+                        //writeFileByLineNumber(ln, rowData);
+                        // if (opt==column) {
+                        //     tree->deleteByVal(old,ln);
+                        //     tree->insert(data,ln);
+                        // }
+                    }
+                }
+               
+        }
+    }
+
     //Update data permanently
     void updateDataFr(Updation& update) {
         writeFileByLineNumber(update.lineNumber, update.rowData);
