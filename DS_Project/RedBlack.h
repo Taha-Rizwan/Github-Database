@@ -1095,29 +1095,13 @@ public:
     void computeHash() {
         cout<<computeHashHelper(Tree<T>::rootFile);
     }
-    int searchData(T data) {
+    vector<int> searchData(T data) {
         string path = search(data);
         if (path == "NULL"||path=="nil")
-            return -1;
+            return {};
         RedBlackNode<T> * node = readNodeFromFile(path);
-
-        if (node->lineNumbers.size()==1)
-            return node->lineNumbers[0];
-        else {
-            cout << "From which line number do you want to see data: ";
-            for (int i = 0; i < node->lineNumbers.size(); i++) {
-                cout << "Line Number: " << node->lineNumbers[i] << endl;
-            }
-            int opt;
-            cin >> opt;
-            for (int i = 0; i < node->lineNumbers.size(); i++) {
-                if (node->lineNumbers[i] == opt) {
-                    return opt;
-                }
-            }
-                return -1;
-
-        }
+        
+        return node->lineNumbers;
 
     }
 

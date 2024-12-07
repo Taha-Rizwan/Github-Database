@@ -775,11 +775,11 @@ public:
 		return searchHelper(Tree<T>::rootFile, val);
 	}
 
-	int searchData(T data) {
+	vector<int> searchData(T data) {
 		string path = search(data);
 		cout << "Searching\n";
 		if (path == "NULL")
-			return -1;
+			return {};
 
 		cout << "path: " << path << endl;
 		if (path.find(".txt") != path.size() - 4) {
@@ -787,24 +787,8 @@ public:
 		}
 		AVLNode<T>* node = readNodeFromFile(path);
 		cout << "read node from fiel done\n";
-		if (node->lineNumbers.size() == 1)
-			return node->lineNumbers[0];
-		else {
-			cout << "From which line number do you want to see data: ";
-			for (int i = 0; i < node->lineNumbers.size(); i++) {
-				cout << "Line Number: " << node->lineNumbers[i] << endl;
-			}
-			int opt;
-			cin >> opt;
-			for (int i = 0; i < node->lineNumbers.size(); i++) {
-				if (node->lineNumbers[i] == opt) {
-					return opt;
-				}
-			}
-			return -1;
 
-		}
-
+		return node->lineNumbers;
 	}
 
 	//T minimum() {
