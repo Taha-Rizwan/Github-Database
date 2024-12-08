@@ -68,13 +68,14 @@ private:
         cout << "\t3: Delete a Node" << endl;
         cout << "\t4: Switch Branch" << endl;
         cout << "\t5: Add A Branch" << endl;
-        cout << "\t6: Hash" << endl;
+        cout << "\t6: Visualize" << endl;
         cout << "\t7: Commit" << endl;
         cout << "\t8: View Data" << endl;
         cout << "\t9: Merge Branch " << endl;
         cout << "\t10: Roll Back to Version " << endl;
         cout << "\t11: Update All " << endl;
         cout << "\t12: Delete All " << endl;
+        cout << "\t0: Save and Exit " << endl;
         cout << "\tChoose: ";
     }
 
@@ -104,8 +105,7 @@ public:
         cin >> name;
         cout << "Enter csv path: ";
         cin >> csv_path;
-        cout << "Enter column Number(0-indexed): ";
-        cin >> column;
+      
         cout << "Select Hashing Algorithm: \n0.Instructor's Hash \n1.SHA256\nSelect: ";
         cin >> useSha;
         create_directory(name);
@@ -151,6 +151,14 @@ public:
             currentColumnIndex++;
             header.push_back(cell);
         }
+        cout << "Columns: " << endl;
+        for (int i = 0; i < header.size(); i++) {
+            cout << i << ": " << header[i] << endl;
+        }
+
+        cout << "Enter column Number(0-indexed): ";
+        cin >> column;
+
         cout << "Reading CSV to main branch(default): " << endl;
         ln = 2;
 
@@ -435,7 +443,7 @@ public:
         T val, newVal;
         cout << "Value to update: ";
         cin >> val;
-        cout << "searchind for dta\n";
+        //cout << "searching for data\n";
         vector<int> l = tree->searchData(val);
 
 
@@ -595,6 +603,7 @@ public:
         //Write commit to commit file whilst also commiting everything
         cout << "Commit Message: ";
         string message;
+        cin.ignore();
         getline(cin, message);
         ofstream file;
         std::ostringstream versionStream;
@@ -602,7 +611,7 @@ public:
         string versionStr = versionStream.str();
         string path = name + "/" + currBranch + "/commit" + currBranch
             + (versionStr) + ".txt";
-        file.open(path, ios::app);
+        file.open(path, ios::trunc);
         file << "Version: " << currVersion << endl;
         for (int i = 0; i < additions.size(); i++) {
             addDataFr(additions[i]);
@@ -663,8 +672,7 @@ public:
     }
 
     void visualizeTree() {
-        string dataFolder = name + "\\" + currBranch + "\\" + "data";
-        cout << "Root Hash: " << tree->merkle->buildMerkleTree(dataFolder)->hash << endl;
+        tree->display();
     }
     //Switching branches
     void switchBranch() {
