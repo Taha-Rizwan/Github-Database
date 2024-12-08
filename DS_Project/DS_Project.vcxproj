@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="23i-0670.cpp" />
     <ClCompile Include="BTree.h" />
     <ClCompile Include="source.cpp" />
   </ItemGroup>
