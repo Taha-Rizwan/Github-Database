@@ -360,6 +360,7 @@ public:
 			for (int i = 0; i < toBeDeleted.size(); i++) {
 				filesystem::remove(toBeDeleted[i]);
 			}
+			toBeDeleted.clear();
 
 		}
 
@@ -1007,6 +1008,7 @@ public:
 
 	//function that returns root's filepath
 	string getRootFile() {
+		ht.emptyTable();
 		return Tree<T>::rootFile;
 	}
 

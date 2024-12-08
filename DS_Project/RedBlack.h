@@ -323,6 +323,7 @@ private:
             for (int i = 0; i < toBeDeleted.size(); i++) {
                 std::filesystem::remove(toBeDeleted[i]);
             }
+            toBeDeleted.clear();
 
         }
         ~HashTable() {
@@ -982,7 +983,7 @@ public:
             while (currFile != "nil" && currFile != "NULL") {
 
                 RedBlackNode<T>* currNode = readNodeFromFile(currFile);
-
+              //cout << currFile << endl;
                 parFile = currFile;
 
                 if (Tree<T>::isEqual(data, currNode->data) == 0) {
@@ -1098,6 +1099,8 @@ public:
          //   cout << "Hello" << endl;
             deleteNode(x);
             deleteFile(x);
+
+
             return ln;
            
         }
@@ -1122,6 +1125,7 @@ public:
         Tree<T>::rootFile = path;
     }
     string getRootFile() {
+        ht.emptyTable();
         return Tree<T>::rootFile;
     }
     void emptyTable() {
