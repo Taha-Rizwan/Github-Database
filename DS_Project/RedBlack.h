@@ -7,6 +7,7 @@
 #include<string>
 #include "Repository.h"
 #include "LRUCache.h"
+#include "queue"
 using namespace std;
 using namespace std::filesystem;
 
@@ -349,7 +350,7 @@ private:
     string pathify(string data) {
         Tree<T>::toLower(data);
         string path = repo.name + "/" + repo.currBranch + "/" + to_string_generic(data) + ".txt";
-        cout << path << endl;
+       // cout << path << endl;
 
         return path;
     }
@@ -877,6 +878,66 @@ private:
             fixDelete(x);
     }
 
+
+    int getHeight(string path) {
+        if (path =="nil"|| path =="NULL") return 0;
+        RedBlackNode<T>* root = readNodeFromFile(path);
+        return 1 + max(getHeight(root->leftPath), getHeight(root->rightPath));
+    }
+    void printSpaces(int count) {
+        for (int i = 0; i < count; ++i)
+            cout << " ";
+    }
+
+    void visualizeTree(string path) {
+        if (path=="NULL"||path=="nil") {
+            cout << "The tree is empty!" << endl;
+            return;
+        }
+
+        int height = getHeight(path);
+        int maxWidth = (1 << height) - 1; // Maximum width of the tree at its bottom level
+
+        queue<string> q;
+        q.push(path);
+
+        for (int level = 0; level < height; ++level) {
+            int levelWidth = (1 << level); // Number of nodes at the current level
+            int spaces = maxWidth / levelWidth; // Spaces between nodes
+
+            // Print the current level
+            for (int i = 0; i < levelWidth; ++i) {
+                if (i == 0) printSpaces(spaces / 2);
+                string current = q.front();
+                q.pop();
+
+                if (current!="NULL" && current!="nil") {
+                    RedBlackNode<T>* node = readNodeFromFile(current);
+                    cout << setw(2) << node->data;
+                    q.push(node->leftPath);
+                    q.push(node->rightPath);
+                }
+                else {
+                    cout << "  ";
+                    q.push("nil");
+                    q.push("nil");
+                }
+                printSpaces(spaces);
+            }
+            cout << endl;
+
+            // Print connecting lines (for visual clarity)
+            if (level < height - 1) {
+                for (int i = 0; i < levelWidth; ++i) {
+                    if (i == 0) printSpaces(spaces / 2 - 1);
+                    printSpaces(spaces - 1);
+                }
+                cout << endl;
+            }
+        }
+    }
+
+
 public:
     RedBlackTree(string path = "") : repo(this, "RedBlack"), ht(this, 151) {
         Tree<T>::order = 2;
@@ -891,14 +952,14 @@ public:
         ht.emptyTable();
 
 
-        cout << Tree<T>::rootFile << endl;
+      //  cout << Tree<T>::rootFile << endl;
         repo.main();
 
 
     }
 
     string search(T val) {
-        cout << "Roofile: " << Tree<T>::rootFile << endl;
+       // cout << "Roofile: " << Tree<T>::rootFile << endl;
         return searchHelper(Tree<T>::rootFile, val);
     }
 
@@ -968,7 +1029,7 @@ public:
         }
     }
     void deleteFile(string x) {
-        cout << "file ot be deleted: " << x << endl;
+     //   cout << "file ot be deleted: " << x << endl;
         ht.deleteFile(pathify(x));
     }
     int deleteByVal(T val,bool updation =false) {
@@ -1020,10 +1081,10 @@ public:
      int deleteByVal(T data, int ln) {
         string x = to_string_generic(data);
         RedBlackNode<T>* node = readNodeFromFile(x);
-        cout << node->lineNumbers.size()<<endl;
-        cout << node->data << endl;
+      //  cout << node->lineNumbers.size()<<endl;
+     //   cout << node->data << endl;
         if (node->lineNumbers.size() > 1) {
-                cout << "hello" << endl;
+               // cout << "hello" << endl;
                 remove(node->lineNumbers.begin(), node->lineNumbers.end(), ln);
 
                 node->lineNumbers.pop_back();
@@ -1034,7 +1095,7 @@ public:
 
         }
         else {
-            cout << "Hello" << endl;
+         //   cout << "Hello" << endl;
             deleteNode(x);
             deleteFile(x);
             return ln;
@@ -1065,5 +1126,9 @@ public:
     }
     void emptyTable() {
         ht.emptyTable();
+    }
+
+    void display() {
+        visualizeTree(Tree<T>::rootFile);
     }
 };

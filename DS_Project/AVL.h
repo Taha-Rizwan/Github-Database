@@ -110,7 +110,7 @@ public:
 	}
 
 	void display() {	
-		printTree(Tree<T>::rootFile);
+		visualizeTree(Tree<T>::rootFile);
 	}
 
 	//for cache
@@ -1013,5 +1013,58 @@ public:
 	//function to empty the hashtable
 	void emptyTable() {
 		ht.emptyTable();
+	}
+
+	void printSpaces(int count) {
+		for (int i = 0; i < count; ++i)
+			cout << " ";
+	}
+
+	void visualizeTree(string path) {
+		if (path == "NULL" || path == "nil") {
+			cout << "The tree is empty!" << endl;
+			return;
+		}
+
+		int height = getHeight(path);
+		int maxWidth = (1 << height) - 1; // Maximum width of the tree at its bottom level
+
+		queue<string> q;
+		q.push(path);
+
+		for (int level = 0; level < height; ++level) {
+			int levelWidth = (1 << level); // Number of nodes at the current level
+			int spaces = maxWidth / levelWidth; // Spaces between nodes
+
+			// Print the current level
+			for (int i = 0; i < levelWidth; ++i) {
+				if (i == 0) printSpaces(spaces / 2);
+				string current = q.front();
+				q.pop();
+
+				if (current != "NULL" && current != "nil") {
+					AVLNode<T>* node = readNodeFromFile(current);
+					cout << setw(2) << node->data;
+					q.push(node->leftPath);
+					q.push(node->rightPath);
+				}
+				else {
+					cout << "  ";
+					q.push("nil");
+					q.push("nil");
+				}
+				printSpaces(spaces);
+			}
+			cout << endl;
+
+			// Print connecting lines (for visual clarity)
+			if (level < height - 1) {
+				for (int i = 0; i < levelWidth; ++i) {
+					if (i == 0) printSpaces(spaces / 2 - 1);
+					printSpaces(spaces - 1);
+				}
+				cout << endl;
+			}
+		}
 	}
 };
