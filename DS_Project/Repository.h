@@ -931,7 +931,6 @@ public:
                 for (int i = 0; i < branches.size(); i++) {
                     if (branches[i] == currBranch) {
                         roots[i] = tree->getRootFile();
-                        return;
                     }
                 }
 
@@ -952,7 +951,6 @@ public:
                 for (int i = 0; i < branches.size(); i++) {
                     if (branches[i] == currBranch) {
                         roots[i] = tree->getRootFile();
-                        return;
                     }
                 }
             }
@@ -980,7 +978,6 @@ public:
                 for (int i = 0; i < branches.size(); i++) {
                     if (branches[i] == currBranch) {
                         roots[i] = tree->getRootFile();
-                        return;
                     }
                 }
 
@@ -1048,7 +1045,7 @@ public:
         for (int i = targetLines.size() - 1; i >= opt; i--) {
             
                 string str = readCommit(targetLines[i]);
-                cout << str << endl;
+                //cout << str << endl;
                 performReverse(str);   
                 tree->emptyTable();
                 currVersion-=0.1;
@@ -1081,13 +1078,12 @@ public:
                 for (int i = 0; i < branches.size(); i++) {
                     if (branches[i] == currBranch) {
                         roots[i] = tree->getRootFile();
-                        return;
                     }
                 }
 
             }
             else if (line == "Deletion") {
-                //cout << "Wow Deletion" << endl;
+                cout << "Wow Deletion" << endl;
 
                 getline(ss, line);
                 string data = line;
@@ -1101,12 +1097,15 @@ public:
                     getline(ss, line);
                     rowData.push_back(line);
                 }
+                cout << rowData[column] << endl;
                 tree->insert(rowData[column], lineNumber);
+
+                tree->emptyTable();
+                cout << "Hello" << endl;
                 writeFileByLineNumber(lineNumber, rowData);
                 for (int i = 0; i < branches.size(); i++) {
                     if (branches[i] == currBranch) {
                         roots[i] = tree->getRootFile();
-                        return;
                     }
                 }
             }
@@ -1140,7 +1139,6 @@ public:
                 for (int i = 0; i < branches.size(); i++) {
                     if (branches[i] == currBranch) {
                         roots[i] = tree->getRootFile();
-                        return;
                     }
                 }
 
@@ -1153,7 +1151,7 @@ public:
      */
             }
             else {
-                cout << line << endl;
+                cout <<"Dwad" << line << endl;
                 return;
             }
         }
