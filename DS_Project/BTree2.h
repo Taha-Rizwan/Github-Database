@@ -285,7 +285,9 @@ public:
     int pathToInt(string str) {
         int res = 0;
         int multiple = 1;
-        for (int i = 11; i < str.length(); i++) {
+        int i = repo.name.size();
+        i += 6;
+        for (i; i < str.length(); i++) {
             if (str[i] == '.')
                 break;
             res = 10 * res + str[i] - 48;
