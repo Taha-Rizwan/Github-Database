@@ -1,7 +1,7 @@
 #pragma once
 #include "RedBlack.h"
 #include "AVL.h"
-//#include "BTree2.h"
+#include "BTree2.h"
 
 struct Menu {
 
@@ -29,9 +29,12 @@ struct Menu {
 		else if (opt == 2) {
 			AVL<string> r;
 		}
-		/*else if (opt == 3) {
-			BTree<string> r;
-		}*/
+		else if (opt == 3) {
+			int deg;
+			cout << "Select Order: ";
+			cin >> deg;
+			BTree<string> r(deg);
+		}
 		
 	}
 
