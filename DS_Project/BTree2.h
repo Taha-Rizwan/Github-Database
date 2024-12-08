@@ -298,17 +298,15 @@ public:
             BTreeNode<T>* curr = new BTreeNode<T>;
             curr->keys.push_back(k);
             curr->nodePath = pathify(curr->nodePath);
-            vector<int> line;
-            line.push_back(ln);
-            curr->lineNumbers.push_back(line);
+            //vector<int> line;
+            //line.push_back(ln);
+            //curr->lineNumbers.push_back(line);
             rootPath = writeNodeToFile(curr);
             rootPath = curr->nodePath;
             return;
         }
         //setLeafNodes();
         BTreeNode<T>* temp = readNodeFromFile(rootPath);
-        vector<int> line;
-        line.push_back(ln);
         root = temp;
         BTreeNode<T>* leafNodeForInsert = search(k, true);
         BTreeNode<T>* node = leafNodeForInsert;
