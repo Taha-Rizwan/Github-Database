@@ -263,6 +263,17 @@ public:
                 if (Tree<T>::isEqual(arr[j], arr[j + 1]) == 1)
                     swap(arr[j], arr[j + 1]);
     }
+    void sortChildren(vector<T>& arr) {
+        vector<BTreeNode<T>*> temp;
+        for (int i = 0; i < arr.size(); i++)
+            temp.push_back(readNodeFromFile(arr[i]));
+        for (int i = 0; i < arr.size(); i++)
+            for (int j = 0; j < temp.size() - 1; j++)
+                if (temp[j]->keys[0] > temp[j + 1]->keys[0]) {
+                    swap(temp[j], temp[j + 1]);
+                    swap(arr[j], arr[j + 1]);
+                }
+    }
    /* bool checkExists(BTreeNode<T>*& node, BTreeNode<T>*& check) {
         for (int i = 0; i < check->keys.size(); i++)
             for (int j = 0; j < node->keys.size(); j++)
@@ -273,12 +284,11 @@ public:
 
     int pathToInt(string str) {
         int res = 0;
-        int multiple = 0;
-        for (int i = str.length() - 5; i > 0; i--) {
-            if (str[i] == '/')
+        int multiple = 1;
+        for (int i = 11; i < str.length(); i++) {
+            if (str[i] == '.')
                 break;
-            res = 10 * multiple + str[i] - 48;
-            multiple++;
+            res = 10 * res + str[i] - 48;
         }
         return res;
     }
@@ -315,7 +325,7 @@ public:
             if (node->nodePath == rootPath) {
                 T splitKey = node->keys[splitFrom]; // the key which is to be moved to parent
                 mySort(node->keys);
-                mySort(node->childrenPaths);
+                sortChildren(node->childrenPaths);
                 if (node->keys.size() == m)
                     setChildren(node, left, right, splitFrom);
                 node->keys.clear(); 
@@ -331,24 +341,39 @@ public:
                 writeNodeToFile(node, pathToInt(node->nodePath));
             }
             else {
-                //node->parent->keys.push_back(node->keys[splitFrom]);
-                //mySort(node->parent->keys.begin(), node->parent->keys.end());
-                //int currentChildIndex = 0;
-                //for (int i = 0; i < node->parent->children.size(); i++) {
-                //    if (node == node->parent->children[i])
-                //        break;
-                //    currentChildIndex++;
-                //}
-                //node->parent->childrenPaths[currentChildIndex] = left->nodePath; //updating the children with left and right nodes
-                //node->parent->childrenPaths.push_back(right->nodePath);
-                //left->parentPath = node->parentPath;
-                //right->parentPath = node->parentPath;
-                //if (node->keys.size() == m)
-                //    setChildren(node, left, right, splitFrom);
-                //node->childrenPaths.clear();
-                //node->childrenPaths.push_back(left->nodePath);
-                //node->childrenPaths.push_back(right->nodePath);
-                //cout << "nigga 1" << endl;
+                BTreeNode<T>* nodeParent = readNodeFromFile(node->parentPath);
+                remove(nodeParent->nodePath);
+                remove(node->nodePath);
+                nodeParent->keys.push_back(node->keys[splitFrom]);
+                mySort(nodeParent->keys);
+                int currentChildIndex = 0;
+                for (int i = 0; i < nodeParent->childrenPaths.size(); i++) {
+                    if (node->nodePath == nodeParent->childrenPaths[i])
+                        break;
+                    currentChildIndex++;
+                }
+                nodeParent->childrenPaths[currentChildIndex] = left->nodePath; //updating the children with left and right nodes
+                nodeParent->childrenPaths.push_back(right->nodePath);
+                left->parentPath = node->parentPath;
+                right->parentPath = node->parentPath;
+                if (node->keys.size() == m)
+                    setChildren(node, left, right, splitFrom);
+                node->childrenPaths.clear();
+                if (left->keys[0] < right->keys[0]) {
+                    node->childrenPaths.push_back(left->nodePath);
+                    node->childrenPaths.push_back(right->nodePath);
+                }
+                else {
+                    node->childrenPaths.push_back(right->nodePath);
+                    node->childrenPaths.push_back(left->nodePath);
+                }
+                //mySort(node->childrenPaths);
+                writeNodeToFile(nodeParent, pathToInt(nodeParent->nodePath));
+                //writeNodeToFile(node);
+                writeNodeToFile(left, pathToInt(left->nodePath));
+                writeNodeToFile(right, pathToInt(right->nodePath));
+                sortChildren(nodeParent->childrenPaths);
+                writeNodeToFile(nodeParent, pathToInt(nodeParent->nodePath));
             }
             BTreeNode<T>* next = readNodeFromFile(node->parentPath);
             if (next != nullptr) delete node;
@@ -367,16 +392,22 @@ public:
         for (int i = 0, j = 0; i <= mid; i++, j++) { //moving children to the left child node
             if (i < node->childrenPaths.size()) {
                 left->childrenPaths.push_back(node->childrenPaths[i]);
-               /* if (j < left->childrenPaths.size())
-                    left->childrenPaths[j]->parentPath = (left->path);*/
+                if (j < left->childrenPaths.size()) {
+                    BTreeNode<T>* temp = readNodeFromFile(left->childrenPaths[i]);
+                    temp->parentPath = (left->nodePath);
+                    writeNodeToFile(temp, pathToInt(temp->nodePath));
+                }
                 left->leaf = false;
             }
         }
         for (int i = mid + 1, j = 0; i <= m; i++, j++) { //moving children to the right child node
             if (i < node->childrenPaths.size()) {
                 right->childrenPaths.push_back(node->childrenPaths[i]);
-                /*if (j < right->childrenPaths.size())
-                    right->childrenPaths[j]->parentPath = right->path;*/
+                if (j < right->childrenPaths.size()) {
+                    BTreeNode<T>* temp = readNodeFromFile(right->childrenPaths[j]);
+                    temp->parentPath = (right->nodePath);
+                    writeNodeToFile(temp, pathToInt(temp->nodePath));
+                }
                 right->leaf = false;
             }
         }
