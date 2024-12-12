@@ -72,7 +72,7 @@
 
 int main() {
    Menu m;
-  
+    m.main();
     return 0;
 }
 ```
